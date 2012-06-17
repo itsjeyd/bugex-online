@@ -1,0 +1,27 @@
+# Folders to ignore
+.hg
+.svn
+.CVS
+.idea
+.idea_modules
+nbproject
+.project
+.DS_Store
+*.komodoproject
+.komodotools
+.settings
+.tmproj
+*.esproj
+.cache
+
+# Data files to ignore
+*.pyc
+*.pyo
+*.db
+*.json
+*.sh
+*.class
+*.log
+*.xml
+*.iml
+*.csv
