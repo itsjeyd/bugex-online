@@ -3,21 +3,13 @@ package de.unisl.cs.st;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.jar.JarFile;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.CheckClassAdapter;
 
 /**
@@ -54,7 +46,7 @@ public class FactExtractingExternalClassLoader extends FactExtractingClassLoader
 			throw new RuntimeException(e);
 		}
 				
-		System.out.println("jar file url: "+jarFileURL.toString());
+		//System.out.println("jar file url: "+jarFileURL.toString());
 		
 		// use new url class loader to load from external jar
 		URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{jarFileURL});

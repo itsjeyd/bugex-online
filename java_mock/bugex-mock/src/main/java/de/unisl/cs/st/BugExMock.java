@@ -28,14 +28,16 @@ public class BugExMock {
 	}
 
 	/**
-	 * First argument: path of jar archive with failing test case
-	 * Second argument: failing test case
-	 * Third argument (optional): path of output file
+	 * 1st argument: path of jar archive with failing test case
+	 * 2nd argument: failing test case
+	 * 3rd argument (optional): path of output file
+	 * 4th argument (optional): artificial delay in seconds (for testing/simulating  purpose)
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		if (args.length < 2) {
 			System.out.println("Specify archive and failing test case that BugEx should analyse.");
+			System.exit(-1);
 			return;
 		}
 
@@ -44,6 +46,7 @@ public class BugExMock {
 			// input archive path is specified
 			if (!isSupported(args[0])) {
 				System.out.println("Input archive path is not valid: '"+args[0]+"' (Archive not supported!)");
+				System.exit(-1);
 				return;
 			}
 		}
@@ -55,15 +58,38 @@ public class BugExMock {
 			// output path is specified
 			if (!args[2].endsWith("/")) {
 				System.out.println("Output path is not valid: '"+args[2]+"' (No trailing '/')");
+				System.exit(-1);
 				return;
 			} else {
 				outputPath = args[2];
 			}
 		}
+		
+		// check for artificial delay
+		long delayInMillis = 0l;
+		
+		if (args.length > 3 && args[3] != null) {
+			long delayInSeconds = Long.parseLong(args[3]);
+			if (delayInSeconds > 0)
+				delayInMillis = delayInSeconds*1000;
+		}
 
 		List<Fact> facts = new BugExMock(args[0],args[1]).explainFailure();
 		
+		if (delayInMillis > 0) {
+			System.out.println("Delaying process for "+delayInMillis/1000+" seconds..");
+			
+			try {
+				Thread.sleep(delayInMillis);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			System.out.println("Waking up..");
+		}
+		
 		exportToXml(facts, outputPath);
+		System.exit(0);
 	}
 	
 	/**
