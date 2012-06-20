@@ -42,8 +42,8 @@ public class BugExMock {
 		// check input archive
 		if (args[0] != null) {
 			// input archive path is specified
-			if (!args[0].endsWith(".jar")) {
-				System.out.println("Input archive path is not valid: '"+args[0]+"' (No '.jar' extension!)");
+			if (!isSupported(args[0])) {
+				System.out.println("Input archive path is not valid: '"+args[0]+"' (Archive not supported!)");
 				return;
 			}
 		}
@@ -144,7 +144,7 @@ public class BugExMock {
 	public BugExMock(String inputArchivePath, String qualifiedFailingTestCase) {
 		logger.info("BugEx rocks #2.");
 		logger.info("Analysing input archive '{}'.", inputArchivePath);
-		if (!inputArchivePath.endsWith(".jar")) {
+		if (!isSupported(inputArchivePath)) {
 			throw new RuntimeException("Need to specify valid input archive!");
 		}
 		logger.info("Analysing test '{}'.", qualifiedFailingTestCase);
@@ -178,6 +178,19 @@ public class BugExMock {
 		}
 		Failure failure = result.getFailures().iterator().next();
 		logger.info("Analyzing failure '{}' in '{}'.", failure.getException(), failure.getDescription());
+	}
+	
+	/**
+	 * currently jar and zip are supported
+	 * 
+	 * @param inputArchivePath
+	 * @return
+	 */
+	static private boolean isSupported(String inputArchivePath) {
+		if (inputArchivePath.endsWith(".jar") || inputArchivePath.endsWith(".zip"))
+			return true;
+		
+		return false;
 	}
 
 }

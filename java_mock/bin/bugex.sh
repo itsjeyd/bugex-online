@@ -15,11 +15,14 @@
 # Example:
 #
 # bugex.sh failing-program.jar de.mypackage.TestMyClass#testGetMin /home/freddy/
+BUGEX_CURRENT=0.0.3
+
 if [ $# -ne 3 ]
 then
     echo "Invalid number of arguments!"
     echo "Usage: `basename $0` <input_archive> <failing_test_case> <output_file>"
     exit 65
 else
- java -jar bugex-mock-0.0.2-SNAPSHOT-jar-with-dependencies.jar $*
+ echo "Running BugEx version $BUGEX_CURRENT..."
+ java -jar bugex-mock-$BUGEX_CURRENT-SNAPSHOT-jar-with-dependencies.jar $*
 fi
