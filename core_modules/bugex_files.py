@@ -1,7 +1,7 @@
 '''
 Created on 21.06.2012
 
-@author: Frederik Leonhardt <frederik.leonhardt@dfki.de>
+@author: Frederik Leonhardt <frederik.leonhardt@googlemail.com>
 '''
 import logging
 

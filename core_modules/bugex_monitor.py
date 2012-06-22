@@ -3,13 +3,16 @@ Created on 19.06.2012
 
 @author: Frederik Leonhardt <frederik.leonhardt@googlemail.com>
 '''
+# internal dependencies
 from bugex_decorators import Singleton
 from bugex_timer import PeriodicTask
 from bugex_base import UserRequest
 from bugex_instance import BugExProcessInstance
 from bugex_files import BugExFile
-import logging
+
+# external dependencies
 from datetime import datetime
+import logging
 
 @Singleton
 class BugExMonitor(object):
@@ -22,7 +25,6 @@ class BugExMonitor(object):
     bug_mon = BugExMonitor.Instance()
     
     """
-    
     
     # some defaults
     BUG_EX_EXECUTABLE = '/home/freddy/bugex-mock-0.0.4-SNAPSHOT-jar-with-dependencies.jar' # move to instance?

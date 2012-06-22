@@ -9,11 +9,11 @@ class PeriodicTask(threading._Timer):
     """
     The PeriodicTask is a recurring Timer.
     
-    Regularly executes a function, intercall given in seconds, e.g.:
+    Regularly executes a function, interval given in seconds, e.g.:
     
     pt = PeriodicTask(30.0, f, args=[], kwargs={})
-    t.start() # executes f every 30 seconds
-    t.cancel() # stop the tasks's action
+    t.start()     # executes f every 30 seconds
+    t.cancel()    # stop the tasks's action
     
     """
     
