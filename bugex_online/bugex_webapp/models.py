@@ -36,3 +36,8 @@ class CodeArchive(models.Model):
         return u'{0}'.format(self.name)
 
 
+class TestCase(models.Model):
+    name = models.CharField()
+
+    def __unicode__(self):
+        return u'{0}'.format(self.name)
