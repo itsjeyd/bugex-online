@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Results Page{% endblock title %}
+
+{% block content %}
+	<div class="container-fluid">
+		<div class="row-fluid">
+        	<div class="span4">
+               <div id="facts">
+                   <h1><small>Facts</small></h1>
+                       	
+				</div>
+        		<hr/>
+	            <ul id="social">
+	                  <li><a href="#"><img src="{{ STATIC_URL }}img/fb.png"></a></li>
+	                  <li><a href="#"><img src="{{ STATIC_URL }}img/go.png"></a></li>
+				</ul>    
+        	</div>
+			<div class="span8">
+            	<div id="code">
+            	
+            	</div>                
+			</div>
+		</div>	
+	</div>
+{% endblock content %}
