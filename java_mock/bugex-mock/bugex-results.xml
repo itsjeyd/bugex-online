@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facts>
+<fact>
+  <className>de.mypackage.MyClass</className>
+  <methodName>getMin</methodName>
+  <lineNumber>9</lineNumber>
+  <explanation>this is just shitty code...</explanation>
+  <factType>TYPE_B</factType>
+</fact>
+</facts>
