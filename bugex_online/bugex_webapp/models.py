@@ -13,6 +13,7 @@ Authors: Amir Baradaran
 
 from django.db import models
 
+
 class UserRequest(models.Model):
     user = models.ForeignKey('User')
     code_archive = models.OneToOneField('CodeArchive')
@@ -41,3 +42,30 @@ class TestCase(models.Model):
 
     def __unicode__(self):
         return u'{0}'.format(self.name)
+
+
+class AnonymousUser(models.Model):
+    registration_date = models.DateField()
+    email_address = models.EmailField()
+
+    def __unicode__(self):
+        return '{0}'.format(self.email_address)
+
+    def register(self):
+        '''Create a registered user
+        '''
+        pass
+
+    def update_email(self, new_email):
+        #self.email_address = new_email
+        pass
+
+    def update_password(self):
+        pass
+
+
+class RegisteredUser(AnonymousUser):
+    password = models.CharField() #size?
+
+    def generate_password(self):
+        pass
