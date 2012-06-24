@@ -10,7 +10,7 @@ Authors: Amir Baradaran
          Iliana Simova
          Peter Stahl
 """
-
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from bugex_webapp.validators import validate_source_file_extension, \
@@ -52,6 +52,7 @@ class SourceFile(ProjectFile):
 
     package = models.CharField(
         max_length=100,
+        blank=True,
         help_text='The name of the package that this source file resides in.'
     )
 
@@ -101,4 +102,108 @@ class Line(models.Model):
 
     def __unicode__(self):
         """Return a unicode representation for a Line model object."""
-        return '{0}: line {1}'.format(self.source_file, self.number)
+        return '{0}: line {1}'.format(self.source_file.name, self.number)
+
+class OutlineElement(models.Model):
+    """The OutlineElement model.
+
+    The OutlineElement model is an abstract base class that will
+    not be saved to the database. Its fields are inherited by three
+    subclasses MethodElement, FieldElement and ClassElement.
+    """
+    ACCESS_LEVELS = (
+        ('PUB', 'public'),
+        ('PRI', 'private'),
+        ('PRO', 'protected'),
+        ('PAC', 'package-private')
+    )
+
+    line = models.OneToOneField('Line',
+        help_text='The line element associated with this outline element.'
+    )
+    class_element = models.ForeignKey('ClassElement', null=True, blank=True,
+        help_text='The class element that this outline element resides in.'
+    )
+    access_level = models.CharField(max_length=3, choices=ACCESS_LEVELS,
+        help_text='The access level modifier of this outline element.'
+    )
+    name = models.CharField(max_length=100,
+        help_text='The name of this outline element.'
+    )
+    comment = models.TextField(blank=True,
+        help_text='An optional comment associated with this outline element.'
+    )
+
+    class Meta:
+        """Inner class providing metadata options to the OutlineElement model."""
+        abstract = True
+
+class MethodElement(OutlineElement):
+    """The MethodElement model.
+
+    The MethodElement model defines method definitions in Java source files.
+    """
+    arguments = models.CharField(max_length=200,
+        help_text='The arguments and their types of this method.'
+    )
+    return_type = models.CharField(max_length=100,
+        help_text='The type of the return value of this method.'
+    )
+
+    def __unicode__(self):
+        """Return a unicode representation for a MethodElement model object."""
+        return '{0}'.format(self.name)
+
+    def save(self, *args, **kwargs):
+        """Override save() method to prevent a MethodElement being saved
+        without an associated ClassElement.
+
+        This model's base class (OutlineElement) defines a ClassElement to be
+        optional because a ClassElement does not necessarily have to reside in
+        another ClassElement. This is not a valid behavior for a MethodElement
+        since a Java method can only reside within a Java class. Thus,
+        a ValidationError is raised if no ClassElement has been associated
+        with this MethodElement.
+        """
+        if self.class_element is None:
+            raise ValidationError('ClassElement may not be NULL!')
+        else:
+            super(MethodElement, self).save(*args, **kwargs)
+
+class FieldElement(OutlineElement):
+    """The FieldElement model.
+
+    The FieldElement model defines variable definitions in Java source files.
+    """
+    field_type = models.CharField(max_length=100,
+        help_text='The type of this variable.'
+    )
+
+    def __unicode__(self):
+        """Return a unicode representation for a FieldElement model object."""
+        return '{0}'.format(self.name)
+
+    def save(self, *args, **kwargs):
+        """Override save() method to prevent a FieldElement being saved
+        without an associated ClassElement.
+
+        This model's base class (OutlineElement) defines a ClassElement to be
+        optional because a ClassElement does not necessarily have to reside in
+        another ClassElement. This is not a valid behavior for a FieldElement
+        since a Java field can only reside within a Java class. Thus,
+        a ValidationError is raised if no ClassElement has been associated
+        with this FieldElement.
+        """
+        if self.class_element is None:
+            raise ValidationError('ClassElement may not be NULL!')
+        else:
+            super(FieldElement, self).save(*args, **kwargs)
+
+class ClassElement(OutlineElement):
+    """The ClassElement model.
+
+    The ClassElement model defines class definitions in Java source files.
+    """
+    def __unicode__(self):
+        """Return a unicode representation for a ClassElement model object."""
+        return '{0}'.format(self.name)
