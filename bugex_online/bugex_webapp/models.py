@@ -10,11 +10,31 @@ Authors: Amir Baradaran
          Iliana Simova
          Peter Stahl
 """
+
 from django.core.exceptions import ValidationError
 from django.db import models
 
 from bugex_webapp.validators import validate_source_file_extension, \
     validate_class_file_extension
+
+class Folder(models.Model):
+    """The Folder model.
+
+    The Folder model represents a single folder inside the code archive.
+    """
+    name = models.CharField(max_length=100,
+        help_text='The name of this folder.'
+    )
+    code_archive = models.ForeignKey('CodeArchive',
+        help_text='The code archive that this folder resides in.'
+    )
+    parent_folder = models.ForeignKey('self', null=True, blank=True,
+        help_text='The parent folder of this folder, if it exists.'
+    )
+
+    def __unicode__(self):
+        """Return a unicode representation for a Folder model object."""
+        return '{0}'.format(self.name)
 
 class ProjectFile(models.Model):
     """The ProjectFile model.
