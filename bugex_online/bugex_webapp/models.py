@@ -23,7 +23,9 @@ class BugExResult(models.Model):
     The BugExResult model represents a single result created by BugEx for
     a specific user request. A result is made up of one ore more facts.
     """
-    date = models.DateTimeField()
+    date = models.DateTimeField(auto_now_add=True,
+        help_text='The date when this BugExResult was created.'
+    )
 
     def __unicode__(self):
         """Return a unicode representation for a BugExResult model object."""
