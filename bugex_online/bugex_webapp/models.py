@@ -31,6 +31,38 @@ class BugExResult(models.Model):
         """Return a unicode representation for a BugExResult model object."""
         return '{0}'.format(self.date)
 
+class Fact(models.Model):
+    """The Fact model.
+
+    The Fact model represents a single fact consisting of location, explanation
+    and type of a specific failure.
+    """
+    bugex_result = models.ForeignKey('BugExResult',
+        help_text='The BugExResult instance associated with this fact.'
+    )
+    class_name = models.CharField(max_length=100,
+        help_text='The class name associated with this fact.'
+    )
+    method_name = models.CharField(max_length=100,
+        help_text='The method name associated with this fact.'
+    )
+    line_number = models.PositiveIntegerField(
+        help_text='The line number associated with this fact.'
+    )
+    explanation = models.TextField(
+        help_text='A detailed summary describing what the '\
+                  'failure associated to this fact is about.'
+    )
+    fact_type = models.CharField(max_length=100,
+        help_text='The type of this fact.'
+    )
+
+    def __unicode__(self):
+        """Return a unicode representation for a Fact model object."""
+        return 'type {0}, class {1}, line {2}'.format(
+            self.fact_type, self.class_name, self.line_number
+        )
+
 class Folder(models.Model):
     """The Folder model.
 
