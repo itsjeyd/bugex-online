@@ -13,3 +13,7 @@ Authors: Amir Baradaran
 
 from django.contrib import admin
 
+from bugex_webapp.models import SourceFile, ClassFile
+
+admin.site.register(SourceFile)
+admin.site.register(ClassFile)
