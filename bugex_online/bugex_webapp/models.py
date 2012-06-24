@@ -74,3 +74,31 @@ class ClassFile(ProjectFile):
     def __unicode__(self):
         """Return a unicode representation for a ClassFile model object."""
         return '{0}'.format(self.name)
+
+class Line(models.Model):
+    """The Line model.
+
+    The Line model represents a single line of source code that is taken
+    from the SourceFile model.
+    """
+    source_file = models.ForeignKey('SourceFile',
+        help_text='The source file that this line resides in.'
+    )
+    number = models.PositiveIntegerField(
+        verbose_name='line number',
+        help_text='The line number of this line in the source file.'
+    )
+    content = models.CharField(
+        max_length=100,
+        help_text='The code that is included in this line.'
+    )
+    definition = models.BooleanField(
+        default=False,
+        verbose_name='definition of model, method or class ?',
+        help_text='Is this source code line a definition of a ' \
+                  'model, method or class ?'
+    )
+
+    def __unicode__(self):
+        """Return a unicode representation for a Line model object."""
+        return '{0}: line {1}'.format(self.source_file, self.number)
