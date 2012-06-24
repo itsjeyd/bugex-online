@@ -17,6 +17,18 @@ from django.db import models
 from bugex_webapp.validators import validate_source_file_extension, \
     validate_class_file_extension
 
+class BugExResult(models.Model):
+    """The BugExResult model.
+
+    The BugExResult model represents a single result created by BugEx for
+    a specific user request. A result is made up of one ore more facts.
+    """
+    date = models.DateTimeField()
+
+    def __unicode__(self):
+        """Return a unicode representation for a BugExResult model object."""
+        return '{0}'.format(self.date)
+
 class Folder(models.Model):
     """The Folder model.
 

@@ -14,7 +14,7 @@ Authors: Amir Baradaran
 from django.contrib import admin
 
 from bugex_webapp.models import SourceFile, ClassFile, Line, \
-    MethodElement, FieldElement, ClassElement, Folder
+    MethodElement, FieldElement, ClassElement, Folder, BugExResult
 
 admin.site.register(SourceFile)
 admin.site.register(ClassFile)
@@ -23,3 +23,4 @@ admin.site.register(MethodElement)
 admin.site.register(FieldElement)
 admin.site.register(ClassElement)
 admin.site.register(Folder)
+admin.site.register(BugExResult)
