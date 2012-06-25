@@ -11,8 +11,10 @@ Authors: Amir Baradaran
          Peter Stahl
 """
 
+import uuid
 from django.core.exceptions import ValidationError
 from django.db import models
+from bugex_webapp import PENDING
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
 
@@ -28,6 +30,11 @@ class UserRequest(models.Model):
 
     def __unicode__(self):
         return u'{0}: {1}'.format(self.token, self. test_case)
+
+    @staticmethod
+    def new():
+        token = uuid.uuid4()
+        return UserRequest(token=token, status=PENDING)
 
 
 class CodeArchive(models.Model):
