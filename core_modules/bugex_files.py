@@ -23,15 +23,22 @@ class BugExFile(object):
                 f.close()
             return True
         except IOError as e:
-            logging.log("File does not exist: %s", self.path)
+            logging.info("File does not exist: %s", self.path)
             return False
     
     def read(self):
         if not self.exists():
             raise Exception('File does not exist: %s', self.path)
 
-        f = open(self.path, 'r')
-        return f.read()
+        try:
+            f = open(self.path, 'r')
+            return f.read()
+        except Exception as e:
+            logging.warn("Something went wrong while reading the file '%s': %s",
+                         self.path, e.strerror)
+            
+        finally:
+            f.close()
 
 
 class BugExResultFile(BugExFile):

@@ -7,6 +7,7 @@ from bugex_files import BugExFile, BugExResultFile
 from datetime import datetime
 import logging
 import subprocess
+from bugex_base import BugExConfig
 #from py4j.java_gateway import JavaGateway
 
 class BugExInstance(object):
@@ -19,12 +20,13 @@ class BugExInstance(object):
     - BugExJavaInstance (utilizes Py4J java gateway)
 
     '''
-    RESULT_FILE_NAME = 'bugex-results.xml'
+    #RESULT_FILE_NAME = 'bugex-results.xml'
 
     def __init__(self, user_archive_path, failing_test_case_name
                  , working_folder_path, token, artificial_delay = 0):
         '''
-        Constructor
+        Constructor, initializes members and checks if the user archive exists.
+        
         '''
         self._failing_test_case = failing_test_case_name    # a String
         self._working_folder = working_folder_path          # a String (path, trailing /)
@@ -32,9 +34,14 @@ class BugExInstance(object):
         self._token = token                                 # a String
         
         self._user_archive = BugExFile(user_archive_path,'zip')
-        self.result_file = BugExResultFile(self._build_path(self.RESULT_FILE_NAME))
+        
+        # load result file name from config
+        result_file_name = BugExConfig.Instance().result_file_name
+        
+        self.result_file = BugExResultFile(
+                                self._build_path(result_file_name))
         self.debug = False      # in debug mode, consider delay
-        self._start_date = None
+        self._start_date = None # start with start() method
         
         if not self._user_archive.exists():
             raise Exception('The defined user archive does not exist: \'%s\''
@@ -51,21 +58,31 @@ class BugExInstance(object):
         raise Exception('This is an abstract class!')
     
     def _build_path(self, file_name):
+        """
+        Returns absolute path for a file in the working folder.
+        
+        """
+        
         file_path = self._working_folder + file_name
         return file_path
+
     
 class BugExJavaInstance(BugExInstance):
     '''
-    TODO
+    Representation of a BugEx instance via Py4J gateway.
+    
+    TODO: Not implemented yet.
     '''
 
     def __init__(self):
         '''
-        TODO
+        TODO: Not implemented yet.
         '''
         
         self.gateway = 'gateway-placeholder'
-        pass
+        
+        raise Exception('Not implemented yet.')
+
 
         
 class BugExProcessInstance(BugExInstance):
@@ -87,9 +104,9 @@ class BugExProcessInstance(BugExInstance):
                  , failing_test_case_name, working_folder_path, token
                  , artificial_delay = 0):
         
-        BugExInstance.__init__(self, user_archive_path
-                               , failing_test_case_name, working_folder_path
-                               , token, artificial_delay)
+        BugExInstance.__init__(
+            self, user_archive_path, failing_test_case_name,
+            working_folder_path, token, artificial_delay)
         
         self.name = 'bugex-instance-'+self._token+'-subprocess'
 
@@ -100,7 +117,9 @@ class BugExProcessInstance(BugExInstance):
         
         # logging
         self._log = logging.getLogger(self.name)
-        self._log.setLevel('INFO') # for testing purpose
+        
+        if self.debug:
+            self._log.setLevel('INFO') # show more stuff in debug mode
         
         # done!
         self._log.info('Created BugExProcessInstance \'%s\'', self.name)
@@ -128,12 +147,24 @@ class BugExProcessInstance(BugExInstance):
             
     
     def kill(self):
+        """
+        Kills the current process.
+        
+        """
+        
         self.__run_check()
         self.__process.kill()
 
 
     @property
     def status(self):
+        """
+        Retrieves exit code from the process.
+        
+        Returns -1, if process has not finished yet.
+        
+        """
+        
         self.__run_check()
         
         # get status from subprocess
@@ -149,22 +180,41 @@ class BugExProcessInstance(BugExInstance):
 
 
     def __run_check(self):
+        """
+        Checks if current process is running, raises Exception if not.
+        
+        """
+        
         if self.__process is None:
-            raise Exception('You have to start the instance \'{}\' first!'.format(self.name))
+            raise Exception(
+                'You have to start the instance \'{}\' first!'.format(self.name))
     
     
     def __build_args(self):
+        """
+        Builds the command line arguments for a BugEx subprocess.
+        
+        Returns a list of arguments.
+        
+        The pattern is:
+        java -jar <bug_ex_executable> <input_archive_path> <failing_test_case>
+            <working_folder> (<artificial_delay>)
+
+        """
+        
         args = "java -jar {0} {1} {2} {3}"
         fargs = ""
         if self.debug:
             # consider delay
             args += " {4}"
-            fargs = args.format(self._bug_ex_executable, self._user_archive.path
-                                , self._failing_test_case, self._working_folder
-                                , self._artificial_delay)
+            fargs = args.format(
+                self._bug_ex_executable, self._user_archive.path,
+                self._failing_test_case, self._working_folder,
+                self._artificial_delay)
         else:
             # ignore delay
-            fargs = args.format(self._bug_ex_executable, self._user_archive.path
-                                , self._failing_test_case, self._working_folder)
+            fargs = args.format(
+                self._bug_ex_executable, self._user_archive.path,
+                self._failing_test_case, self._working_folder)
         
         return fargs.split()

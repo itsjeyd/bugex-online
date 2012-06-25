@@ -6,7 +6,7 @@ Created on 19.06.2012
 # internal dependencies
 from bugex_decorators import Singleton
 from bugex_timer import PeriodicTask
-from bugex_base import UserRequest
+from bugex_base import UserRequest, BugExConfig
 from bugex_instance import BugExProcessInstance
 from bugex_files import BugExFile
 
@@ -26,14 +26,12 @@ class BugExMonitor(object):
     
     """
     
-    # some defaults
-    BUG_EX_EXECUTABLE = '/home/freddy/bugex-mock-0.0.4-SNAPSHOT-jar-with-dependencies.jar' # move to instance?
-    BUG_EX_CHECK_INTERVAL = 1.0
-    BUG_EX_DEBUG = True
-    
     def __init__(self):
         # init file job list
         self.__monitor_jobs = list()
+        
+        # config
+        self.__config = BugExConfig.Instance()
         
         # logging
         self.__log = logging.getLogger("BugExMonitor")
@@ -48,16 +46,21 @@ class BugExMonitor(object):
         failing_test_case = user_request.failing_test_case
         token = user_request.token
         
+        # get config options
+        bugex_executable = self.__config.executable
+        bugex_debug = self.__config.debug
+        bugex_interval = self.__config.check_interval
+        
         # create instance
         bugex_instance = BugExProcessInstance(
-            self.BUG_EX_EXECUTABLE, user_archive_path, failing_test_case,
+            bugex_executable, user_archive_path, failing_test_case,
             request_path, token, 15)
         
-        bugex_instance.debug = self.BUG_EX_DEBUG
+        bugex_instance.debug = bugex_debug
         
         # create job
         job = BugExMonitorJob(bugex_instance, user_request)
-        job.schedule(self.BUG_EX_CHECK_INTERVAL)
+        job.schedule(bugex_interval)
         
         # store reference to job
         self.__monitor_jobs.append(job)
@@ -82,10 +85,6 @@ class BugExMonitorJob(object):
     If the instance terminates in time, it stores the result to the database.
     """
     
-    # some defaults (stop criteria)
-    MAX_RETRIES = 100
-    MAX_LIFE_TIME = 12 * 60 * 60 #12h, seconds
-    
     def __init__(self, bug_ex_instance, user_request):
         # members
         self._bug_ex_instance = bug_ex_instance
@@ -93,19 +92,32 @@ class BugExMonitorJob(object):
         self._task = None # no task yet
         self._tries = 0
         self._creation_date = datetime.now()
-                
+        
+        # config
+        config = BugExConfig.Instance()
+        
+        # load stop criteria values
+        self.MAX_RETRIES = config.max_retries       # int
+        self.MAX_LIFE_TIME = config.max_life_time   # in seconds
+        
         # job name
         self.name = 'job-' + user_request.token
         
         # logging
         self._log = logging.getLogger(self.name)
-        self._log.setLevel('INFO') # for testing purpose
         
+        print config.debug
+        
+        if config.debug:
+            self._log.setLevel('DEBUG')
+        else:
+            self._log.setLevel('INFO')
+            
         # done!
         self._log.info('Created FileMonitorJob \'%s\'', self.name)
     
     def run(self):
-        self._log.info('running the job.. (try %s of %s)', str(self._tries)
+        self._log.debug('running the job.. (try %s of %s)', str(self._tries)
                       , str(self.MAX_RETRIES))
         
         # increase try count
@@ -129,7 +141,7 @@ class BugExMonitorJob(object):
         status = self._bug_ex_instance.status
         
         if status == -1:
-            self._log.info('BugEx is not ready..')
+            self._log.debug('BugEx is not ready..')
             return
         elif not status == 0:
             self._user_request.status = 'FAIL'
@@ -182,8 +194,9 @@ class BugExMonitorJob(object):
 #test_file = BugExFile('/home/freddy/bugex-results.xml','xml')
 #status_file = BugExFile('/home/freddy/bugex-results.xml','xml')
 
-logging.basicConfig() # this has to be done somewhen!
-
+FORMAT = '%(asctime)-15s %(message)s'
+logging.basicConfig(format = FORMAT) # this has to be done somewhen!
+#logging.basicConfig() 
 
 user_request = UserRequest()
 user_request.token = '82230841-bcbe-451c-8b3e-e1365ad7f257'
