@@ -11,10 +11,14 @@ Authors: Amir Baradaran
          Peter Stahl
 """
 
+import uuid
+from os import path
 from django.core.exceptions import ValidationError
 from django.db import models
+from bugex_webapp import PENDING
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
+from core_config import WORKING_DIR
 
 
 class UserRequest(models.Model):
@@ -22,12 +26,31 @@ class UserRequest(models.Model):
     code_archive = models.OneToOneField('CodeArchive')
     test_case = models.OneToOneField('TestCase')
     token = models.CharField()
-    request_folder = models.CharField()
     status = models.IntegerField()
     result = models.OneToOneField('BugExResult')
 
     def __unicode__(self):
         return u'{0}: {1}'.format(self.token, self. test_case)
+
+    @staticmethod
+    def new():
+        token = uuid.uuid4()
+        return UserRequest(token=token, status=PENDING)
+
+    @property
+    def folder(self):
+        return path.join(
+            WORKING_DIR, 'user_'+self.user.id, self.token)
+
+    @property
+    def status(self):
+        return self.status
+
+    @status.setter
+    def status(self, new_status):
+        self.status = new_status
+        self.save()
+        print 'Status of {0} changed to: {1}'.format(self.token, self._status)
 
 
 class CodeArchive(models.Model):
