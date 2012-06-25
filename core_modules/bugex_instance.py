@@ -3,11 +3,14 @@ Created on 21.06.2012
 
 @author: Frederik Leonhardt <frederik.leonhardt@googlemail.com>
 '''
+# internal dependencies
 from bugex_files import BugExFile, BugExResultFile
+import core_config
+
+# external dependencies
 from datetime import datetime
 import logging
 import subprocess
-from bugex_base import BugExConfig
 #from py4j.java_gateway import JavaGateway
 
 class BugExInstance(object):
@@ -36,7 +39,7 @@ class BugExInstance(object):
         self._user_archive = BugExFile(user_archive_path,'zip')
         
         # load result file name from config
-        result_file_name = BugExConfig.Instance().result_file_name
+        result_file_name = core_config.RESULT_FILE_NAME
         
         self.result_file = BugExResultFile(
                                 self._build_path(result_file_name))
@@ -100,9 +103,9 @@ class BugExProcessInstance(BugExInstance):
     
     """
     
-    def __init__(self, bug_ex_executable, user_archive_path
-                 , failing_test_case_name, working_folder_path, token
-                 , artificial_delay = 0):
+    def __init__(self, bug_ex_executable, user_archive_path,
+                  failing_test_case_name, working_folder_path, token,
+                  artificial_delay = 0):
         
         BugExInstance.__init__(
             self, user_archive_path, failing_test_case_name,

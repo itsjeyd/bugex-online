@@ -9,6 +9,7 @@ from bugex_timer import PeriodicTask
 from bugex_base import UserRequest, BugExConfig
 from bugex_instance import BugExProcessInstance
 from bugex_files import BugExFile
+import core_config
 
 # external dependencies
 from datetime import datetime
@@ -29,17 +30,14 @@ class BugExMonitor(object):
     def __init__(self):
         # init file job list
         self.__monitor_jobs = list()
-        
-        # config
-        self.__config = BugExConfig.Instance()
-        
+
         # logging
         self.__log = logging.getLogger("BugExMonitor")
         self.__log.info('BugExMonitor created.')
 
     def __create_job(self, user_request):
         # get output path
-        request_path = user_request.path
+        request_path = user_request.folder
         
         # gather necessary data
         user_archive_path = user_request.user_archive.path
@@ -47,14 +45,15 @@ class BugExMonitor(object):
         token = user_request.token
         
         # get config options
-        bugex_executable = self.__config.executable
-        bugex_debug = self.__config.debug
-        bugex_interval = self.__config.check_interval
+        bugex_executable = core_config.EXECUTABLE
+        bugex_debug = core_config.DEBUG
+        bugex_interval = core_config.CHECK_INTERVAL
+        bugex_delay = core_config.ARTIFICIAL_DELAY
         
         # create instance
         bugex_instance = BugExProcessInstance(
             bugex_executable, user_archive_path, failing_test_case,
-            request_path, token, 15)
+            request_path, token, bugex_delay)
         
         bugex_instance.debug = bugex_debug
         
@@ -92,23 +91,14 @@ class BugExMonitorJob(object):
         self._task = None # no task yet
         self._tries = 0
         self._creation_date = datetime.now()
-        
-        # config
-        config = BugExConfig.Instance()
-        
-        # load stop criteria values
-        self.MAX_RETRIES = config.max_retries       # int
-        self.MAX_LIFE_TIME = config.max_life_time   # in seconds
-        
+    
         # job name
         self.name = 'job-' + user_request.token
         
         # logging
         self._log = logging.getLogger(self.name)
-        
-        print config.debug
-        
-        if config.debug:
+                
+        if core_config.DEBUG:
             self._log.setLevel('DEBUG')
         else:
             self._log.setLevel('INFO')
@@ -117,27 +107,21 @@ class BugExMonitorJob(object):
         self._log.info('Created FileMonitorJob \'%s\'', self.name)
     
     def run(self):
-        self._log.debug('running the job.. (try %s of %s)', str(self._tries)
-                      , str(self.MAX_RETRIES))
+        self._log.debug('running the job.. (try %s)', str(self._tries))
         
         # increase try count
         self._tries += 1
         
         # check stop criteria
-        # (1) max retries
-        if (self._tries > self.MAX_RETRIES):
-            self.cancel('Maximum number of retries exceeded (%s tries)'
-                        , str(self.tries))
+        
+        # (1) life time
+        time_diff = datetime.now() - self._creation_date    #timedelta
+        if (time_diff.total_seconds() > core_config.MAX_LIFE_TIME):
+            self.cancel('Maximum life time exceeded (%s seconds)',
+                        str(time_diff.total_seconds()))
             return
         
-        # (2) life time
-        time_diff = datetime.now() - self._creation_date #timedelta
-        if (time_diff.total_seconds() > self.MAX_LIFE_TIME):
-            self.cancel('Maximum life time exceeded (%s seconds)'
-                        , str(time_diff.total_seconds()))
-            return
-        
-        # check process status
+        # (2) check process status
         status = self._bug_ex_instance.status
         
         if status == -1:
@@ -200,7 +184,7 @@ logging.basicConfig(format = FORMAT) # this has to be done somewhen!
 
 user_request = UserRequest()
 user_request.token = '82230841-bcbe-451c-8b3e-e1365ad7f257'
-user_request.user_archive = BugExFile(user_request.path+'failing-program-0.0.1-SNAPSHOT-jar-with-dependencies.jar','jar')
+user_request.user_archive = BugExFile(user_request.folder+'failing-program-0.0.1-SNAPSHOT-jar-with-dependencies.jar','jar')
 user_request.failing_test_case = 'de.mypackage.TestMyClass#testGetMin'
 
 bug_mon = BugExMonitor.Instance()
