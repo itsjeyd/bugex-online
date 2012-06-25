@@ -42,6 +42,15 @@ class UserRequest(models.Model):
         return path.join(
             WORKING_DIR, 'user_'+self.user.id, self.token)
 
+    @property
+    def status(self):
+        return self.status
+
+    @status.setter
+    def status(self, new_status):
+        self.status = new_status
+        self.save()
+        print 'Status of {0} changed to: {1}'.format(self.token, self._status)
 
 
 class CodeArchive(models.Model):
