@@ -13,10 +13,72 @@ Authors: Amir Baradaran
 
 from django.core.exceptions import ValidationError
 from django.db import models
+from bugex_webapp.validators import validate_source_file_extension
+from bugex_webapp.validators import validate_class_file_extension
 
+
+class UserRequest(models.Model):
+    user = models.ForeignKey('User')
+    code_archive = models.OneToOneField('CodeArchive')
+    test_case = models.OneToOneField('TestCase')
+    token = models.CharField()
+    request_folder = models.CharField()
+    status = models.IntegerField()
+    result = models.OneToOneField('BugExResult')
+
+    def __unicode__(self):
+        return u'{0}: {1}'.format(self.token, self. test_case)
+
+
+class CodeArchive(models.Model):
+    EXTENSION_CHOICES = (('jar', 'Type of archive: jar'),
+                         ('zip', 'Type of archive: zip'))
+    name = models.CharField()
+    extension = models.CharField(choices=EXTENSION_CHOICES) # This is called "type" in class diagram
+
+    def __unicode__(self):
+        return u'{0}'.format(self.name)
+
+
+class TestCase(models.Model):
+    name = models.CharField()
+
+    def __unicode__(self):
+        return u'{0}'.format(self.name)
+
+
+class AnonymousUser(models.Model):
+    registration_date = models.DateField()
+    email_address = models.EmailField()
+
+    def __unicode__(self):
+        return '{0}'.format(self.email_address)
+
+    def register(self):
+        '''Create a registered user
+        '''
+        pass
+
+    def update_email(self, new_email):
+        #self.email_address = new_email
+        pass
+
+    def update_password(self):
+        pass
+
+
+class RegisteredUser(AnonymousUser):
+    password = models.CharField() #size?
+
+    def generate_password(self):
+        pass
+
+<<<<<<< HEAD
 <<<<<<< HEAD
 from bugex_webapp.validators import validate_source_file_extension, \
     validate_class_file_extension
+=======
+>>>>>>> tim
 
 class BugExResult(models.Model):
     """The BugExResult model.
@@ -83,6 +145,7 @@ class Folder(models.Model):
         """Return a unicode representation for a Folder model object."""
         return '{0}'.format(self.name)
 
+
 class ProjectFile(models.Model):
     """The ProjectFile model.
 
@@ -104,6 +167,7 @@ class ProjectFile(models.Model):
     class Meta:
         """Inner class providing metadata options to the ProjectFile model."""
         abstract = True
+
 
 class SourceFile(ProjectFile):
     """The SourceFile model.
@@ -143,6 +207,7 @@ class ClassFile(ProjectFile):
         """Return a unicode representation for a ClassFile model object."""
         return '{0}'.format(self.name)
 
+
 class Line(models.Model):
     """The Line model.
 
@@ -170,6 +235,7 @@ class Line(models.Model):
     def __unicode__(self):
         """Return a unicode representation for a Line model object."""
         return '{0}: line {1}'.format(self.source_file.name, self.number)
+
 
 class OutlineElement(models.Model):
     """The OutlineElement model.
@@ -205,6 +271,7 @@ class OutlineElement(models.Model):
         """Inner class providing metadata options to the OutlineElement model."""
         abstract = True
 
+
 class MethodElement(OutlineElement):
     """The MethodElement model.
 
@@ -237,6 +304,7 @@ class MethodElement(OutlineElement):
         else:
             super(MethodElement, self).save(*args, **kwargs)
 
+
 class FieldElement(OutlineElement):
     """The FieldElement model.
 
@@ -266,6 +334,7 @@ class FieldElement(OutlineElement):
         else:
             super(FieldElement, self).save(*args, **kwargs)
 
+
 class ClassElement(OutlineElement):
     """The ClassElement model.
 
@@ -274,6 +343,7 @@ class ClassElement(OutlineElement):
     def __unicode__(self):
         """Return a unicode representation for a ClassElement model object."""
         return '{0}'.format(self.name)
+<<<<<<< HEAD
 =======
 
 class UserRequest(models.Model):
@@ -331,4 +401,6 @@ class RegisteredUser(AnonymousUser):
 
     def generate_password(self):
         pass
+>>>>>>> tim
+=======
 >>>>>>> tim
