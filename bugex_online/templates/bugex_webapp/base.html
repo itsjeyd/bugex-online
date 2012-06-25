@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <title>{% block title %}{% endblock title %}</title>
@@ -16,7 +16,7 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-responsive-2.0.4.css">
 
     2) The LESS versions (either normal or extra responsive version):
-    <link rel="stylesheet/less" type="text/css" href="{{ STATIC_URL }}less/bootstrap.less">
+    <link rel="stylesheet/less" type="text/css" href"C:/Users/Chris/Desktop/BugEx Online - Twitter Bootstrap Drafts/mainpage.html"="{{ STATIC_URL }}less/bootstrap.less">
     OR
     <link rel="stylesheet/less" type="text/css" href="{{ STATIC_URL }}less/bootstrap-responsive.less">
 
@@ -37,12 +37,42 @@
     Including LESS files is suitable for development only (compilation too slow),
     CSS files are thus recommended for deployment.
     ====================================================================== -->
+    <script type="text/javascript">
+    $(document).ready(function() {
+	    $("#informingText").hide();
+	    $("button").click(function() {
+	    	$("#informingText").text("Please do not close the Browser till your files are uploaded!").fadeIn("slow").delay(6000).fadeOut("fast");
+	    });
+    });
+    </script>
 </head>
 
-<body>
-    {% block header %}{% endblock header %}
+<body onload="prettyPrint()">
+    {% block header %}	
+    <div class="navbar">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="#"><img src="{{ STATIC_URL }}img/logo.png"></a>
+				<ul class="nav">
+					<li><a href="#">Home</a></li>
+					<li><a href="#">HowTo</a></li>
+					<li><a href="#">Contact Us</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	{% endblock header %}
     {% block content %}{% endblock content %}
-    {% block footer %}{% endblock footer %}
+    {% block footer %}        
+    <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span12"></div>
+                    <div id="footer">
+                        <p>blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah </p>
+                    </div>  
+            </div>	
+	</div>	
+	{% endblock footer %}
 </body>
 
 </html>
