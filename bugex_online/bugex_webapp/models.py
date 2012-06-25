@@ -12,11 +12,13 @@ Authors: Amir Baradaran
 """
 
 import uuid
+from os import path
 from django.core.exceptions import ValidationError
 from django.db import models
 from bugex_webapp import PENDING
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
+from core_config import WORKING_DIR
 
 
 class UserRequest(models.Model):
@@ -24,7 +26,6 @@ class UserRequest(models.Model):
     code_archive = models.OneToOneField('CodeArchive')
     test_case = models.OneToOneField('TestCase')
     token = models.CharField()
-    request_folder = models.CharField()
     status = models.IntegerField()
     result = models.OneToOneField('BugExResult')
 
@@ -35,6 +36,11 @@ class UserRequest(models.Model):
     def new():
         token = uuid.uuid4()
         return UserRequest(token=token, status=PENDING)
+
+    @property
+    def folder(self):
+        return path.join(
+            WORKING_DIR, self.user.id, self.token)
 
 
 class CodeArchive(models.Model):
