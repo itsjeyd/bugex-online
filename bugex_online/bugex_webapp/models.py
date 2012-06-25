@@ -40,7 +40,8 @@ class UserRequest(models.Model):
     @property
     def folder(self):
         return path.join(
-            WORKING_DIR, self.user.id, self.token)
+            WORKING_DIR, 'user_'+self.user.id, self.token)
+
 
 
 class CodeArchive(models.Model):
