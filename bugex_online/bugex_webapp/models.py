@@ -25,6 +25,10 @@ from core_config import WORKING_DIR
 
 
 class UserRequest(models.Model):
+    """The UserRequest model.
+
+    The UserRequest model represents a single request to be sent to BugEx.
+    """
     user = models.ForeignKey(User)
     code_archive = models.OneToOneField('CodeArchive')
     test_case = models.OneToOneField('TestCase')
@@ -33,6 +37,7 @@ class UserRequest(models.Model):
     result = models.OneToOneField('BugExResult')
 
     def __unicode__(self):
+        """Return a unicode representation for a UserRequest model object."""
         return u'{0}: {1}'.format(self.token, self. test_case)
 
     @staticmethod
@@ -57,19 +62,40 @@ class UserRequest(models.Model):
 
 
 class CodeArchive(models.Model):
-    EXTENSION_CHOICES = (('jar', 'Type of archive: jar'),
-                         ('zip', 'Type of archive: zip'))
-    name = models.CharField()
-    extension = models.CharField(choices=EXTENSION_CHOICES) # This is called "type" in class diagram
+    """The CodeArchive model.
+
+    The CodeArchive model represents a single code archive uploaded by the user.
+    """
+    EXTENSIONS = (
+        ('JAR', 'jar'),
+        ('ZIP', 'zip')
+    )
+
+    name = models.CharField(
+        max_length=100,
+        help_text='The name of this code archive.'
+    )
+    archive_format = models.CharField(
+        max_length=3,
+        choices=EXTENSIONS,
+        help_text='The format of this archive (either *.jar or *.zip)'
+    )
 
     def __unicode__(self):
+        """Return a unicode representation for a CodeArchive model object."""
         return u'{0}'.format(self.name)
 
 
 class TestCase(models.Model):
-    name = models.CharField()
+    """The TestCase model.
+
+    The TestCase model represents a single failing test case to be analyzed
+    by BugEx.
+    """
+    name = models.CharField(max_length=100)
 
     def __unicode__(self):
+        """Return a unicode representation for a TestCase model object."""
         return u'{0}'.format(self.name)
 
 
