@@ -17,7 +17,23 @@ from bugex_webapp.models import UserRequest, CodeArchive, TestCase, BugExResult
 from bugex_webapp.models import Fact, Folder, SourceFile, ClassFile, Line
 from bugex_webapp.models import MethodElement, FieldElement, ClassElement
 
-admin.site.register(UserRequest)
+class UserRequestAdmin(admin.ModelAdmin):
+    """The admin site configuration for the UserRequest model."""
+    fieldsets = (
+        (None, {
+            'fields': ('status', 'token')
+        }),
+        (None, {
+            'fields': ('code_archive', 'result', 'test_case', 'user')
+        })
+    )
+    list_display = ('status', 'token', 'code_archive', 'result', 'test_case', 'user')
+    list_display_links = ('token',)
+    list_filter = ('status', 'user__username')
+    ordering = ('user', 'result')
+
+
+admin.site.register(UserRequest, UserRequestAdmin)
 admin.site.register(CodeArchive)
 admin.site.register(TestCase)
 admin.site.register(BugExResult)
