@@ -120,6 +120,22 @@ class SourceFileAdmin(admin.ModelAdmin):
     search_fields = ('name', 'code_archive', 'folder')
 
 
+class ClassFileAdmin(admin.ModelAdmin):
+    """The admin configuration for the ClassFile model."""
+    fieldsets = (
+        (None, {
+            'fields': ('name',)
+        }),
+        (None, {
+            'fields': ('code_archive', 'folder')
+        })
+    )
+    list_display = ('name', 'code_archive', 'folder')
+    list_display_links = ('name',)
+    ordering = ('code_archive', 'name')
+    search_fields = ('name', 'code_archive', 'folder')
+
+
 admin.site.register(UserRequest, UserRequestAdmin)
 admin.site.register(CodeArchive, CodeArchiveAdmin)
 admin.site.register(TestCase, TestCaseAdmin)
@@ -127,7 +143,7 @@ admin.site.register(BugExResult, BugExResultAdmin)
 admin.site.register(Fact, FactAdmin)
 admin.site.register(Folder, FolderAdmin)
 admin.site.register(SourceFile, SourceFileAdmin)
-admin.site.register(ClassFile)
+admin.site.register(ClassFile, ClassFileAdmin)
 admin.site.register(Line)
 admin.site.register(MethodElement)
 admin.site.register(FieldElement)
