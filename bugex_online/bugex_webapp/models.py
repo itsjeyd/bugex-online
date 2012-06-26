@@ -117,6 +117,10 @@ class BugExResult(models.Model):
         """Return a unicode representation for a BugExResult model object."""
         return '{0}'.format(self.date)
 
+    class Meta:
+        """Inner class providing metadata options to the OutlineElement model."""
+        verbose_name = 'BugEx result'
+
 
 class Fact(models.Model):
     """The Fact model.
