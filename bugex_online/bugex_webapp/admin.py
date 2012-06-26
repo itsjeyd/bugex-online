@@ -199,6 +199,26 @@ class FieldElementAdmin(admin.ModelAdmin):
     search_fields = ('name', 'field_type', 'class_element', 'comment')
 
 
+class ClassElementAdmin(admin.ModelAdmin):
+    """The admin configuration for the ClassElement model."""
+    fieldsets = (
+        (None, {
+            'fields': ('name',)
+        }),
+        (None, {
+            'fields': ('access_level', 'line')
+        }),
+        ('Optional', {
+            'fields': ('class_element', 'comment')
+        })
+    )
+    list_display = ('name', 'access_level', 'class_element', 'line', 'comment')
+    list_display_links = ('name',)
+    list_filter = ('access_level',)
+    ordering = ('name',)
+    search_fields = ('name', 'class_element', 'comment')
+
+
 admin.site.register(UserRequest, UserRequestAdmin)
 admin.site.register(CodeArchive, CodeArchiveAdmin)
 admin.site.register(TestCase, TestCaseAdmin)
@@ -210,4 +230,4 @@ admin.site.register(ClassFile, ClassFileAdmin)
 admin.site.register(Line, LineAdmin)
 admin.site.register(MethodElement, MethodElementAdmin)
 admin.site.register(FieldElement, FieldElementAdmin)
-admin.site.register(ClassElement)
+admin.site.register(ClassElement, ClassElementAdmin)
