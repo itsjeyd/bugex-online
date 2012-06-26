@@ -123,13 +123,19 @@ class BugExResult(models.Model):
         
         xml_string -- a string containing the xml output of BugEx
         '''
-        #save if parsing the xml goes well and Fact were created
         try:
-            _parse_xml(xml_string)
+            facts = _parse_xml(xml_string)
         except Exception:
+            #re-raise any exceptions raised during xml parsing 
             raise
         else:
-            self.save()
+            #instantiate a BugExResult and save all corresponding Facts
+            #setting the ForeignKey field of each Fact properly
+            be_res = BugExResult()
+            be_res.save()
+            for f in facts:
+                f.bugex_result = be_res
+                f.save()
     
     def _parse_xml(xml_string): 
         '''Parse the xml string and if parse is successful create Facts
@@ -142,13 +148,15 @@ class BugExResult(models.Model):
         EXPL_NODE = 'explanation'
         TYPE_NODE = 'factType'
         
+        facts = []    #for Fact objects
+        
         try:
             #parse xml string and extract fact nodes
-            facts = fromstring(xml_string).findall(FACT_NODE)
+            facts_xml = fromstring(xml_string).findall(FACT_NODE)
             
             #create a Fact for each fact node in the xml file only if all 
             #required information about the fact was found in the xml tree
-            for f in facts:
+            for f in facts_xml:
                 try:
                     my_fact = Fact(f.find(CLASS_NODE).text.strip(),
                                    f.find(METHOD_NODE).text.strip(),
@@ -158,10 +166,13 @@ class BugExResult(models.Model):
                 except Exception:
                     #nodes are missing
                     raise
-                else:my_fact.save()
+                else:
+                    facts.append(my_fact)
         except Exception:
             #xml string is empty or not valid  
             raise
+        else:
+            return facts
         
 
 class Fact(models.Model):
