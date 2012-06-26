@@ -156,6 +156,28 @@ class LineAdmin(admin.ModelAdmin):
     search_fields = ('content', 'number', 'source_file')
 
 
+class MethodElementAdmin(admin.ModelAdmin):
+    """The admin configuration for the MethodElement model."""
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'arguments', 'return_type')
+        }),
+        (None, {
+            'fields': ('access_level', 'class_element', 'line')
+        }),
+        ('Optional', {
+            'fields': ('comment',)
+        })
+    )
+    list_display = ('name', 'arguments', 'return_types',
+                    'access_level', 'class_element', 'line', 'comment')
+    list_display_links = ('name',)
+    list_filter = ('access_level',)
+    ordering = ('name',)
+    search_fields = ('name', 'arguments', 'return_types', 'class_element',
+                     'comment')
+
+
 admin.site.register(UserRequest, UserRequestAdmin)
 admin.site.register(CodeArchive, CodeArchiveAdmin)
 admin.site.register(TestCase, TestCaseAdmin)
@@ -165,6 +187,6 @@ admin.site.register(Folder, FolderAdmin)
 admin.site.register(SourceFile, SourceFileAdmin)
 admin.site.register(ClassFile, ClassFileAdmin)
 admin.site.register(Line, LineAdmin)
-admin.site.register(MethodElement)
+admin.site.register(MethodElement, MethodElementAdmin)
 admin.site.register(FieldElement)
 admin.site.register(ClassElement)
