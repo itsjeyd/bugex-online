@@ -43,9 +43,18 @@ class CodeArchiveAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 
+class TestCaseAdmin(admin.ModelAdmin):
+    """The admin site configuration for the TestCase model."""
+    fields = ('name',)
+    list_display = ('name',)
+    list_display_links = ('name',)
+    ordering = ('name',)
+    search_fields = ('name',)
+
+
 admin.site.register(UserRequest, UserRequestAdmin)
 admin.site.register(CodeArchive, CodeArchiveAdmin)
-admin.site.register(TestCase)
+admin.site.register(TestCase, TestCaseAdmin)
 admin.site.register(BugExResult)
 admin.site.register(Fact)
 admin.site.register(Folder)
