@@ -128,6 +128,13 @@ class Fact(models.Model):
     The Fact model represents a single fact consisting of location, explanation
     and type of a specific failure.
     """
+    FACT_TYPES = [
+        ('A', 'TYPE_A'),
+        ('B', 'TYPE_B'),
+        ('C', 'TYPE_C'),
+        # ...
+    ]
+
     bugex_result = models.ForeignKey('BugExResult',
         help_text='The BugExResult instance associated with this fact.'
     )
@@ -144,7 +151,8 @@ class Fact(models.Model):
         help_text='A detailed summary describing what the '\
                   'failure associated to this fact is about.'
     )
-    fact_type = models.CharField(max_length=100,
+    fact_type = models.CharField(max_length=1,
+        choices=FACT_TYPES,
         help_text='The type of this fact.'
     )
 
