@@ -169,13 +169,34 @@ class MethodElementAdmin(admin.ModelAdmin):
             'fields': ('comment',)
         })
     )
-    list_display = ('name', 'arguments', 'return_types',
+    list_display = ('name', 'arguments', 'return_type',
                     'access_level', 'class_element', 'line', 'comment')
     list_display_links = ('name',)
     list_filter = ('access_level',)
     ordering = ('name',)
     search_fields = ('name', 'arguments', 'return_types', 'class_element',
                      'comment')
+
+
+class FieldElementAdmin(admin.ModelAdmin):
+    """The admin configuration for the FieldElement model."""
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'field_type')
+        }),
+        (None, {
+            'fields': ('access_level', 'class_element', 'line')
+        }),
+        ('Optional', {
+            'fields': ('comment',)
+        })
+    )
+    list_display = ('name', 'field_type', 'access_level',
+                    'class_element', 'line', 'comment')
+    list_display_links = ('name',)
+    list_filter = ('access_level',)
+    ordering = ('name',)
+    search_fields = ('name', 'field_type', 'class_element', 'comment')
 
 
 admin.site.register(UserRequest, UserRequestAdmin)
@@ -188,5 +209,5 @@ admin.site.register(SourceFile, SourceFileAdmin)
 admin.site.register(ClassFile, ClassFileAdmin)
 admin.site.register(Line, LineAdmin)
 admin.site.register(MethodElement, MethodElementAdmin)
-admin.site.register(FieldElement)
+admin.site.register(FieldElement, FieldElementAdmin)
 admin.site.register(ClassElement)
