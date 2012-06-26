@@ -33,8 +33,18 @@ class UserRequestAdmin(admin.ModelAdmin):
     ordering = ('user', 'result')
 
 
+class CodeArchiveAdmin(admin.ModelAdmin):
+    """The admin site configuration for the CodeArchive model."""
+    fields = ('archive_format', 'name')
+    list_display = ('archive_format', 'name')
+    list_display_links = ('name',)
+    list_filter = ('archive_format',)
+    ordering = ('archive_format', 'name')
+    search_fields = ('name',)
+
+
 admin.site.register(UserRequest, UserRequestAdmin)
-admin.site.register(CodeArchive)
+admin.site.register(CodeArchive, CodeArchiveAdmin)
 admin.site.register(TestCase)
 admin.site.register(BugExResult)
 admin.site.register(Fact)
