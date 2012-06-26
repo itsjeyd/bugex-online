@@ -13,8 +13,11 @@ Authors: Amir Baradaran
 
 import uuid
 from os import path
+
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
+
 from bugex_webapp import PENDING
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
@@ -22,14 +25,19 @@ from core_config import WORKING_DIR
 
 
 class UserRequest(models.Model):
-    user = models.ForeignKey('User')
+    """The UserRequest model.
+
+    The UserRequest model represents a single request to be sent to BugEx.
+    """
+    user = models.ForeignKey(User)
     code_archive = models.OneToOneField('CodeArchive')
     test_case = models.OneToOneField('TestCase')
-    token = models.CharField()
+    token = models.CharField(max_length=100)
     status = models.IntegerField()
     result = models.OneToOneField('BugExResult')
 
     def __unicode__(self):
+        """Return a unicode representation for a UserRequest model object."""
         return u'{0}: {1}'.format(self.token, self. test_case)
 
     @staticmethod
@@ -54,47 +62,93 @@ class UserRequest(models.Model):
 
 
 class CodeArchive(models.Model):
-    EXTENSION_CHOICES = (('jar', 'Type of archive: jar'),
-                         ('zip', 'Type of archive: zip'))
-    name = models.CharField()
-    extension = models.CharField(choices=EXTENSION_CHOICES) # This is called "type" in class diagram
+    """The CodeArchive model.
+
+    The CodeArchive model represents a single code archive uploaded by the user.
+    """
+    EXTENSIONS = (
+        ('JAR', 'jar'),
+        ('ZIP', 'zip')
+    )
+
+    name = models.CharField(
+        max_length=100,
+        help_text='The name of this code archive.'
+    )
+    archive_format = models.CharField(
+        max_length=3,
+        choices=EXTENSIONS,
+        help_text='The format of this archive (either *.jar or *.zip)'
+    )
 
     def __unicode__(self):
+        """Return a unicode representation for a CodeArchive model object."""
         return u'{0}'.format(self.name)
 
 
 class TestCase(models.Model):
-    name = models.CharField()
+    """The TestCase model.
+
+    The TestCase model represents a single failing test case to be analyzed
+    by BugEx.
+    """
+    name = models.CharField(max_length=100,
+        help_text='The name of this test case.'
+    )
 
     def __unicode__(self):
+        """Return a unicode representation for a TestCase model object."""
         return u'{0}'.format(self.name)
 
 
-class AnonymousUser(models.Model):
-    registration_date = models.DateField()
-    email_address = models.EmailField()
+class BugExResult(models.Model):
+    """The BugExResult model.
+
+    The BugExResult model represents a single result created by BugEx for
+    a specific user request. A result is made up of one ore more facts.
+    """
+    date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='date of creation',
+        help_text='The date when this BugEx result was created.'
+    )
 
     def __unicode__(self):
-        return '{0}'.format(self.email_address)
-
-    def register(self):
-        '''Create a registered user
-        '''
-        pass
-
-    def update_email(self, new_email):
-        #self.email_address = new_email
-        pass
-
-    def update_password(self):
-        pass
+        """Return a unicode representation for a BugExResult model object."""
+        return '{0}'.format(self.date)
 
 
-class RegisteredUser(AnonymousUser):
-    password = models.CharField() #size?
+class Fact(models.Model):
+    """The Fact model.
 
-    def generate_password(self):
-        pass
+    The Fact model represents a single fact consisting of location, explanation
+    and type of a specific failure.
+    """
+    bugex_result = models.ForeignKey('BugExResult',
+        help_text='The BugExResult instance associated with this fact.'
+    )
+    class_name = models.CharField(max_length=100,
+        help_text='The class name associated with this fact.'
+    )
+    method_name = models.CharField(max_length=100,
+        help_text='The method name associated with this fact.'
+    )
+    line_number = models.PositiveIntegerField(
+        help_text='The line number associated with this fact.'
+    )
+    explanation = models.TextField(
+        help_text='A detailed summary describing what the '\
+                  'failure associated to this fact is about.'
+    )
+    fact_type = models.CharField(max_length=100,
+        help_text='The type of this fact.'
+    )
+
+    def __unicode__(self):
+        """Return a unicode representation for a Fact model object."""
+        return 'type {0}, class {1}, line {2}'.format(
+            self.fact_type, self.class_name, self.line_number
+        )
 
 
 class Folder(models.Model):
@@ -161,6 +215,7 @@ class SourceFile(ProjectFile):
     def __unicode__(self):
         """Return a unicode representation for a SourceFile model object."""
         return '{0}'.format(self.name)
+
 
 class ClassFile(ProjectFile):
     """The ClassFile model.
