@@ -60,11 +60,32 @@ class BugExResultAdmin(admin.ModelAdmin):
     search_fields = ('date',)
 
 
+class FactAdmin(admin.ModelAdmin):
+    """The admin configuration for the Fact model."""
+    fieldsets = (
+        (None, {
+            'fields': ('class_name', 'method_name', 'line_number')
+        }),
+        (None, {
+            'fields': ('bugex_result', 'fact_type')
+        }),
+        (None, {
+            'fields': ('explanation',)
+        })
+    )
+    list_display = ('class_name', 'method_name', 'line_number',
+                    'bugex_result', 'fact_type', 'explanation')
+    list_display_links = ('class_name',)
+    list_filter = ('class_name', 'fact_type')
+    ordering = ('class_name', 'bugex_result')
+    search_fields = ('class_name', 'method_name', 'explanation')
+
+
 admin.site.register(UserRequest, UserRequestAdmin)
 admin.site.register(CodeArchive, CodeArchiveAdmin)
 admin.site.register(TestCase, TestCaseAdmin)
 admin.site.register(BugExResult, BugExResultAdmin)
-admin.site.register(Fact)
+admin.site.register(Fact, FactAdmin)
 admin.site.register(Folder)
 admin.site.register(SourceFile)
 admin.site.register(ClassFile)
