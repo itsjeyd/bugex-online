@@ -13,8 +13,11 @@ Authors: Amir Baradaran
 
 import uuid
 from os import path
+
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
+
 from bugex_webapp import PENDING
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
@@ -22,10 +25,10 @@ from core_config import WORKING_DIR
 
 
 class UserRequest(models.Model):
-    user = models.ForeignKey('User')
+    user = models.ForeignKey(User)
     code_archive = models.OneToOneField('CodeArchive')
     test_case = models.OneToOneField('TestCase')
-    token = models.CharField()
+    token = models.CharField(max_length=100)
     status = models.IntegerField()
     result = models.OneToOneField('BugExResult')
 
@@ -68,33 +71,6 @@ class TestCase(models.Model):
 
     def __unicode__(self):
         return u'{0}'.format(self.name)
-
-
-class AnonymousUser(models.Model):
-    registration_date = models.DateField()
-    email_address = models.EmailField()
-
-    def __unicode__(self):
-        return '{0}'.format(self.email_address)
-
-    def register(self):
-        '''Create a registered user
-        '''
-        pass
-
-    def update_email(self, new_email):
-        #self.email_address = new_email
-        pass
-
-    def update_password(self):
-        pass
-
-
-class RegisteredUser(AnonymousUser):
-    password = models.CharField() #size?
-
-    def generate_password(self):
-        pass
 
 
 class Folder(models.Model):
@@ -161,6 +137,7 @@ class SourceFile(ProjectFile):
     def __unicode__(self):
         """Return a unicode representation for a SourceFile model object."""
         return '{0}'.format(self.name)
+
 
 class ClassFile(ProjectFile):
     """The ClassFile model.
