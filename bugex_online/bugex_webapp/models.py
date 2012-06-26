@@ -21,6 +21,7 @@ from django.db import models
 from bugex_webapp import PENDING
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
+from bugex_webapp.validators import validate_archive_format
 from core_config import WORKING_DIR
 
 
@@ -73,6 +74,7 @@ class CodeArchive(models.Model):
 
     name = models.CharField(
         max_length=100,
+        validators=[validate_archive_format],
         help_text='The name of this code archive.'
     )
     archive_format = models.CharField(
