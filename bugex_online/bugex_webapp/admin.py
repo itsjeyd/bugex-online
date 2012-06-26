@@ -81,12 +81,32 @@ class FactAdmin(admin.ModelAdmin):
     search_fields = ('class_name', 'method_name', 'explanation')
 
 
+class FolderAdmin(admin.ModelAdmin):
+    """The admin configuration for the Folder model."""
+    fieldsets = (
+        (None, {
+            'fields': ('name',)
+        }),
+        (None, {
+            'fields': ('code_archive',)
+        }),
+        ('Optional', {
+            'fields': ('parent_folder',)
+        })
+    )
+    list_display = ('name', 'code_archive', 'parent_folder')
+    list_display_links = ('name',)
+    list_filter = ('code_archive',)
+    ordering = ('code_archive', 'name')
+    search_fields = ('name',)
+
+
 admin.site.register(UserRequest, UserRequestAdmin)
 admin.site.register(CodeArchive, CodeArchiveAdmin)
 admin.site.register(TestCase, TestCaseAdmin)
 admin.site.register(BugExResult, BugExResultAdmin)
 admin.site.register(Fact, FactAdmin)
-admin.site.register(Folder)
+admin.site.register(Folder, FolderAdmin)
 admin.site.register(SourceFile)
 admin.site.register(ClassFile)
 admin.site.register(Line)
