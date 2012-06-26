@@ -136,6 +136,26 @@ class ClassFileAdmin(admin.ModelAdmin):
     search_fields = ('name', 'code_archive', 'folder')
 
 
+class LineAdmin(admin.ModelAdmin):
+    """The admin configuration for the Line model."""
+    fieldsets = (
+        (None, {
+            'fields': ('content', 'number')
+        }),
+        (None, {
+            'fields': ('source_file',)
+        }),
+        (None, {
+            'fields': ('definition',)
+        })
+    )
+    list_display = ('content', 'number', 'source_file', 'definition')
+    list_display_links = ('content',)
+    list_filter = ('definition',)
+    ordering = ('source_file', 'number')
+    search_fields = ('content', 'number', 'source_file')
+
+
 admin.site.register(UserRequest, UserRequestAdmin)
 admin.site.register(CodeArchive, CodeArchiveAdmin)
 admin.site.register(TestCase, TestCaseAdmin)
@@ -144,7 +164,7 @@ admin.site.register(Fact, FactAdmin)
 admin.site.register(Folder, FolderAdmin)
 admin.site.register(SourceFile, SourceFileAdmin)
 admin.site.register(ClassFile, ClassFileAdmin)
-admin.site.register(Line)
+admin.site.register(Line, LineAdmin)
 admin.site.register(MethodElement)
 admin.site.register(FieldElement)
 admin.site.register(ClassElement)
