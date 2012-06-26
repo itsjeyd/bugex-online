@@ -52,10 +52,18 @@ class TestCaseAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 
+class BugExResultAdmin(admin.ModelAdmin):
+    """The admin configuration for the BugExResult model."""
+    list_display = ('date',)
+    list_display_links = ('date',)
+    ordering = ('date',)
+    search_fields = ('date',)
+
+
 admin.site.register(UserRequest, UserRequestAdmin)
 admin.site.register(CodeArchive, CodeArchiveAdmin)
 admin.site.register(TestCase, TestCaseAdmin)
-admin.site.register(BugExResult)
+admin.site.register(BugExResult, BugExResultAdmin)
 admin.site.register(Fact)
 admin.site.register(Folder)
 admin.site.register(SourceFile)
