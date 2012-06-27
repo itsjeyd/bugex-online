@@ -22,7 +22,7 @@ from django.db import models
 from bugex_webapp import *
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
-from core_config import WORKING_DIR
+from bugex_webapp.core_modules.core_config import WORKING_DIR
 
 
 class UserRequest(models.Model):
@@ -124,7 +124,7 @@ class BugExResult(models.Model):
         xml_string -- a string containing the xml output of BugEx
         '''
         try:
-            facts = _parse_xml(xml_string)
+            facts = BugExResult._parse_xml(xml_string)
         except Exception:
             #re-raise any exceptions raised during xml parsing 
             raise
@@ -137,6 +137,7 @@ class BugExResult(models.Model):
                 f.bugex_result = be_res
                 f.save()
     
+    @staticmethod
     def _parse_xml(xml_string): 
         '''Parse the xml string and if parse is successful create Facts
         '''         
@@ -150,11 +151,12 @@ class BugExResult(models.Model):
             #required information about the fact was found in the xml tree
             for f in facts_xml:
                 try:
-                    my_fact = Fact(f.find(CLASS_NODE).text.strip(),
-                                   f.find(METHOD_NODE).text.strip(),
-                                   int(f.find(LINE_NODE).text.strip()),
-                                   f.find(EXPL_NODE).text.strip(),
-                                   f.find(TYPE_NODE).text.strip())
+                    my_fact = Fact(
+                           class_name=f.find(CLASS_NODE).text.strip(),
+                           method_name=f.find(METHOD_NODE).text.strip(),
+                           line_number=int(f.find(LINE_NODE).text.strip()),
+                           explanation=f.find(EXPL_NODE).text.strip(),
+                           fact_type=f.find(TYPE_NODE).text.strip())
                 except Exception:
                     #nodes are missing
                     raise
