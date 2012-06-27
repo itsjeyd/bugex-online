@@ -6,10 +6,13 @@ Created on 19.06.2012
 # internal dependencies
 from bugex_decorators import Singleton
 from bugex_timer import PeriodicTask
-from bugex_base import UserRequest, BugExConfig
+from bugex_base import UserRequest
 from bugex_instance import BugExProcessInstance
 from bugex_files import BugExFile
 import core_config
+
+# bugex webapp dependencies
+from bugex_webapp.models import BugExResult
 
 # external dependencies
 from datetime import datetime
@@ -136,11 +139,16 @@ class BugExMonitorJob(object):
         if not self._bug_ex_instance.result_file.exists():
             self.cancel('Result file should exist, but does not.')
             return
-           
-        print (self._bug_ex_instance.result_file.read())
+        
+        xml_content = self._bug_ex_instance.result_file.read()   
+        #print (self._bug_ex_instance.result_file.read())
         
         # convert and store this to database
-        pass
+        try:
+	        BugExResult.new(xml_content)
+        except Exception as e:
+	        self._log.error('Could not store the BugExResult: %s',e)
+        #pass
     
         # success
         self.cancel('Success!')
