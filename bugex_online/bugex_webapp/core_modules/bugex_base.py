@@ -7,11 +7,10 @@ Created on 19.06.2012
 from bugex_files import BugExFile
 import core_config
 
-import uuid
+# django
+from bugex_webapp import PENDING
 
-# config
-import ConfigParser, os, logging
-from bugex_decorators import Singleton
+import uuid
 
 class UserRequest(object):
     """
@@ -24,7 +23,7 @@ class UserRequest(object):
     def __init__(self):
         # create an unique token and set status to pending
         self.token = str(uuid.uuid4())
-        self.status = 'PENDING'
+        self.status = PENDING
 
     @property
     def folder(self):

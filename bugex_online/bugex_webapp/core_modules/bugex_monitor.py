@@ -13,6 +13,7 @@ import core_config
 
 # bugex webapp dependencies
 from bugex_webapp.models import BugExResult
+from bugex_webapp import FAILED, FINISHED
 
 # external dependencies
 from datetime import datetime
@@ -31,6 +32,12 @@ class BugExMonitor(object):
     """
     
     def __init__(self):
+        """
+        Only to be called by Instance()
+        
+        Initializes the job list and the logging facilities.
+
+        """
         # init file job list
         self.__monitor_jobs = list()
 
@@ -39,6 +46,11 @@ class BugExMonitor(object):
         self.__log.info('BugExMonitor created.')
 
     def __create_job(self, user_request):
+        """
+        For internal use only. This method takes care of initializing a task
+        with all necessary data.
+
+        """
         # get output path
         request_path = user_request.folder
         
@@ -69,6 +81,11 @@ class BugExMonitor(object):
         
         
     def shutdown(self):
+        """
+        This method should be called on system shutdown.
+        It cancels all monitored tasks and their BugEx instances.
+
+        """
         # cancel all jobs
         for job in self.__monitor_jobs:
             job.cancel()
@@ -76,6 +93,15 @@ class BugExMonitor(object):
         self.__log.info('Shutting down FileMonitor.')
     
     def new_request(self, request):
+        """
+        This is the notification interface. It needs to be called upon creation
+        of a new UserRequest and will take care of executing BugEx and
+        monitoring the process.
+        
+        It also updates the request's status according to the progress and
+        persists the results to the database.
+
+        """
         # create file job
         self.__create_job(request)
 
@@ -88,6 +114,11 @@ class BugExMonitorJob(object):
     """
     
     def __init__(self, bug_ex_instance, user_request):
+        """
+        A BugExMonitorJob needs a BugExInstance to monitor and a UserRequest
+        for status update and notifications.
+
+        """
         # members
         self._bug_ex_instance = bug_ex_instance
         self._user_request = user_request
@@ -109,7 +140,21 @@ class BugExMonitorJob(object):
         # done!
         self._log.info('Created FileMonitorJob \'%s\'', self.name)
     
-    def run(self):
+
+    def _run(self):
+        """
+        The run() method checks if
+        - a stop criteria of the job has been met. This can either be the
+          maxmimum execution time, or an unexpected BugEx exit code.
+          In this case the job is being canceled.
+        - BugEx finished successfully. In this case it tries to parse
+          and persist the resulting XML file to the database.
+
+        The run() method should be called periodically by a PeriodicTask.
+        Calling the schedule() method will take care of scheduling and
+        running the task.
+
+        """
         self._log.debug('running the job.. (try %s)', str(self._tries))
         
         # increase try count
@@ -121,18 +166,21 @@ class BugExMonitorJob(object):
         time_diff = datetime.now() - self._creation_date    #timedelta
         if (time_diff.total_seconds() > core_config.MAX_LIFE_TIME):
             self.cancel('Maximum life time exceeded (%s seconds)',
-                        str(time_diff.total_seconds()))
+            str(time_diff.total_seconds()))
             return
         
         # (2) check process status
         status = self._bug_ex_instance.status
         
         if status == -1:
-            self._log.debug('BugEx is not ready..')
+            self._log.debug('BugEx is not ready yet..')
             return
         elif not status == 0:
-            self._user_request.status = 'FAIL'
-            self.cancel('BugEx terminated unsuccessfully (status code %s)!', status)
+            self._user_request.status = FAILED
+            self.cancel(
+                'BugEx terminated unsuccessfully (status code %s)! \
+                Please check bugex.log in the request directory for more \
+                details.', status)
             return
         
         # check result file
@@ -142,38 +190,49 @@ class BugExMonitorJob(object):
         
         xml_content = self._bug_ex_instance.result_file.read()   
         
-        print xml_content
-        #print (self._bug_ex_instance.result_file.read())
+        self._log.debug('Processing XML: \n%s',xml_content)
         
         # convert and store this to database
         try:
-	        BugExResult.new(xml_content)
+	    BugExResult.new(xml_content)
         except Exception as e:
-	        self._log.error('Could not store the BugExResult: %s',e)
-        #pass
+	    self._log.error('Could not store the BugExResult: %s',e)
+            self._user_request.status = FAILED
+            return
     
         # success
         self.cancel('Success!')
-        self._user_request.status = 'SUCCESS'
-        pass
+        self._user_request.status = FINISHED
+        pass # TODO anything else here?
     
+
     def schedule(self, interval):
+        """
+        The schedule method starts the underlying BugEx instance.
+        Also it sets up a periodic task to check for completion.
+
+        The interval specifies the time in seconds between executing the
+        run() method.
+
+        """
         # start process
         self._bug_ex_instance.start()
         
         # create timer task
-        self._task = PeriodicTask(interval, self.run)
+        self._task = PeriodicTask(interval, self._run)
         
         # start task
         self._task.start()
         self._log.info('Scheduled to run every %s seconds.', str(interval))
+    
             
     def cancel(self, message, *args):
+        """
+        This method cancels the underlying task.
+
+        """
         self._log.info(message, *args)
         self._task.cancel()
-    
-    def convert(self, result_file):
-        pass
         
 #
 #TESTING AREA
