@@ -19,7 +19,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from bugex_webapp import PENDING
+from bugex_webapp import *
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
 from core_config import WORKING_DIR
@@ -139,16 +139,8 @@ class BugExResult(models.Model):
     
     def _parse_xml(xml_string): 
         '''Parse the xml string and if parse is successful create Facts
-        ''' 
-        # where to put these?  
-        FACT_NODE = './/fact'
-        CLASS_NODE = 'className'
-        LINE_NODE = 'lineNumber'
-        METHOD_NODE = 'methodName'
-        EXPL_NODE = 'explanation'
-        TYPE_NODE = 'factType'
-        
-        facts = []    #for Fact objects
+        '''         
+        facts = []
         
         try:
             #parse xml string and extract fact nodes
