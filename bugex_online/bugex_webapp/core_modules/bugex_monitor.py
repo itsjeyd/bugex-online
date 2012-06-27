@@ -141,6 +141,8 @@ class BugExMonitorJob(object):
             return
         
         xml_content = self._bug_ex_instance.result_file.read()   
+        
+        print xml_content
         #print (self._bug_ex_instance.result_file.read())
         
         # convert and store this to database
