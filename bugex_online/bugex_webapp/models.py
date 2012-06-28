@@ -22,6 +22,7 @@ from django.db import models
 from bugex_webapp import *
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
+from bugex_webapp.validators import validate_archive_format
 from bugex_webapp.core_modules.core_config import WORKING_DIR
 
 
@@ -34,7 +35,7 @@ class UserRequest(models.Model):
     code_archive = models.OneToOneField('CodeArchive')
     test_case = models.OneToOneField('TestCase')
     token = models.CharField(max_length=100)
-    status = models.IntegerField()
+    status = models.PositiveIntegerField()
     result = models.OneToOneField('BugExResult')
 
     def __unicode__(self):
@@ -51,15 +52,15 @@ class UserRequest(models.Model):
         return path.join(
             WORKING_DIR, 'user_'+self.user.id, self.token)
 
-    @property
-    def status(self):
-        return self.status
+    #@property
+    #def status(self):
+    #    return self.status
 
-    @status.setter
-    def status(self, new_status):
-        self.status = new_status
-        self.save()
-        print 'Status of {0} changed to: {1}'.format(self.token, self._status)
+    #@status.setter
+    #def set_status(self, new_status):
+    #    self.status = new_status
+    #    self.save()
+    #    print 'Status of {0} changed to: {1}'.format(self.token, self._status)
 
 
 class CodeArchive(models.Model):
@@ -74,6 +75,7 @@ class CodeArchive(models.Model):
 
     name = models.CharField(
         max_length=100,
+        validators=[validate_archive_format],
         help_text='The name of this code archive.'
     )
     archive_format = models.CharField(
@@ -111,12 +113,13 @@ class BugExResult(models.Model):
     date = models.DateTimeField(
         auto_now_add=True,
         verbose_name='date of creation',
-        help_text='The date when this BugEx result was created.')
+        help_text='The date when this BugEx result was created.'
+    )
 
     def __unicode__(self):
         """Return a unicode representation for a BugExResult model object."""
         return '{0}'.format(self.date)
-    
+
     @staticmethod
     def new(xml_string):
         '''Creates a new instance of BugExResult.
@@ -167,7 +170,11 @@ class BugExResult(models.Model):
             raise
         else:
             return facts
-        
+
+    class Meta:
+        """Inner class providing metadata options to the OutlineElement model."""
+        verbose_name = 'BugEx result'
+
 
 class Fact(models.Model):
     """The Fact model.
@@ -175,24 +182,39 @@ class Fact(models.Model):
     The Fact model represents a single fact consisting of location, explanation
     and type of a specific failure.
     """
+    FACT_TYPES = [
+        ('A', 'TYPE_A'),
+        ('B', 'TYPE_B'),
+        ('C', 'TYPE_C'),
+        # ...
+    ]
+
     bugex_result = models.ForeignKey('BugExResult',
-        help_text='The BugExResult instance associated with this fact.')
+        help_text='The BugExResult instance associated with this fact.'
+    )
     class_name = models.CharField(max_length=100,
-        help_text='The class name associated with this fact.')
+        help_text='The class name associated with this fact.'
+    )
     method_name = models.CharField(max_length=100,
-        help_text='The method name associated with this fact.')
+        help_text='The method name associated with this fact.'
+    )
     line_number = models.PositiveIntegerField(
-        help_text='The line number associated with this fact.')
+        help_text='The line number associated with this fact.'
+    )
     explanation = models.TextField(
         help_text='A detailed summary describing what the '\
-                  'failure associated to this fact is about.')
-    fact_type = models.CharField(max_length=100,
-        help_text='The type of this fact.')
+                  'failure associated to this fact is about.'
+    )
+    fact_type = models.CharField(max_length=1,
+        choices=FACT_TYPES,
+        help_text='The type of this fact.'
+    )
 
     def __unicode__(self):
         """Return a unicode representation for a Fact model object."""
         return 'type {0}, class {1}, line {2}'.format(
-            self.fact_type, self.class_name, self.line_number)
+            self.fact_type, self.class_name, self.line_number
+        )
 
 
 class Folder(models.Model):
