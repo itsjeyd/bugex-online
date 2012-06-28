@@ -8,9 +8,53 @@
         	<div class="span4">
                <div id="facts">
                    <h1><small>Facts</small></h1>
-                       	
+                   <script>
+                   {% comment %} to adjust this script to the real data. But i hope as it is it works. Won't work for choosing different columns though... {% endcomment %}
+                   $(document).ready(function(){
+                	   $( '#factsList > li > ul' )
+                	   	.hide()
+                	   	.click(function( e ){
+                	   		e.stopPropagation();
+                	   	});
+                	     $('#factList > li').toggle(function(){
+                	   	  $(this).find('ul').slideDown();
+                	     }, function(){
+                	     	$( this ).find('ul').slideUp();
+                	     });
+                	});
+                   </script>
+		                <ul class="nav nav-tabs" id="myTab">
+		                	{% for fact_type in fact_type_list %}
+		                		<li class="{% if forloop.first %}active{% endif %}"><a href="#cat{% forloop.counter %}" data-toggle="tab">{{ fact_type }}</a></li>
+		                	{% empty %}
+		                		<li class="active"><li>
+		                	{% endfor %}
+						</ul>
+						<div class="scrollable">
+							<div class="tab-content">
+								{% for fact_type in fact_type_list %}
+										<div class="tab-pane fade{% if forloop.first %} in active{% endif %}" id="cat{% forloop.counter %}">
+					                       	<ul id="factsList">
+												{% for fact in fact_list %}
+												<li>
+						    						<ul class="factBasic"><li>{{ fact.id }}</li><li>{{ fact.class_name }}#{{ fact.method_name }}</li><li>{{ fact.type }}</li></ul>
+						    						<ul class="factDescription"><li>{{ fact.explanation }}</li></ul>
+					    						</li>
+					    						{% empty %}
+					    							<li>You had no errors in your code!</li>
+												{% endfor %}
+											</ul>									
+										</div>
+					  			{% endfor %}
+							</div>
+							<br><br>
+							<button class="btn btn-primary"><i class="icon-download icon-white"></i> Download</button>
+						</div>						
+
 				</div>
         		<hr/>
+        		<form>
+        		<input type="button" value="Download the facts" onClick="window.location.href=''" title="Download the facts"></form>
 	            <ul id="social">
 	                  <li><a href="#"><img src="{{ STATIC_URL }}img/fb.png"></a></li>
 	                  <li><a href="#"><img src="{{ STATIC_URL }}img/go.png"></a></li>
