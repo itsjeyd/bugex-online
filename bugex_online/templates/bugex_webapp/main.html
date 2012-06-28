@@ -25,10 +25,10 @@
                                 <div class="span6">
                                     <div id="mainPageForm">
                                     	<h2>Input Form</h2>
-                                    	    <form action="/upload/" method="post">{% csrf_token %}
+                                    	    <form action="/upload/" method="post" onsubmit="$('#informingText').fadeIn('fast');">{% csrf_token %}
         										{{ form.as_p }}
-        										<button class="btn btn-primary" type="submit" value="Submit"></button>
-        										<div id="informingText"></div>
+        										<button class="btn btn-primary" type="submit" value="Submit" title="Submit"></button>
+        										<div id="informingText"><p>Uploading...</p><p>Please do not close the Browser!</p></div>
     										</form>
                                     </div>
                                 </div>
