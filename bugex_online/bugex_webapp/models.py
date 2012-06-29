@@ -36,21 +36,28 @@ class UserRequest(models.Model):
     test_case = models.OneToOneField('TestCase')
     token = models.CharField(max_length=100)
     status = models.PositiveIntegerField()
-    result = models.OneToOneField('BugExResult')
+    result = models.OneToOneField('BugExResult', blank=True, null=True)
 
     def __unicode__(self):
         """Return a unicode representation for a UserRequest model object."""
         return u'{0}: {1}'.format(self.token, self. test_case)
 
     @staticmethod
-    def new():
+    def new(user, test_case_name, code_archive_name):
         token = uuid.uuid4()
-        return UserRequest(token=token, status=PENDING)
+        test_case = TestCase.objects.create(name=test_case_name)
+        code_archive_format = code_archive_name.split('.')[-1]
+        code_archive = CodeArchive.objects.create(
+                name=code_archive_name, archive_format=code_archive_format)
+        return UserRequest(user=user, code_archive=code_archive,
+                test_case=test_case, token=token, status=PENDING)
 
     @property
     def folder(self):
         return path.join(
             WORKING_DIR, 'user_'+self.user.id, self.token)
+
+
 
     #@property
     #def status(self):
