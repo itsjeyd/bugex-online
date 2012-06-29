@@ -14,6 +14,7 @@ Authors: Amir Baradaran
 import uuid
 from os import path
 from xml.etree.ElementTree import fromstring
+from zipfile import ZipFile
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -36,33 +37,50 @@ class UserRequest(models.Model):
     test_case = models.OneToOneField('TestCase')
     token = models.CharField(max_length=100)
     status = models.PositiveIntegerField()
-    result = models.OneToOneField('BugExResult')
+    result = models.OneToOneField('BugExResult', blank=True, null=True)
 
     def __unicode__(self):
         """Return a unicode representation for a UserRequest model object."""
         return u'{0}: {1}'.format(self.token, self. test_case)
 
     @staticmethod
-    def new():
+    def new(user, test_case_name, code_archive_name):
         token = uuid.uuid4()
-        return UserRequest(token=token, status=PENDING)
+        test_case = TestCase.objects.create(name=test_case_name)
+        code_archive_format = os.path.splitext(
+            code_archive_name)[1][1:].strip().upper()
+        code_archive = CodeArchive.objects.create(
+                name=code_archive_name, archive_format=code_archive_format)
+        return UserRequest(user=user, code_archive=code_archive,
+                test_case=test_case, token=token, status=PENDING)
 
     @property
     def folder(self):
         return path.join(
             WORKING_DIR, 'user_'+self.user.id, self.token)
 
-    #@property
-    #def status(self):
-    #    return self.status
-
-    #@status.setter
-    #def set_status(self, new_status):
-    #    self.status = new_status
-    #    self.save()
-    #    print 'Status of {0} changed to: {1}'.format(self.token, self._status)
-
-
+    def _build_path(self, *sub_folders):
+        return os.path.join(self.folder, *sub_folders)
+     
+    def parse_archive(self):
+        path = self._build_path(self.code_archive.name)
+        path_extracted = self._build_path('tmp_extracted')
+        try:
+            archive = ZipFile(path, 'r')
+            archive.extractall(path_extracted)
+            archive.close()
+        except:
+            self.update_status(INVALID)
+        else:
+            self.code_archive.traverse(path_extracted)
+        
+    def update_status(self, new_status):
+        self.status = new_status
+        self.save()
+        print 'Status of {0} changed to: {1}'.format(self.token, self._status)
+        #call notifier
+        
+    
 class CodeArchive(models.Model):
     """The CodeArchive model.
 
@@ -88,6 +106,9 @@ class CodeArchive(models.Model):
     def __unicode__(self):
         """Return a unicode representation for a CodeArchive model object."""
         return u'{0}'.format(self.name)
+    
+    def traverse(self, path):
+        pass
 
 
 class TestCase(models.Model):
@@ -319,7 +340,7 @@ class Line(models.Model):
         help_text='The code that is included in this line.'
     )
     definition = models.BooleanField(
-        default=False,
+        blank=True, null=True,
         verbose_name='definition of model, method or class ?',
         help_text='Is this source code line a definition of a ' \
                   'model, method or class ?'
