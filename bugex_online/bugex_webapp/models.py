@@ -57,7 +57,8 @@ class UserRequest(models.Model):
         return path.join(
             WORKING_DIR, 'user_'+self.user.id, self.token)
 
-
+    def parse_archive():
+        pass
 
     #@property
     #def status(self):
