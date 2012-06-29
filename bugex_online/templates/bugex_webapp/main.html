@@ -25,10 +25,82 @@
                                 <div class="span6">
                                     <div id="mainPageForm">
                                     	<h2>Input Form</h2>
-                                    	    <form action="/upload/" method="post" onsubmit="$('#informingText').fadeIn('fast');">{% csrf_token %}
-        										{{ form.as_p }}
+                                    	<script>
+                                        $(document).ready(function() {
+                                			// validate signup form on keyup and submit
+                              				var validator = $("#uploadForm").validate({
+                                          		rules: {
+		                                              email: { required: true, email: true },
+		                                              fctmn: { required: true },
+		                                              projectFile: { required: true },
+		                                              copyrights: { required: true }
+		                                        },
+                                          		messages: {
+                                              		email: { required: "Enter an Email address", minlength: "Enter a valid email address" },
+                              						projectFile: { required: "Give the project files" },
+                                                	copyrights: { required: "Specify that you have the copyrights for this code" },
+                                              		fctmn: { required: "Specify the FCTMN" }
+                                          		},
+                                          		// the errorPlacement has to take the table layout into account
+                                          		errorPlacement: function(error, element) {
+	                                                  if ( element.is(":radio") )
+	                                                          error.appendTo( element.parent().next().next() );
+	                                                  else if ( element.is(":checkbox") )
+	                                                          error.appendTo ( element.next() );
+	                                                  else error.appendTo( element.parent().next() );
+                                          		},
+                              					// specifying a submitHandler prevents the default submit, good for the demo
+                              					submitHandler: function() {
+                              						$('#informingText').fadeIn('slow');
+                              					},
+                              					// set this class to error-labels to indicate valid fields
+                              					success: function(label) {
+                              					// set &nbsp; as text for IE
+                              						label.html("&nbsp;").addClass("checked");
+                              					}
+                              				});
+                              	        });
+                                    	</script>
+                                    	    <form action="/upload/" method="post">{% csrf_token %}
+        										{% comment %} {{ form.as_p }} {% endcomment %}
+        										    <form action="" method="POST" id="uploadForm" autocomplete="off" enctype="multipart/form-data">
+											            <table>
+											                <tr>
+											                    <td class="label"><label id="lemail" for="email">Your Email:</label></td>
+											                    <td class="field"><input type="text" id="email" name="email" value=""/></td>
+											                    <td class="status"></td>
+											                </tr>
+											                <tr>
+											                    <td class="label"><label id="lproject" for="projectFile">Project:</label></td>
+											                    <td class="field"><input type="file" id="projectFile" name="projectFile"/></td>
+											                    <td class="status"></td>
+											                </tr>  
+											                <tr>
+											                    <td class="label"><label id="lftcmn" for="fctmn">FTCMN:</label></td>
+											                    <td class="field"><input type="text" id="fctmn" name="fctmn" value=""/></td>
+											                    <td class="status"></td>
+											                </tr>                
+											                <tr>
+											                    <td class="label"><label id="lcopyrights" for="copyrights">Copyrights</label></td>
+											                    <td class="field" colspan="2">
+											                        <div id="copyrightswrap">
+											                            <input type="checkbox" id="copyrights"  name="copyrights" />
+											                            <label id="lcopyrightText" for="copyrights">I own the copyrights for this project</label>
+											                        </div>
+											                    </td>
+											                </tr>             
+											                <tr>
+											                    <td class="field" colspan="2">
+											                    <input type="button" value="Download the facts!" onClick="window.location.href='ftp://web511@chrismonogios.de/html/se/fb.png'"/>
+											                    <button type="button">Click Me!</button>
+											                    <input id="submit" name="submit" type="submit" value="Submit" />
+											                    </td>
+											                </tr>                
+											            </table>
+                      									<div id="informingText">Uploading... Please do not close the Browser!</div>
+          											</form>
         										<button class="btn btn-primary" type="submit" value="Submit" title="Submit"></button>
-        										<div id="informingText"><p>Uploading...</p><p>Please do not close the Browser!</p></div>
+        										<!-- <div id="informingText"><p>Uploading...</p><p>Please do not close the Browser!</p></div> -->
     										</form>
                                     </div>
                                 </div>
