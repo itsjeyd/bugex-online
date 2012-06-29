@@ -105,6 +105,9 @@ class CodeArchive(models.Model):
     def __unicode__(self):
         """Return a unicode representation for a CodeArchive model object."""
         return u'{0}'.format(self.name)
+    
+    def traverse(self, path):
+        pass
 
 
 class TestCase(models.Model):
@@ -336,7 +339,7 @@ class Line(models.Model):
         help_text='The code that is included in this line.'
     )
     definition = models.BooleanField(
-        default=False,
+        blank=True, null=True,
         verbose_name='definition of model, method or class ?',
         help_text='Is this source code line a definition of a ' \
                   'model, method or class ?'
