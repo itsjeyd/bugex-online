@@ -19,9 +19,14 @@ nbproject
 *.pyo
 *.db
 *.json
-*.sh
+#*.sh
 *.class
 *.log
-*.xml
+#*.xml
 *.iml
 *.csv
+*BACKUP*
+*BASE*
+*LOCAL*
+*REMOTE*
+.pydevproject
