@@ -99,6 +99,7 @@ class CodeArchive(models.Model):
     archive_format = models.CharField(
         max_length=3,
         choices=EXTENSIONS,
+        validators=[validate_archive_format],
         help_text='The format of this archive (either *.jar or *.zip)'
     )
 
