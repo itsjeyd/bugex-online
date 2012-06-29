@@ -5,9 +5,10 @@
     <title>{% block title %}{% endblock title %}</title>
 
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-2.0.4.css">
-
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css">
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/prettify.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.validate.js"></script>
     <!--
     ======================================================================
     There are alternatives for including the basic Bootstrap CSS file above.
@@ -48,11 +49,12 @@
     <div class="navbar">
 		<div class="navbar-inner">
 			<div class="container">
-				<a class="brand" href="#"><img src="{{ STATIC_URL }}img/logo.png"></a>
+				<a class="brand" href="#"><img src="{{ STATIC_URL }}img/draft2.png"></a>
 				<ul class="nav">
-					<li><a href="#">Home</a></li>
-					<li><a href="#">HowTo</a></li>
-					<li><a href="#">Contact Us</a></li>
+					<li><a href="{% url main-page %}">Home</a></li>
+					<li><a href="{% url howto-page %}">HowTo</a></li>
+<!-- I have to implement it with jquery. A pop up window on the middle of the page when the user clicks on Contact Us -->
+					<li><a href="{% url contact-page %}">Contact Us</a></li>
 				</ul>
 			</div>
 		</div>
@@ -64,7 +66,7 @@
             <div class="row-fluid">
                 <div class="span12"></div>
                     <div id="footer">
-                        <p>blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah </p>
+                        <p>Copyright &copy; BugEx Online</p>
                     </div>  
             </div>	
 	</div>	

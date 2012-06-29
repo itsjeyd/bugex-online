@@ -12,15 +12,6 @@
                    {% comment %} to adjust this script to the real data. But i hope as it is it works. {% endcomment %}
                    $(document).ready(function(){
                 	   $(".collapse").collapse()
-                	   $('#factsList > li > ul').hide().click(function(e) {
-                	   		e.st"bugex_online/templates/bugex_webapp/howto.html"opPropagation();
-                	   	});
-                	   $('#factList > li').toggle(function(){
-                	   	    $(this).find('ul').slideDown();
-                	     }, function(){
-                	     	$(this).find('ul').slideUp();
-                	     });
-                	});
                    </script>
 		                <ul class="nav nav-tabs" id="myTab">
 		                	{% for fact_type in fact_type_list %}
@@ -29,21 +20,29 @@
 		                		<li class="active"><li>
 		                	{% endfor %}
 						</ul>
-						<div class="scrollable">
+						<div class="scrollable-facts">
 							<div class="tab-content">
 								{% for fact_type in fact_type_list %}
-										<div class="tab-pane fade{% if forloop.first %} in active{% endif %}" id="#{{ forloop.counter }}">
-					                       	<ul id="factsList">
-												{% for fact in fact_list %}
-												<li>
-						    						<ul class="factBasic"><li>{{ fact.id }}</li><li>{{ fact.class_name }}#{{ fact.method_name }}</li><li>{{ fact.type }}</li></ul>
-						    						<ul class="factDescription"><li>{{ fact.explanation }}</li></ul>
-					    						</li>
-					    						{% empty %}
-					    							<li>You had no errors in your code!</li>
-												{% endfor %}
-											</ul>									
-										</div>
+									<div class="tab-pane fade{% if forloop.first %} in active{% endif %}" id="#{{ forloop.counter }}">
+            							<div class="accordion" id="accordion">
+            								{% for fact in fact_list %}
+									            <div class="accordion-group">
+									              <div class="accordion-heading">
+									                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#{{ fact.counter }}">
+						    							<ul class="factBasic"><li>{{ fact.id }}</li><li>{{ fact.class_name }}#{{ fact.method_name }}</li><li>{{ fact.type }}</li></ul>
+									                </a>
+									              </div>
+									              <div id="collapse{{ fact.counter }}" class="accordion-body collapse {% if forloop.first %}in{% endif %}">
+									                <div class="accordion-inner">
+									                	{{ fact.explanation }}
+									                </div>
+									              </div>
+									            </div>
+									         {% empty %}
+					    						<p>You had no errors in your code!</p>
+											 {% endfor %}            								
+            							</div>								
+									</div>
 					  			{% endfor %}
 							</div>
 							<br><br>
