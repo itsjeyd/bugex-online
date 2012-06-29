@@ -273,6 +273,7 @@ class ProjectFile(models.Model):
         help_text='The code archive that this project file resides in.'
     )
     folder = models.ForeignKey('Folder',
+        blank=True,
         help_text='The folder that this project file resides in.'
     )
 
@@ -298,6 +299,26 @@ class SourceFile(ProjectFile):
         blank=True,
         help_text='The name of the package that this source file resides in.'
     )
+
+    @staticmethod
+    def new(code_archive, name, folder=None, path):
+        """
+        Creates a new SourceFile object, parses its lines and stores everything
+        to database.
+
+        Raises an IOError, if the file can not be opened.
+        """
+        source_file = SourceFile(code_archive=code_archive, name=name)
+
+        if folder:
+            source_file.folder = folder
+
+        for number, line in enumerate(open(path).readlines(), 1):
+            Line.objects.create(
+                    code_archive=self, number=number, content=line.strip())
+            
+        source_file.save()
+
 
     def __unicode__(self):
         """Return a unicode representation for a SourceFile model object."""
