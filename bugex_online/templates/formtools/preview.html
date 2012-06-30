@@ -1,0 +1,55 @@
+{% extends "formtools/base.html" %}
+
+{% block content %}
+
+<br>
+<h1>Preview your submission</h1>
+<br><br>
+<table>
+{% for field in form %}
+<tr>
+<th>{{ field.label }}:</th>
+<td>{{ field.data }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<p>Security hash: {{ hash_value }}</p>
+
+<form action="" class="form-vertical" method="post">{% csrf_token %}
+{% for field in form %}{{ field.as_hidden }}
+{% endfor %}
+<input type="hidden" name="{{ stage_field }}" value="2" />
+<input type="hidden" name="{{ hash_field }}" value="{{ hash_value }}" />
+<button type="submit" value="Submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
+</form>
+
+<br>
+<h1>Or edit it again</h1>
+<br><br>
+<form action="" class="form-vertical" method="post">{% csrf_token %}
+    {% for field in form %}
+
+        {% if field.errors %}
+            <div class="control-group error">
+        {% else %}
+            <div class="control-group">
+        {% endif %}
+
+        <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+
+
+        <div class="controls">
+            {{ field }}
+            <p class="help-block">{{ field.help_text }}</p>
+            {{ field.errors }}
+        </div>
+        </div>
+        <br>
+        {% endfor %}
+<input type="hidden" name="{{ stage_field }}" value="1" />
+<button type="submit" value="Preview" class="btn btn-primary"><i class="icon-ok icon-white"></i> Preview</button>
+<button type="reset" class="btn"><i class="icon-remove"></i> Reset form</button>
+</form>
+
+{% endblock %}

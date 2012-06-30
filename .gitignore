@@ -25,8 +25,11 @@ nbproject
 #*.xml
 *.iml
 *.csv
+# These 4 entries below are not a good idea in their current state.
+# Please add file endings to them but don't ignore all file types containing
+# these words.
 *BACKUP*
-*BASE*
+#*BASE*
 *LOCAL*
 *REMOTE*
 .pydevproject
