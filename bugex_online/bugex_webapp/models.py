@@ -12,6 +12,7 @@ Authors: Amir Baradaran
 """
 
 import uuid
+import os
 from os import path
 from xml.etree.ElementTree import fromstring
 from zipfile import ZipFile
@@ -47,7 +48,7 @@ class UserRequest(models.Model):
     def new(user, test_case_name, code_archive_name):
         token = uuid.uuid4()
         test_case = TestCase.objects.create(name=test_case_name)
-        code_archive_format = os.path.splitext(
+        code_archive_format = path.splitext(
             code_archive_name)[1][1:].strip().upper()
         code_archive = CodeArchive.objects.create(
                 name=code_archive_name, archive_format=code_archive_format)
@@ -60,7 +61,7 @@ class UserRequest(models.Model):
             WORKING_DIR, 'user_'+self.user.id, self.token)
 
     def _build_path(self, *sub_folders):
-        return os.path.join(self.folder, *sub_folders)
+        return path.join(self.folder, *sub_folders)
      
     def parse_archive(self):
         path = self._build_path(self.code_archive.name)
@@ -72,7 +73,9 @@ class UserRequest(models.Model):
         except:
             self.update_status(INVALID)
         else:
-            self.code_archive.traverse(path_extracted)
+            #a better way to do this?
+            root_folder = Folder.objects.create(name='ROOT', code_archive=self)
+            self.code_archive.traverse(path_extracted, root_folder)
         
     def update_status(self, new_status):
         self.status = new_status
@@ -107,8 +110,59 @@ class CodeArchive(models.Model):
         """Return a unicode representation for a CodeArchive model object."""
         return u'{0}'.format(self.name)
     
-    def traverse(self, path):
-        pass
+    def _get_path_elements(self, my_path):
+        '''Returns the current and parent folder names of a specified path
+        
+        my_path -- a path string
+        '''
+        elements = path.split(path.abspath(my_path))
+        this_f = elements[1] 
+        parent_f = path.split(path.abspath(elements[0]))[1]
+        return parent_f, this_f
+    
+    def traverse(self, my_path, parent):
+        '''Recursively traverse every file and directory in a directory tree.
+        
+        Recursively traverse every file and directory in a directory tree 
+        specified by a path. Save each folder, java and class file, preserving
+        the directory tree structure.
+        
+        my_path -- a path (string) which points to the extracted archive folder
+        parent -- a folder instance; the parent folder of the current folder
+        '''
+        '''
+        TODO: save folders; 
+        TODO: change UR status in case of an exception;
+        '''
+        parent_f, this_f = self._get_path_elements(my_path)
+        
+        #needs to be done in a nicer way without hardcoding the name
+        if this_f != 'tmp_extracted' and parent_f != 'tmp_extracted':
+            
+            #create a new folder with name=this_f and parent_folder=parent
+            my_folder = Folder.objects.create(name=this_f, code_archive=self, 
+                                           parent_folder=parent)            
+        for f in os.listdir(my_path):
+            f_path = path.join(my_path, f)
+            
+            #if f_path points to a class or java file, create it
+            if path.isfile(f_path):
+                ext = path.splitext(f)[1][1:].strip()
+                if ext == 'java':
+                    try:
+                        sf = SourceFile.new(code_archive=self, name=f, 
+                                       folder=my_folder, path=f_path)
+                    except Exception as e:
+                        print e
+                        #if something goes wring during SourceFile creation, 
+                        #change UserRequest status to INVALID
+                elif ext == 'class':
+                    cf = ClassFile.objects.create(code_archive=self, 
+                                                  folder=my_folder, name=f)
+                    cf.save()
+            else:
+                #current file is a folder, continue traversing
+                self.traverse(f_path, my_folder)
 
 
 class TestCase(models.Model):
@@ -302,7 +356,7 @@ class SourceFile(ProjectFile):
     )
 
     @staticmethod
-    def new(code_archive, name, folder=None, path):
+    def new(code_archive, name, path, folder=None):
         """
         Creates a new SourceFile object, parses its lines and stores everything
         to database.
