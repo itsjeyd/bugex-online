@@ -302,7 +302,7 @@ class SourceFile(ProjectFile):
     )
 
     @staticmethod
-    def new(code_archive, name, folder=None, path):
+    def new(code_archive, name, path, folder=None):
         """
         Creates a new SourceFile object, parses its lines and stores everything
         to database.
