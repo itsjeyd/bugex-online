@@ -11,6 +11,8 @@ Authors: Amir Baradaran
          Peter Stahl
 """
 
+import os
+import re
 import uuid
 import os
 from os import path
@@ -57,7 +59,7 @@ class UserRequest(models.Model):
 
     @property
     def folder(self):
-        return path.join(
+        return os.path.join(
             WORKING_DIR, 'user_'+self.user.id, self.token)
 
     def _build_path(self, *sub_folders):
@@ -82,8 +84,8 @@ class UserRequest(models.Model):
         self.save()
         print 'Status of {0} changed to: {1}'.format(self.token, self._status)
         #call notifier
-        
-    
+
+
 class CodeArchive(models.Model):
     """The CodeArchive model.
 
@@ -109,7 +111,7 @@ class CodeArchive(models.Model):
     def __unicode__(self):
         """Return a unicode representation for a CodeArchive model object."""
         return u'{0}'.format(self.name)
-    
+  
     def _get_path_elements(self, my_path):
         '''Returns the current and parent folder names of a specified path
         
@@ -164,7 +166,6 @@ class CodeArchive(models.Model):
                 #current file is a folder, continue traversing
                 self.traverse(f_path, my_folder)
 
-
 class TestCase(models.Model):
     """The TestCase model.
 
@@ -199,13 +200,13 @@ class BugExResult(models.Model):
     @staticmethod
     def new(xml_string):
         '''Creates a new instance of BugExResult.
-        
+
         xml_string -- a string containing the xml output of BugEx
         '''
         try:
             facts = BugExResult._parse_xml(xml_string)
         except Exception:
-            #re-raise any exceptions raised during xml parsing 
+            #re-raise any exceptions raised during xml parsing
             raise
         else:
             #instantiate a BugExResult and save all corresponding Facts
@@ -215,18 +216,18 @@ class BugExResult(models.Model):
             for f in facts:
                 f.bugex_result = be_res
                 f.save()
-    
+
     @staticmethod
-    def _parse_xml(xml_string): 
+    def _parse_xml(xml_string):
         '''Parse the xml string and if parse is successful create Facts
-        '''         
+        '''
         facts = []
-        
+
         try:
             #parse xml string and extract fact nodes
             facts_xml = fromstring(xml_string).findall(FACT_NODE)
-            
-            #create a Fact for each fact node in the xml file only if all 
+
+            #create a Fact for each fact node in the xml file only if all
             #required information about the fact was found in the xml tree
             for f in facts_xml:
                 try:
@@ -242,7 +243,7 @@ class BugExResult(models.Model):
                 else:
                     facts.append(my_fact)
         except Exception:
-            #xml string is empty or not valid  
+            #xml string is empty or not valid
             raise
         else:
             return facts
@@ -370,8 +371,12 @@ class SourceFile(ProjectFile):
 
         for number, line in enumerate(open(path).readlines(), 1):
             Line.objects.create(
-                    code_archive=self, number=number, content=line.strip())
-            
+                code_archive=source_file.code_archive,
+                number=number,
+                content=line.strip())
+            if line.startswith('package'):
+                source_file.package = re.search('package +(.+);', line).group(1)
+
         source_file.save()
 
 
@@ -414,8 +419,8 @@ class Line(models.Model):
         max_length=100,
         help_text='The code that is included in this line.'
     )
-    definition = models.BooleanField(
-        blank=True, null=True,
+    definition = models.NullBooleanField(
+        blank=True,
         verbose_name='definition of model, method or class ?',
         help_text='Is this source code line a definition of a ' \
                   'model, method or class ?'
