@@ -35,12 +35,11 @@ class UserRequestAdmin(admin.ModelAdmin):
 
 class CodeArchiveAdmin(admin.ModelAdmin):
     """The admin site configuration for the CodeArchive model."""
-    fields = ('archive_format', 'name')
-    list_display = ('archive_format', 'name')
-    list_display_links = ('name',)
+    fields = ('archive_file', 'archive_format')
+    list_display = ('archive_file', 'archive_format')
+    list_display_links = ('archive_file',)
     list_filter = ('archive_format',)
-    ordering = ('archive_format', 'name')
-    search_fields = ('name',)
+    search_fields = ('archive_file',)
 
 
 class TestCaseAdmin(admin.ModelAdmin):

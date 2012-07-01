@@ -26,7 +26,7 @@ from django.db import models
 from bugex_webapp import *
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
-from bugex_webapp.validators import validate_archive_format
+from bugex_webapp.validators import validate_archive_file_extension
 from bugex_webapp.core_modules.core_config import WORKING_DIR
 
 
@@ -36,7 +36,7 @@ class UserRequest(models.Model):
     The UserRequest model represents a single request to be sent to BugEx.
     """
     user = models.ForeignKey(User)
-    code_archive = models.OneToOneField('CodeArchive')
+    code_archive = models.OneToOneField('CodeArchive', blank=True, null=True)
     test_case = models.OneToOneField('TestCase')
     token = models.CharField(max_length=100)
     status = models.PositiveIntegerField()
@@ -86,6 +86,29 @@ class UserRequest(models.Model):
         #call notifier
 
 
+def archive_file_path(instance, filename):
+    """
+    Dynamically generate the upload path for the FileField archive_file in
+    a single CodeArchive instance.
+
+    All code archives will be saved to MEDIA_ROOT/username/token/...
+    The respective UserRequest instance has to be saved first before saving
+    the CodeArchive instance.
+
+    Arguments:
+    instance -- the respective CodeArchive instance
+    filename -- the file name of the archive file to be uploaded
+
+    """
+    latest_userrequest_id = UserRequest.objects.latest('id').id
+    latest_userrequest = UserRequest.objects.get(id=latest_userrequest_id)
+
+    username = latest_userrequest.user.username
+    token = latest_userrequest.token
+
+    return '/'.join((username, token, filename))
+
+
 class CodeArchive(models.Model):
     """The CodeArchive model.
 
@@ -96,10 +119,10 @@ class CodeArchive(models.Model):
         ('ZIP', 'zip')
     )
 
-    name = models.CharField(
-        max_length=100,
-        validators=[validate_archive_format],
-        help_text='The name of this code archive.'
+    archive_file = models.FileField(
+        upload_to=archive_file_path,
+        validators=[validate_archive_file_extension],
+        help_text='The code archive file that should be uploaded.'
     )
     archive_format = models.CharField(
         max_length=3,
@@ -109,8 +132,8 @@ class CodeArchive(models.Model):
 
     def __unicode__(self):
         """Return a unicode representation for a CodeArchive model object."""
-        return u'{0}'.format(self.name)
-  
+        return u'{0}'.format(self.archive_file.name)
+
     def _get_path_elements(self, my_path):
         '''Returns the current and parent folder names of a specified path
         

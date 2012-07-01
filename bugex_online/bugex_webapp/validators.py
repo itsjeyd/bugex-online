@@ -34,7 +34,7 @@ def validate_source_file_extension(file_name):
     """
     if not file_name.endswith('.java'):
         raise ValidationError(
-            '{0} is not a Java source file'.format(file_name)
+            u'{0} is not a Java source file'.format(file_name)
         )
 
 def validate_class_file_extension(file_name):
@@ -52,23 +52,23 @@ def validate_class_file_extension(file_name):
     """
     if not file_name.endswith('.class'):
         raise ValidationError(
-            '{0} is not a Java class file'.format(file_name)
+            u'{0} is not a Java class file'.format(file_name)
         )
 
-def validate_archive_format(archive_name):
-    """Validate the name field of the CodeArchive model.
+def validate_archive_file_extension(archive_file):
+    """Validate the archive_file field of the CodeArchive model.
 
     Before saving an instance of the CodeArchive model into
     the database, this function will be called, checking for
-    the correct archive extension. If the extension is different,
+    the correct archive file extension. If the extension is different,
     a ValidationError is raised and the instance will not be
     saved to the database.
 
     Arguments:
-    archive_name -- value of CodeArchive model's `name` field
+    archive_file -- value of CodeArchive model's `archive_file` field
 
     """
-    if not archive_name.endswith(('.zip', '.jar')):
+    if not archive_file.name.endswith(('.zip', '.jar')):
         raise ValidationError(
-            '{0} is not a valid archive format'.format(archive_name)
+            u'{0} is not a valid archive format'.format(archive_file.name)
         )
