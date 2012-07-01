@@ -58,7 +58,7 @@ class UserRequest(models.Model):
     @property
     def folder(self):
         return os.path.join(
-            WORKING_DIR, 'user_'+self.user.id, self.token)
+            WORKING_DIR, 'user_%d' % self.user.id, self.token)
 
     def _build_path(self, *sub_folders):
         return os.path.join(self.folder, *sub_folders)
