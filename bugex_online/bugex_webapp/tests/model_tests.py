@@ -19,7 +19,9 @@ from bugex_webapp.models import UserRequest
 
 
 class UserRequestConstructorTest(TestCase):
-    """ Tests for the UserRequest model """
+    """ Tests for the static constructor of the UserRequest model
+    (UserRequest.new)
+    """
 
     test_case = 'FooTest.testFoo'
     code_archive = 'archive.jar'
