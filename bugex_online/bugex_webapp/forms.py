@@ -13,6 +13,8 @@ Authors: Amir Baradaran
 
 from django import forms
 
+from bugex_webapp.validators import validate_archive_format
+
 class EmailBaseForm(forms.Form):
     """The EmailBaseForm form.
 
@@ -42,10 +44,12 @@ class UserRequestForm(EmailBaseForm):
     EmailBaseForm.
     """
     code_archive = forms.FileField(
+        validators=[validate_archive_format],
         help_text='The archive (ZIP or JAR) that contains your code.'
     )
-    test_case = forms.FileField(
-        help_text='The failing test case related to your program.'
+    test_case = forms.CharField(
+        max_length=100,
+        help_text='The name of the failing test case related to your program.'
     )
     has_copyright = forms.BooleanField(
         required=False,
