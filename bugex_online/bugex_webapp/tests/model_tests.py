@@ -11,10 +11,13 @@ Authors: Amir Baradaran
          Peter Stahl
 """
 
+import os
+
 from django.contrib.auth.models import User
 from django.test import TestCase
 
 from bugex_webapp import PENDING
+from bugex_webapp.core_modules.core_config import WORKING_DIR
 from bugex_webapp.models import UserRequest
 
 
@@ -50,3 +53,8 @@ class UserRequestConstructorTest(TestCase):
     def test_status(self):
         ur = UserRequest.objects.get(id=1)
         self.assertEqual(ur.status, PENDING)
+
+    def test_folder(self):
+        ur = UserRequest.objects.get(id=1)
+        path = os.path.join(WORKING_DIR, 'user_1', ur.token)
+        self.assertEqual(ur.folder, path)
