@@ -11,9 +11,9 @@ Authors: Amir Baradaran
          Peter Stahl
 """
 
+import os
 import re
 import uuid
-from os import path
 from xml.etree.ElementTree import fromstring
 from zipfile import ZipFile
 
@@ -57,7 +57,7 @@ class UserRequest(models.Model):
 
     @property
     def folder(self):
-        return path.join(
+        return os.path.join(
             WORKING_DIR, 'user_'+self.user.id, self.token)
 
     def _build_path(self, *sub_folders):
