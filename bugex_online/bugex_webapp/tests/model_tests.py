@@ -16,7 +16,7 @@ import os
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from bugex_webapp import PENDING
+from bugex_webapp import PENDING, VALID
 from bugex_webapp.core_modules.core_config import WORKING_DIR
 from bugex_webapp.models import UserRequest
 
@@ -58,3 +58,21 @@ class UserRequestConstructorTest(TestCase):
         ur = UserRequest.objects.get(id=1)
         path = os.path.join(WORKING_DIR, 'user_1', ur.token)
         self.assertEqual(ur.folder, path)
+
+
+class UserRequestUpdateStatusTest(TestCase):
+    """  """
+    test_case = 'FooTest.testFoo'
+    code_archive = 'archive.jar'
+
+    def setUp(self):
+        user = User.objects.create(email='user@example.com')
+        ur = UserRequest.new(user, self.test_case, self.code_archive)
+        ur.save()
+
+    def test_update_status(self):
+        ur = UserRequest.objects.get(id=1)
+        old_status = ur.status
+        ur.update_status(VALID)
+        self.assertNotEqual(old_status, ur.status)
+        self.assertEqual(VALID, ur.status)
