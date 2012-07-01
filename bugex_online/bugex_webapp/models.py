@@ -44,7 +44,7 @@ class UserRequest(models.Model):
 
     def __unicode__(self):
         """Return a unicode representation for a UserRequest model object."""
-        return u'{0}: {1}'.format(self.token, self. test_case)
+        return u'{0}: {1}'.format(self.token, self.test_case)
 
     @staticmethod
     def new(user, test_case_name, code_archive_name):
@@ -60,7 +60,7 @@ class UserRequest(models.Model):
     @property
     def folder(self):
         return os.path.join(
-            WORKING_DIR, 'user_'+self.user.id, self.token)
+            WORKING_DIR, 'user_%d' % self.user.id, self.token)
 
     def _build_path(self, *sub_folders):
         return path.join(self.folder, *sub_folders)
@@ -82,7 +82,7 @@ class UserRequest(models.Model):
     def update_status(self, new_status):
         self.status = new_status
         self.save()
-        print 'Status of {0} changed to: {1}'.format(self.token, self._status)
+        print 'Status of {0} changed to: {1}'.format(self.token, self.status)
         #call notifier
 
 
