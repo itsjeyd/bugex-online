@@ -317,9 +317,11 @@ class SourceFile(ProjectFile):
 
         for number, line in enumerate(open(path).readlines(), 1):
             Line.objects.create(
-                    code_archive=self, number=number, content=line.strip())
+                code_archive=source_file.code_archive,
+                number=number,
+                content=line.strip())
             if line.startswith('package'):
-                self.package = re.search('package +(.+);', line).group(1)
+                source_file.package = re.search('package +(.+);', line).group(1)
 
         source_file.save()
 
