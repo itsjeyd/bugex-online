@@ -42,7 +42,7 @@ class UserRequest(models.Model):
 
     def __unicode__(self):
         """Return a unicode representation for a UserRequest model object."""
-        return u'{0}: {1}'.format(self.token, self. test_case)
+        return u'{0}: {1}'.format(self.token, self.test_case)
 
     @staticmethod
     def new(user, test_case_name, code_archive_name):
