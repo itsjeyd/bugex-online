@@ -11,11 +11,9 @@ Authors: Amir Baradaran
          Peter Stahl
 """
 
-import os
 import re
 import uuid
 import os
-from os import path
 from xml.etree.ElementTree import fromstring
 from zipfile import ZipFile
 
@@ -23,7 +21,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from bugex_webapp import *
+from bugex_webapp import UserRequestStatus, XMLNode
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
 from bugex_webapp.validators import validate_archive_format
@@ -48,22 +46,27 @@ class UserRequest(models.Model):
 
     @staticmethod
     def new(user, test_case_name, code_archive_name):
-        token = uuid.uuid4()
+        token = str(uuid.uuid4())
         test_case = TestCase.objects.create(name=test_case_name)
-        code_archive_format = path.splitext(
+        code_archive_format = os.path.splitext(
             code_archive_name)[1][1:].strip().upper()
         code_archive = CodeArchive.objects.create(
                 name=code_archive_name, archive_format=code_archive_format)
         return UserRequest(user=user, code_archive=code_archive,
-                test_case=test_case, token=token, status=PENDING)
+                test_case=test_case, token=token,
+                status=UserRequestStatus.PENDING)
 
     @property
     def folder(self):
         return os.path.join(
             WORKING_DIR, 'user_%d' % self.user.id, self.token)
+        
+    @property
+    def code_archive_path(self):
+        return self._build_path(self.folder,self.code_archive.name)
 
     def _build_path(self, *sub_folders):
-        return path.join(self.folder, *sub_folders)
+        return os.path.join(self.folder, *sub_folders)
      
     def parse_archive(self):
         path = self._build_path(self.code_archive.name)
@@ -73,7 +76,7 @@ class UserRequest(models.Model):
             archive.extractall(path_extracted)
             archive.close()
         except:
-            self.update_status(INVALID)
+            self.update_status(UserRequestStatus.INVALID)
         else:
             #a better way to do this?
             root_folder = Folder.objects.create(name='ROOT', code_archive=self)
@@ -82,7 +85,7 @@ class UserRequest(models.Model):
     def update_status(self, new_status):
         self.status = new_status
         self.save()
-        print 'Status of {0} changed to: {1}'.format(self.token, self.status)
+        print 'Status of {0} changed to: {1}'.format(self.token, UserRequestStatus.const_name(self.status))
         #call notifier
 
 
@@ -117,9 +120,9 @@ class CodeArchive(models.Model):
         
         my_path -- a path string
         '''
-        elements = path.split(path.abspath(my_path))
+        elements = os.path.split(os.path.abspath(my_path))
         this_f = elements[1] 
-        parent_f = path.split(path.abspath(elements[0]))[1]
+        parent_f = os.path.split(os.path.abspath(elements[0]))[1]
         return parent_f, this_f
     
     def traverse(self, my_path, parent):
@@ -145,11 +148,11 @@ class CodeArchive(models.Model):
             my_folder = Folder.objects.create(name=this_f, code_archive=self, 
                                            parent_folder=parent)            
         for f in os.listdir(my_path):
-            f_path = path.join(my_path, f)
+            f_path = os.path.join(my_path, f)
             
             #if f_path points to a class or java file, create it
-            if path.isfile(f_path):
-                ext = path.splitext(f)[1][1:].strip()
+            if os.path.isfile(f_path):
+                ext = os.path.splitext(f)[1][1:].strip()
                 if ext == 'java':
                     try:
                         sf = SourceFile.new(code_archive=self, name=f, 
@@ -211,8 +214,8 @@ class BugExResult(models.Model):
         else:
             #instantiate a BugExResult and save all corresponding Facts
             #setting the ForeignKey field of each Fact properly
-            be_res = BugExResult()
-            be_res.save()
+            be_res = BugExResult.objects.create()
+            #be_res.save()
             for f in facts:
                 f.bugex_result = be_res
                 f.save()
@@ -225,18 +228,18 @@ class BugExResult(models.Model):
 
         try:
             #parse xml string and extract fact nodes
-            facts_xml = fromstring(xml_string).findall(FACT_NODE)
+            facts_xml = fromstring(xml_string).findall(XMLNode.FACT_NODE)
 
             #create a Fact for each fact node in the xml file only if all
             #required information about the fact was found in the xml tree
             for f in facts_xml:
                 try:
                     my_fact = Fact(
-                           class_name=f.find(CLASS_NODE).text.strip(),
-                           method_name=f.find(METHOD_NODE).text.strip(),
-                           line_number=int(f.find(LINE_NODE).text.strip()),
-                           explanation=f.find(EXPL_NODE).text.strip(),
-                           fact_type=f.find(TYPE_NODE).text.strip())
+                           class_name=f.find(XMLNode.CLASS_NODE).text.strip(),
+                           method_name=f.find(XMLNode.METHOD_NODE).text.strip(),
+                           line_number=int(f.find(XMLNode.LINE_NODE).text.strip()),
+                           explanation=f.find(XMLNode.EXPL_NODE).text.strip(),
+                           fact_type=f.find(XMLNode.TYPE_NODE).text.strip())
                 except Exception:
                     #nodes are missing
                     raise

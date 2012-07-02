@@ -2,7 +2,7 @@
 
 # Working directory of BugExOnline.
 # It holds all user data.
-WORKING_DIR = '/tmp'
+WORKING_DIR = '/tmp/bugex'
 
 # A boolean that turns on/off debug mode.
 # It determines if bugex instances run in debug mode,
@@ -20,7 +20,7 @@ ARTIFICIAL_DELAY = 3
 RESULT_FILE_NAME = 'bugex-results.xml'
 
 # Absolute path of the BugEx executable.
-EXECUTABLE = '/home/freddy/bugex-mock-0.0.4-SNAPSHOT-jar-with-dependencies.jar'
+EXECUTABLE = '/home/freddy/bugex-mock-0.0.5-SNAPSHOT-jar-with-dependencies.jar'
 
 
 # [ MONITORING ]

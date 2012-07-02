@@ -11,6 +11,7 @@ import core_config
 from datetime import datetime
 import logging
 import subprocess
+import os
 #from py4j.java_gateway import JavaGateway
 
 class BugExInstance(object):
@@ -46,6 +47,10 @@ class BugExInstance(object):
         self.debug = False      # in debug mode, consider delay
         self._start_date = None # start with start() method
         
+        #print "ok, guys."
+        #print "der case is {0}, der folder is {1}, das delay betraegt {2}, token is wompe? {3}, das user archive findeste hier {4}".format(
+        #         failing_test_case_name, working_folder_path, artificial_delay, token, user_archive_path)
+   
         if not self._user_archive.exists():
             raise Exception('The defined user archive does not exist: \'%s\''
                             ,self._user_archive.path)
@@ -65,8 +70,7 @@ class BugExInstance(object):
         Returns absolute path for a file in the working folder.
         
         """
-        
-        file_path = self._working_folder + file_name
+        file_path = os.path.join(self._working_folder,file_name)
         return file_path
 
     
@@ -117,6 +121,10 @@ class BugExProcessInstance(BugExInstance):
         self._bug_ex_executable = bug_ex_executable
         # process variable
         self.__process = None
+        
+        #print "und bugex is hier {0}".format(
+        #         bug_ex_executable)
+   
         
         # logging
         self._log = logging.getLogger(self.name)
