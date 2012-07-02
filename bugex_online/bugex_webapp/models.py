@@ -28,7 +28,7 @@ from bugex_webapp import *
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
 from bugex_webapp.validators import validate_archive_file_extension
-
+from bugex_webapp.validators import validate_test_case_name
 
 class UserRequest(models.Model):
     """The UserRequest model.
@@ -210,6 +210,7 @@ class TestCase(models.Model):
     by BugEx.
     """
     name = models.CharField(max_length=100,
+        validators=[validate_test_case_name],
         help_text='The name of this test case.'
     )
 

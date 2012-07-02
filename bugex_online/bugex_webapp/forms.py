@@ -15,6 +15,7 @@ from django import forms
 
 from bugex_webapp.validators import validate_archive_file_extension
 from bugex_webapp.validators import validate_archive_copyright
+from bugex_webapp.validators import validate_test_case_name
 
 class EmailBaseForm(forms.Form):
     """The EmailBaseForm form.
@@ -50,6 +51,7 @@ class UserRequestForm(EmailBaseForm):
     )
     test_case = forms.CharField(
         max_length=100,
+        validators=[validate_test_case_name],
         help_text='The name of the failing test case related to your program.'
     )
     has_copyright = forms.BooleanField(

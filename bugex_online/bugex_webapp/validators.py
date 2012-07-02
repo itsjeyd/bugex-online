@@ -17,6 +17,8 @@ https://docs.djangoproject.com/en/1.4/ref/validators/
 
 """
 
+import re
+
 from django.core.exceptions import ValidationError
 
 def validate_source_file_extension(file_name):
@@ -90,4 +92,31 @@ def validate_archive_copyright(has_copyright):
     if not has_copyright:
         raise ValidationError(
             u'You must confirm to own the copyright on the code archive'
+        )
+
+def validate_test_case_name(test_case_name):
+    """
+    Validate the name of a test case in the TestCase model and in the
+    UserRequestForm form.
+
+    Before saving an instance of the TestCase model into
+    the database, this function will be called, checking whether
+    the test case name is of the format "de.mypackage.TestMyClass#testGetMin".
+    If the format is not correct, a ValidationError is raised and the
+    instance will not be saved to the database.
+
+    Arguments:
+    test_case_name -- value of TestCase model's `name` field
+
+    """
+    test_case_name_pattern = re.compile(r"""^
+        (?P<package> [a-z0-9]+\. )+
+        (?P<class> [A-Z][A-Za-z0-9]+\# )
+        (?P<method> [a-z][A-Za-z0-9]+ )$""",
+        re.VERBOSE
+    )
+    if not test_case_name_pattern.match(test_case_name):
+        raise ValidationError(
+            u'Your entered test case name does not have the ' +
+            u'needed format "de.mypackage.TestMyClass#testGetMin"'
         )
