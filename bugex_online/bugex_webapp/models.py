@@ -19,6 +19,7 @@ from os import path
 from xml.etree.ElementTree import fromstring
 from zipfile import ZipFile
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -27,7 +28,6 @@ from bugex_webapp import *
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
 from bugex_webapp.validators import validate_archive_file_extension
-from bugex_webapp.core_modules.core_config import WORKING_DIR
 
 
 class UserRequest(models.Model):
@@ -36,9 +36,8 @@ class UserRequest(models.Model):
     The UserRequest model represents a single request to be sent to BugEx.
     """
     user = models.ForeignKey(User)
-    code_archive = models.OneToOneField('CodeArchive', blank=True, null=True)
     test_case = models.OneToOneField('TestCase')
-    token = models.CharField(max_length=100)
+    token = models.CharField(max_length=36)
     status = models.PositiveIntegerField()
     result = models.OneToOneField('BugExResult', blank=True, null=True)
 
@@ -47,20 +46,41 @@ class UserRequest(models.Model):
         return u'{0}: {1}'.format(self.token, self.test_case)
 
     @staticmethod
-    def new(user, test_case_name, code_archive_name):
-        token = uuid.uuid4()
+    def new(user, test_case_name, archive_file):
         test_case = TestCase.objects.create(name=test_case_name)
-        code_archive_format = path.splitext(
-            code_archive_name)[1][1:].strip().upper()
-        code_archive = CodeArchive.objects.create(
-                name=code_archive_name, archive_format=code_archive_format)
-        return UserRequest(user=user, code_archive=code_archive,
-                test_case=test_case, token=token, status=PENDING)
+        token = str(uuid.uuid4())
+
+        user_request = UserRequest.objects.create(
+            user=user,
+            test_case=test_case,
+            token=token,
+            status=PENDING
+        )
+
+        code_archive = CodeArchive()
+        code_archive.user_request = user_request
+        code_archive.archive_file.save(
+            name=archive_file.name,
+            content=archive_file
+        )
+
+        archive_file_ext = os.path.splitext(archive_file.name)[1][1:].strip()
+        code_archive.archive_format = archive_file_ext.upper()
+        code_archive.save()
+
+        return user_request
 
     @property
     def folder(self):
         return os.path.join(
-            WORKING_DIR, 'user_%d' % self.user.id, self.token)
+            settings.MEDIA_ROOT, self.relative_folder
+        )
+
+    @property
+    def relative_folder(self):
+        return os.path.join(
+            'user_{0}'.format(self.user.id), self.token
+        )
 
     def _build_path(self, *sub_folders):
         return path.join(self.folder, *sub_folders)
@@ -91,22 +111,14 @@ def archive_file_path(instance, filename):
     Dynamically generate the upload path for the FileField archive_file in
     a single CodeArchive instance.
 
-    All code archives will be saved to MEDIA_ROOT/username/token/...
-    The respective UserRequest instance has to be saved first before saving
-    the CodeArchive instance.
+    All code archives will be saved to MEDIA_ROOT/user_id/token/*.{zip|jar}
 
     Arguments:
     instance -- the respective CodeArchive instance
     filename -- the file name of the archive file to be uploaded
 
     """
-    latest_userrequest_id = UserRequest.objects.latest('id').id
-    latest_userrequest = UserRequest.objects.get(id=latest_userrequest_id)
-
-    username = latest_userrequest.user.username
-    token = latest_userrequest.token
-
-    return '/'.join((username, token, filename))
+    return os.path.join(instance.user_request.relative_folder, filename)
 
 
 class CodeArchive(models.Model):
@@ -119,6 +131,9 @@ class CodeArchive(models.Model):
         ('ZIP', 'zip')
     )
 
+    user_request = models.OneToOneField('UserRequest',
+        help_text='The UserRequest instance associated with this CodeArchive'
+    )
     archive_file = models.FileField(
         upload_to=archive_file_path,
         validators=[validate_archive_file_extension],
