@@ -71,17 +71,15 @@ def create_new_user(email_address):
 def submit_user_request(request):
     """Submit a user request.
 
-    1.  Bind the entered data to the UserRequestForm.
-    2.  Validate the form.
-    3.  Create a new user instance or get it from the database, if present.
-    4.  Create and save a new TestCase instance.
-    5.  Create and save a new UserRequest instance.
-    6.  Create and save a new CodeArchive instance.
-    7.  Add the CodeArchive instance to the UserRequest's code_archive field.
-    8.  Save again the UserRequest instance.
-    9.  Send a confirmation email to the user.
-        (Email will be sent to the console for testing purposes.)
-    10. Render a template with the given form context.
+    1. Bind the entered data to the UserRequestForm.
+    2. Validate the form.
+    3. Create a new user instance or get it from the database, if present.
+    4. Create and save a new TestCase instance.
+    5. Create and save a new CodeArchive instance.
+    6. Create and save a new UserRequest instance.
+    7. Send a confirmation email to the user.
+       (Email will be sent to the console for testing purposes.)
+    8. Render a template with the given form context.
        (Just for testing purposes.)
 
     """
@@ -89,42 +87,25 @@ def submit_user_request(request):
         form = UserRequestForm(request.POST, request.FILES)
 
         if form.is_valid():
-            user = create_new_user(form.cleaned_data['email_address'])
 
-            test_case = TestCase.objects.create(
-                name=form.cleaned_data['test_case']
+            user_request = UserRequest.new(
+                user=create_new_user(form.cleaned_data['email_address']),
+                test_case_name=form.cleaned_data['test_case'],
+                archive_file=request.FILES['code_archive']
             )
 
-            user_request = UserRequest()
-            user_request.user = user
-            user_request.token = uuid.uuid4()
-            user_request.status = PENDING
-            user_request.test_case = test_case
-            user_request.save()
-
-            code_archive = CodeArchive()
-            archive_content = request.FILES['code_archive']
-            archive_name = archive_content.name
-            archive_file_ext = os.path.splitext(archive_name)[1][1:].strip()
-
-            code_archive.archive_file.save(
-                name=archive_name,
-                content=archive_content
-            )
-
-            code_archive.archive_format = archive_file_ext.upper()
-            code_archive.save()
-
-            user_request.code_archive = code_archive
-            user_request.save()
-
-            user.email_user(
+            user_request.user.email_user(
                 subject='We successfully received your request',
-                message='Dear user,\n\nyour request for the ' \
-                        'code archive "' + archive_name + '" was ' \
-                        'processed successfully.\n\nBest regards,\n' \
+                message='Dear user,\n\nyour request for the code archive "' +
+                        request.FILES['code_archive'].name +
+                        '" was processed successfully.\n\nBest regards,\n'\
                         'The BugEx Online Group'
             )
+
+            # ================================================
+            # NEXT STEP: Parse the content of the code archive
+            # user_request.parse_archive()
+            # ================================================
 
             messages.success(request, 'Form submission was successful!')
 
