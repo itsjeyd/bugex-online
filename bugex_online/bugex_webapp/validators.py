@@ -72,3 +72,22 @@ def validate_archive_file_extension(archive_file):
         raise ValidationError(
             u'{0} is not a valid archive format'.format(archive_file.name)
         )
+
+def validate_archive_copyright(has_copyright):
+    """Validate the has_copyright field of the UserRequestForm form.
+
+    Before saving an instance of the CodeArchive model into
+    the database, this function will be called, checking whether
+    the user confirmed to own the copyright for the code they intend to upload.
+    If the user refuses to confirm, a ValidationError is raised and the
+    instance will not be saved to the database.
+
+    Arguments:
+    has_copyright -- Boolean value of UserRequestForm form's
+                    `has_copyright` field
+
+    """
+    if not has_copyright:
+        raise ValidationError(
+            u'You must confirm to own the copyright on the code archive'
+        )
