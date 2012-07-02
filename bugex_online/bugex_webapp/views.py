@@ -43,20 +43,13 @@ class UserPageView(TemplateView):
     template_name = 'bugex_webapp/user.html'
 
 
-def username_present(username):
-    """Determine whether a particular user exists in the database."""
-    if User.objects.filter(username=username).count():
-        return True
-    return False
-
-
 def create_new_user(email_address):
     """Create and return a new user.
 
     If the user is already present in the database, return this user.
 
     """
-    if not username_present(username=email_address):
+    if not User.objects.filter(username=email_address).count():
         password = User.objects.make_random_password(length=8)
         user = User.objects.create_user(
             username=email_address,
