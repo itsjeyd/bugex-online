@@ -13,7 +13,7 @@ import core_config
 
 # bugex webapp dependencies
 from bugex_webapp.models import BugExResult
-from bugex_webapp import FAILED, FINISHED
+from bugex_webapp import UserRequestStatus
 
 # external dependencies
 from datetime import datetime
@@ -176,7 +176,7 @@ class BugExMonitorJob(object):
             self._log.debug('BugEx is not ready yet..')
             return
         elif not status == 0:
-            self._user_request.status = FAILED
+            self._user_request.status = UserRequestStatus.FAILED
             self.cancel(
                 'BugEx terminated unsuccessfully (status code %s)! \
                 Please check bugex.log in the request directory for more \
@@ -202,7 +202,7 @@ class BugExMonitorJob(object):
     
         # success
         self.cancel('Success!')
-        self._user_request.status = FINISHED
+        self._user_request.status = UserRequestStatus.FINISHED
         pass # TODO anything else here?
     
 
