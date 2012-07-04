@@ -10,3 +10,7 @@ Akmal Qodirov
 Iliana Simova
 Peter Stahl
 """
+
+import logging
+
+logging.basicConfig()

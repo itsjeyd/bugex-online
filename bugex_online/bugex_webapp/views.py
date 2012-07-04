@@ -96,7 +96,7 @@ def submit_user_request(request):
 
             # ================================================
             # NEXT STEP: Parse the content of the code archive
-            # user_request.parse_archive()
+            user_request.parse_archive()
             # ================================================
 
             messages.success(request, 'Form submission was successful!')
