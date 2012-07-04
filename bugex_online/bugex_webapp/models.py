@@ -79,7 +79,8 @@ class UserRequest(models.Model):
     def update_status(self, new_status):
         self.status = new_status
         self.save()
-        print 'Status of {0} changed to: {1}'.format(self.token, self.status)
+        print 'Status of {0} changed to: {1}'.format(
+            self.token, UserRequestStatus.const_name(self.status))
         #call notifier
 
 
