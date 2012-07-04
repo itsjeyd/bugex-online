@@ -57,9 +57,9 @@ public class BugExMock {
 		if (args.length > 2 && args[2] != null) {
 			// output path is specified
 			if (!args[2].endsWith("/")) {
-				System.out.println("Output path is not valid: '"+args[2]+"' (No trailing '/')");
-				System.exit(-1);
-				return;
+				System.out.println("Oops, you forgot the trailing slash after: '"+args[2]);
+				System.out.println("Since I am a very kind program, I will add it for you :]");
+				outputPath = args[2]+"/";
 			} else {
 				outputPath = args[2];
 			}
