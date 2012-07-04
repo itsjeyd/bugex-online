@@ -36,9 +36,9 @@ class UserRequestStatus(Enum):
 class XMLNode(Enum):
     """ Collection of possible node types in XML output of BugEx """
 
-    FACT_NODE = './/fact'
-    CLASS_NODE = 'className'
-    LINE_NODE = 'lineNumber'
-    METHOD_NODE = 'methodName'
-    EXPL_NODE = 'explanation'
-    TYPE_NODE = 'factType'
+    FACT = './/fact'
+    CLASS = 'className'
+    LINE = 'lineNumber'
+    METHOD = 'methodName'
+    EXPL = 'explanation'
+    TYPE = 'factType'
