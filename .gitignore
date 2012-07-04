@@ -13,6 +13,7 @@ nbproject
 .tmproj
 *.esproj
 .cache
+uploads
 
 # Data files to ignore
 *.pyc
