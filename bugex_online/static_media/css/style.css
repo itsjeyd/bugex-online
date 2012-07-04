@@ -1,77 +1,54 @@
-           .navbar .nav > li > a {
-                    line-height: 62px;
-                    /*padding-left: 20px;
-                    padding-right: 20px; */
-                    text-shadow:none;
-                    font-size: 16px;
-
-            }
-            .scrollable-code {
-                    height: 470px;
-                    overflow: auto;
-            }
-
-            .scrollable-facts {
-                    height: 120px;
-                    overflow: auto;
-            }
-
-            .scrollable-outline {
-                    height: 220px;
-                    overflow: auto;
-            }
-
-            .scrollable-code > p {
-                    padding-right: 15px;
-            }
-
-            .navbar-fixed-bottom {
-                    height: 40px;
-            }
+/*********Navigation*********/
 div.navbar ul.nav { float: right; padding: 20px 100px 20px 0; }
 div.navbar ul.nav li { margin: 0 1em; }
+/*********Navigation*********/
+
+/*********Main Content*********/
 div.container-fluid #welcomeText, div.container-fluid #howTo { text-align: center; }
 div.container-fluid #welcomeText h1, div.container-fluid #howTo h1 { font-size: 2em; font-weight: 800; }
 div.container-fluid #howTo img { margin: 1em 0; }
 div.container-fluid #leftColumnMain { width: 50%; margin: 5em auto 0 auto; }
 div.container-fluid #mainPageForm { width: 75%; margin: 5em auto 0 auto; }
+
+div.row-fluid h1 {}
+div.row-fluid p {}
+/*********Main Content*********/
+
+/*********Footer*********/
 div.container-fluid #footer { width: 100%; margin: 4em auto 0 auto; background: url(../img/bg.jpg) repeat-x; padding: 1em 0; }
 div.container-fluid #footer p { text-align: center; line-height: 1.5em; }
+/*********Footer*********/
+
+/*********Social*********/
 ul#social { list-style-type: none; float: left; clear: both; padding: 0; margin: 0; }
 ul#social li { display: inline; }
-div.row-fluid:after { clear: both; } 
-.facts { background: #000; }
-#code { background: #000; }
+/*********Social*********/
 
-#informingText { display:none; background: #C11B17; color: #fff; width: 25%; height: 5%; padding: 5px; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;  }
-label {
-  display: block;
-}
-label.valid {
-  width: 24px;
-  background: url(../img/valid.png) center center no-repeat;
-  display: inline-block;
-  text-indent: -9999px;
-}
-
-label.error {
-  padding-left: 5px;
-  display: inline-block;
-}
-
-input {
-  display: inline-block;
-}
-
-form div {
-  padding: 5px;
-  float: left;
-  clear: left;
-  width: 100%;
-}
-
-button {
-  margin-top: 10px;
-}
-
+/*********Facts*********/
 #facts { height: 300px; background: #000; }
+/*********Facts*********/
+
+/*********Code*********/
+#code { background: #000; }
+/*********Code*********/
+
+/*********Informing Text After Submitting something*********/
+#informingText { display:none; background: #C11B17; color: #fff; width: 25%; height: 5%; padding: 5px; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;  }
+/*********Informing Text After Submitting something*********/
+
+/*********Forms*********/
+label { display: block; }
+label.valid { width: 24px; display: inline-block; text-indent: -9999px; }
+label.error { padding-left: 5px; display: inline-block; }
+input { display: inline-block; }
+form div { padding: 5px; float: left; clear: left; width: 100%; }
+button { margin-top: 10px; }
+/*********Forms*********/
+
+.navbar .nav > li > a { line-height: 62px; text-shadow:none; font-size: 16px; }
+.scrollable-code { height: 470px; overflow: auto; }
+.scrollable-facts { height: 120px; overflow: auto; }
+.scrollable-outline { height: 220px; overflow: auto; }
+.scrollable-code>p { padding-right: 15px; }
+.navbar-fixed-bottom { height: 40px; }
+div.row-fluid:after { clear: both; }
