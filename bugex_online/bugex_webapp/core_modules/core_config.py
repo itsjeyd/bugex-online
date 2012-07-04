@@ -2,7 +2,7 @@
 
 # Working directory of BugExOnline.
 # It holds all user data.
-WORKING_DIR = '/tmp/bugex'
+#WORKING_DIR = '/tmp/bugex'
 
 # A boolean that turns on/off debug mode.
 # It determines if bugex instances run in debug mode,
@@ -11,7 +11,7 @@ DEBUG = True
 
 # Defines the artificial delay for the BugEx Mockup in seconds.
 # Will only be used in DEBUG mode.
-ARTIFICIAL_DELAY = 3
+ARTIFICIAL_DELAY = 120
 
 
 # [ BUG EX ]

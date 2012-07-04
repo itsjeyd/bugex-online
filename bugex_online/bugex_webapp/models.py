@@ -27,6 +27,7 @@ from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
 from bugex_webapp.validators import validate_archive_file_extension
 from bugex_webapp.validators import validate_test_case_name
+from bugex_webapp.core_modules.bugex_monitor import BugExMonitor
 
 class UserRequest(models.Model):
     """The UserRequest model.
@@ -66,6 +67,8 @@ class UserRequest(models.Model):
         code_archive.archive_format = archive_file_ext.upper()
         code_archive.save()
 
+        user_request.save()
+        user_request.update_status(UserRequestStatus.PENDING)
         return user_request
 
     @property
@@ -80,10 +83,20 @@ class UserRequest(models.Model):
             'user_{0}'.format(self.user.id), self.token
         )
 
+    @property
+    def code_archive_path(self):
+        return os.path.join(
+            settings.MEDIA_ROOT, self.codearchive.archive_file.name
+        )
+
     def _build_path(self, *sub_folders):
         return os.path.join(self.folder, *sub_folders)
      
     def parse_archive(self):
+        self.update_status(UserRequestStatus.VALIDATION)
+        bugex_mon = BugExMonitor.Instance()
+        bugex_mon.new_request(self)
+        return
         path = self._build_path(self.code_archive.name)
         path_extracted = self._build_path('tmp_extracted')
         try:
@@ -131,6 +144,8 @@ class CodeArchive(models.Model):
     )
 
     user_request = models.OneToOneField('UserRequest',
+#        blank=True,
+#        null=True,
         help_text='The UserRequest instance associated with this CodeArchive'
     )
     archive_file = models.FileField(
@@ -356,6 +371,9 @@ class Folder(models.Model):
             return True
         return False
 
+#    @staticmethod
+#    def recursive_build(self, parent_folder):
+#        return folder
 
 class ProjectFile(models.Model):
     """The ProjectFile model.

@@ -19,7 +19,6 @@ from django.contrib.auth.models import User
 from django.views.generic import TemplateView
 from django.shortcuts import render
 
-from bugex_webapp import PENDING
 from bugex_webapp.models import UserRequest, TestCase, CodeArchive
 from bugex_webapp.forms import UserRequestForm
 
@@ -97,7 +96,7 @@ def submit_user_request(request):
 
             # ================================================
             # NEXT STEP: Parse the content of the code archive
-            # user_request.parse_archive()
+            user_request.parse_archive()
             # ================================================
 
             messages.success(request, 'Form submission was successful!')
