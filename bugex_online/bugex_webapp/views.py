@@ -19,7 +19,6 @@ from django.contrib.auth.models import User
 from django.views.generic import TemplateView
 from django.shortcuts import render
 
-from bugex_webapp import PENDING
 from bugex_webapp.models import UserRequest, TestCase, CodeArchive
 from bugex_webapp.forms import UserRequestForm
 
