@@ -16,7 +16,7 @@ import os
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from bugex_webapp import PENDING, VALID
+from bugex_webapp import UserRequestStatus
 from bugex_webapp.core_modules.core_config import WORKING_DIR
 from bugex_webapp.models import UserRequest
 
@@ -52,7 +52,7 @@ class UserRequestConstructorTest(TestCase):
 
     def test_status(self):
         ur = UserRequest.objects.get(id=1)
-        self.assertEqual(ur.status, PENDING)
+        self.assertEqual(ur.status, UserRequestStatus.PENDING)
 
     def test_folder(self):
         ur = UserRequest.objects.get(id=1)
@@ -73,6 +73,6 @@ class UserRequestUpdateStatusTest(TestCase):
     def test_update_status(self):
         ur = UserRequest.objects.get(id=1)
         old_status = ur.status
-        ur.update_status(VALID)
+        ur.update_status(UserRequestStatus.VALID)
         self.assertNotEqual(old_status, ur.status)
-        self.assertEqual(VALID, ur.status)
+        self.assertEqual(UserRequestStatus.VALID, ur.status)
