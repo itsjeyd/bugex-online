@@ -21,7 +21,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from bugex_webapp import *
+from bugex_webapp import UserRequestStatus, XMLNode
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
 from bugex_webapp.validators import validate_archive_format
@@ -52,8 +52,9 @@ class UserRequest(models.Model):
             code_archive_name)[1][1:].strip().upper()
         code_archive = CodeArchive.objects.create(
                 name=code_archive_name, archive_format=code_archive_format)
-        return UserRequest(user=user, code_archive=code_archive,
-                test_case=test_case, token=token, status=PENDING)
+        return UserRequest(
+            user=user, code_archive=code_archive, test_case=test_case,
+            token=token, status=UserRequestStatus.PENDING)
 
     @property
     def folder(self):
@@ -71,7 +72,7 @@ class UserRequest(models.Model):
             archive.extractall(path_extracted)
             archive.close()
         except:
-            self.update_status(INVALID)
+            self.update_status(UserRequestStatus.INVALID)
         else:
             self.code_archive.traverse(path_extracted)
 
@@ -171,18 +172,18 @@ class BugExResult(models.Model):
 
         try:
             #parse xml string and extract fact nodes
-            facts_xml = fromstring(xml_string).findall(FACT_NODE)
+            facts_xml = fromstring(xml_string).findall(XMLNode.FACT)
 
             #create a Fact for each fact node in the xml file only if all
             #required information about the fact was found in the xml tree
             for f in facts_xml:
                 try:
                     my_fact = Fact(
-                           class_name=f.find(CLASS_NODE).text.strip(),
-                           method_name=f.find(METHOD_NODE).text.strip(),
-                           line_number=int(f.find(LINE_NODE).text.strip()),
-                           explanation=f.find(EXPL_NODE).text.strip(),
-                           fact_type=f.find(TYPE_NODE).text.strip())
+                        class_name=f.find(XMLNode.CLASS).text.strip(),
+                        method_name=f.find(XMLNode.METHOD).text.strip(),
+                        line_number=int(f.find(XMLNode.LINE).text.strip()),
+                        explanation=f.find(XMLNode.EXPL).text.strip(),
+                        fact_type=f.find(XMLNode.TYPE).text.strip())
                 except Exception:
                     #nodes are missing
                     raise
