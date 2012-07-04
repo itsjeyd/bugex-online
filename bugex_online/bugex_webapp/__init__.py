@@ -11,17 +11,34 @@ Authors: Amir Baradaran
          Peter Stahl
 """
 
-PENDING = 1
-VALID = 2
-INVALID = 3
-PROCESSING = 4
-FAILED = 5
-FINISHED = 6
-DELETED = 7
+class Enum(object):
+    """ Parent class for all constant enums """
 
-FACT_NODE = './/fact'
-CLASS_NODE = 'className'
-LINE_NODE = 'lineNumber'
-METHOD_NODE = 'methodName'
-EXPL_NODE = 'explanation'
-TYPE_NODE = 'factType'
+    @classmethod
+    def const_name(cls, const_value):
+        for const, value in vars(cls).items():
+            if value == const_value:
+                return const
+
+
+class UserRequestStatus(Enum):
+    """ Collection of possible statuses for UserRequests """
+
+    PENDING = 1
+    VALID = 2
+    INVALID = 3
+    PROCESSING = 4
+    FAILED = 5
+    FINISHED = 6
+    DELETED = 7
+
+
+class XMLNode(Enum):
+    """ Collection of possible node types in XML output of BugEx """
+
+    FACT = './/fact'
+    CLASS = 'className'
+    LINE = 'lineNumber'
+    METHOD = 'methodName'
+    EXPL = 'explanation'
+    TYPE = 'factType'

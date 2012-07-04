@@ -13,3 +13,67 @@ Authors: Amir Baradaran
 
 from django import forms
 
+from bugex_webapp.validators import validate_archive_format
+
+class EmailBaseForm(forms.Form):
+    """The EmailBaseForm form.
+
+    The EmailBaseForm is used as a more generic replacement for
+    RecoverPasswordForm and RegistrationForm.
+    """
+    email_address = forms.EmailField(help_text='Your current email address')
+
+
+class EmailPasswordBaseForm(EmailBaseForm):
+    """The EmailPasswordBaseForm form.
+
+    The EmailPasswordBaseForm inherits from EmailBaseForm and
+    introduces a new field for entering passwords. This is used
+    as a more generic replacement for LoginForm.
+    """
+    password = forms.CharField(
+        min_length=8, max_length=8,
+        help_text='Your current password.'
+    )
+
+
+class UserRequestForm(EmailBaseForm):
+    """The UserRequestForm form for uploading user requests.
+
+    The UserRequestForm inherits the field `email_address` from
+    EmailBaseForm.
+    """
+    code_archive = forms.FileField(
+        validators=[validate_archive_format],
+        help_text='The archive (ZIP or JAR) that contains your code.'
+    )
+    test_case = forms.CharField(
+        max_length=100,
+        help_text='The name of the failing test case related to your program.'
+    )
+    has_copyright = forms.BooleanField(
+        required=False,
+        help_text='Please confirm that you own the copyright to the files' \
+                  ' that you are going to upload.'
+    )
+
+
+class AdditionalTestCaseForm(forms.Form):
+    """The AdditionalTestCaseForm form for uploading additional test cases."""
+    additional_test_case = forms.FileField(
+        help_text='The additional failing test case that you want to upload.'
+    )
+
+
+class ChangeEmailForm(EmailPasswordBaseForm):
+    """The ChangeEmailForm for changing a user's email address.
+
+    The ChangeEmailForm inherits the fields `email_address` and `password`
+    from the EmailPassWordBaseForm.
+    """
+    new_email_address_1 = forms.EmailField(
+        help_text='Please enter your new email address.'
+    )
+    new_email_address_2 = forms.EmailField(
+        help_text='Please re-enter your new email address.'
+    )

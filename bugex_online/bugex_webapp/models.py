@@ -11,15 +11,19 @@ Authors: Amir Baradaran
          Peter Stahl
 """
 
+import os
+import re
 import uuid
+import os
 from os import path
 from xml.etree.ElementTree import fromstring
+from zipfile import ZipFile
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from bugex_webapp import *
+from bugex_webapp import UserRequestStatus, XMLNode
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
 from bugex_webapp.validators import validate_archive_format
@@ -36,31 +40,52 @@ class UserRequest(models.Model):
     test_case = models.OneToOneField('TestCase')
     token = models.CharField(max_length=100)
     status = models.PositiveIntegerField()
-    result = models.OneToOneField('BugExResult')
+    result = models.OneToOneField('BugExResult', blank=True, null=True)
 
     def __unicode__(self):
         """Return a unicode representation for a UserRequest model object."""
-        return u'{0}: {1}'.format(self.token, self. test_case)
+        return u'{0}: {1}'.format(self.token, self.test_case)
 
     @staticmethod
-    def new():
+    def new(user, test_case_name, code_archive_name):
         token = uuid.uuid4()
-        return UserRequest(token=token, status=PENDING)
+        test_case = TestCase.objects.create(name=test_case_name)
+        code_archive_format = path.splitext(
+            code_archive_name)[1][1:].strip().upper()
+        code_archive = CodeArchive.objects.create(
+                name=code_archive_name, archive_format=code_archive_format)
+        return UserRequest(
+            user=user, code_archive=code_archive, test_case=test_case,
+            token=token, status=UserRequestStatus.PENDING)
 
     @property
     def folder(self):
-        return path.join(
-            WORKING_DIR, 'user_'+self.user.id, self.token)
+        return os.path.join(
+            WORKING_DIR, 'user_%d' % self.user.id, self.token)
 
-    #@property
-    #def status(self):
-    #    return self.status
-
-    #@status.setter
-    #def set_status(self, new_status):
-    #    self.status = new_status
-    #    self.save()
-    #    print 'Status of {0} changed to: {1}'.format(self.token, self._status)
+    def _build_path(self, *sub_folders):
+        return path.join(self.folder, *sub_folders)
+     
+    def parse_archive(self):
+        path = self._build_path(self.code_archive.name)
+        path_extracted = self._build_path('tmp_extracted')
+        try:
+            archive = ZipFile(path, 'r')
+            archive.extractall(path_extracted)
+            archive.close()
+        except:
+            self.update_status(UserRequestStatus.INVALID)
+        else:
+            #a better way to do this?
+            root_folder = Folder.objects.create(name='ROOT', code_archive=self)
+            self.code_archive.traverse(path_extracted, root_folder)
+        
+    def update_status(self, new_status):
+        self.status = new_status
+        self.save()
+        print 'Status of {0} changed to: {1}'.format(
+            self.token, UserRequestStatus.const_name(self.status))
+        #call notifier
 
 
 class CodeArchive(models.Model):
@@ -81,13 +106,67 @@ class CodeArchive(models.Model):
     archive_format = models.CharField(
         max_length=3,
         choices=EXTENSIONS,
+        validators=[validate_archive_format],
         help_text='The format of this archive (either *.jar or *.zip)'
     )
 
     def __unicode__(self):
         """Return a unicode representation for a CodeArchive model object."""
         return u'{0}'.format(self.name)
-
+  
+    def _get_path_elements(self, my_path):
+        '''Returns the current and parent folder names of a specified path
+        
+        my_path -- a path string
+        '''
+        elements = path.split(path.abspath(my_path))
+        this_f = elements[1] 
+        parent_f = path.split(path.abspath(elements[0]))[1]
+        return parent_f, this_f
+    
+    def traverse(self, my_path, parent):
+        '''Recursively traverse every file and directory in a directory tree.
+        
+        Recursively traverse every file and directory in a directory tree 
+        specified by a path. Save each folder, java and class file, preserving
+        the directory tree structure.
+        
+        my_path -- a path (string) which points to the extracted archive folder
+        parent -- a folder instance; the parent folder of the current folder
+        '''
+        '''
+        TODO: save folders; 
+        TODO: change UR status in case of an exception;
+        '''
+        parent_f, this_f = self._get_path_elements(my_path)
+        
+        #needs to be done in a nicer way without hardcoding the name
+        if this_f != 'tmp_extracted' and parent_f != 'tmp_extracted':
+            
+            #create a new folder with name=this_f and parent_folder=parent
+            my_folder = Folder.objects.create(name=this_f, code_archive=self, 
+                                           parent_folder=parent)            
+        for f in os.listdir(my_path):
+            f_path = path.join(my_path, f)
+            
+            #if f_path points to a class or java file, create it
+            if path.isfile(f_path):
+                ext = path.splitext(f)[1][1:].strip()
+                if ext == 'java':
+                    try:
+                        sf = SourceFile.new(code_archive=self, name=f, 
+                                       folder=my_folder, path=f_path)
+                    except Exception as e:
+                        print e
+                        #if something goes wring during SourceFile creation, 
+                        #change UserRequest status to INVALID
+                elif ext == 'class':
+                    cf = ClassFile.objects.create(code_archive=self, 
+                                                  folder=my_folder, name=f)
+                    cf.save()
+            else:
+                #current file is a folder, continue traversing
+                self.traverse(f_path, my_folder)
 
 class TestCase(models.Model):
     """The TestCase model.
@@ -123,13 +202,13 @@ class BugExResult(models.Model):
     @staticmethod
     def new(xml_string):
         '''Creates a new instance of BugExResult.
-        
+
         xml_string -- a string containing the xml output of BugEx
         '''
         try:
             facts = BugExResult._parse_xml(xml_string)
         except Exception:
-            #re-raise any exceptions raised during xml parsing 
+            #re-raise any exceptions raised during xml parsing
             raise
         else:
             #instantiate a BugExResult and save all corresponding Facts
@@ -139,34 +218,34 @@ class BugExResult(models.Model):
             for f in facts:
                 f.bugex_result = be_res
                 f.save()
-    
+
     @staticmethod
-    def _parse_xml(xml_string): 
+    def _parse_xml(xml_string):
         '''Parse the xml string and if parse is successful create Facts
-        '''         
+        '''
         facts = []
-        
+
         try:
             #parse xml string and extract fact nodes
-            facts_xml = fromstring(xml_string).findall(FACT_NODE)
-            
-            #create a Fact for each fact node in the xml file only if all 
+            facts_xml = fromstring(xml_string).findall(XMLNode.FACT)
+
+            #create a Fact for each fact node in the xml file only if all
             #required information about the fact was found in the xml tree
             for f in facts_xml:
                 try:
                     my_fact = Fact(
-                           class_name=f.find(CLASS_NODE).text.strip(),
-                           method_name=f.find(METHOD_NODE).text.strip(),
-                           line_number=int(f.find(LINE_NODE).text.strip()),
-                           explanation=f.find(EXPL_NODE).text.strip(),
-                           fact_type=f.find(TYPE_NODE).text.strip())
+                        class_name=f.find(XMLNode.CLASS).text.strip(),
+                        method_name=f.find(XMLNode.METHOD).text.strip(),
+                        line_number=int(f.find(XMLNode.LINE).text.strip()),
+                        explanation=f.find(XMLNode.EXPL).text.strip(),
+                        fact_type=f.find(XMLNode.TYPE).text.strip())
                 except Exception:
                     #nodes are missing
                     raise
                 else:
                     facts.append(my_fact)
         except Exception:
-            #xml string is empty or not valid  
+            #xml string is empty or not valid
             raise
         else:
             return facts
@@ -252,6 +331,7 @@ class ProjectFile(models.Model):
         help_text='The code archive that this project file resides in.'
     )
     folder = models.ForeignKey('Folder',
+        blank=True,
         help_text='The folder that this project file resides in.'
     )
 
@@ -277,6 +357,30 @@ class SourceFile(ProjectFile):
         blank=True,
         help_text='The name of the package that this source file resides in.'
     )
+
+    @staticmethod
+    def new(code_archive, name, path, folder=None):
+        """
+        Creates a new SourceFile object, parses its lines and stores everything
+        to database.
+
+        Raises an IOError, if the file can not be opened.
+        """
+        source_file = SourceFile(code_archive=code_archive, name=name)
+
+        if folder:
+            source_file.folder = folder
+
+        for number, line in enumerate(open(path).readlines(), 1):
+            Line.objects.create(
+                code_archive=source_file.code_archive,
+                number=number,
+                content=line.strip())
+            if line.startswith('package'):
+                source_file.package = re.search('package +(.+);', line).group(1)
+
+        source_file.save()
+
 
     def __unicode__(self):
         """Return a unicode representation for a SourceFile model object."""
@@ -317,8 +421,8 @@ class Line(models.Model):
         max_length=100,
         help_text='The code that is included in this line.'
     )
-    definition = models.BooleanField(
-        default=False,
+    definition = models.NullBooleanField(
+        blank=True,
         verbose_name='definition of model, method or class ?',
         help_text='Is this source code line a definition of a ' \
                   'model, method or class ?'

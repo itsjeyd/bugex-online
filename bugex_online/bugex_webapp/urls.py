@@ -13,6 +13,13 @@ Authors: Amir Baradaran
 
 from django.conf.urls import patterns, include, url
 
-urlpatterns = patterns('',
+from bugex_webapp.views import MainPageView, HowToPageView, ResultsPageView
+from bugex_webapp.views import DeletePageView, UserPageView
 
+urlpatterns = patterns('',
+    url(r'main/$', MainPageView.as_view(), name='main-page'),
+    url(r'howto/$', HowToPageView.as_view(), name='howto-page'),
+    url(r'results/$', ResultsPageView.as_view(), name='results-page'),
+    url(r'delete/$', DeletePageView.as_view(), name='delete-page'),
+    url(r'user/$', UserPageView.as_view(), name='user-page'),
 )
