@@ -75,6 +75,8 @@ class BugExMonitoringTest(TestCase):
         
 
     def test_new(self):
+        self.ureq.update_status(1)
+        
         bug_mon = BugExMonitor.Instance()
         bug_mon.new_request(self.ureq)
         
