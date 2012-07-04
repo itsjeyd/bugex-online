@@ -46,9 +46,23 @@ class UserRequest(models.Model):
 
     @staticmethod
     def new(user, test_case_name, archive_file):
+        """
+        Creates a new UserRequest object and returns the reference to it.
+
+        Arguments:
+
+        user            -- the user associated to the request
+        test_case_name  -- the fully qulified nam eof the test case
+        archive_file    -- the uploaded file (user archive)
+
+        """
+        # create test case object
         test_case = TestCase.objects.create(name=test_case_name)
+        
+        # create unique token for request
         token = str(uuid.uuid4())
 
+        # create user request object
         user_request = UserRequest.objects.create(
             user=user,
             test_case=test_case,
@@ -56,35 +70,53 @@ class UserRequest(models.Model):
             status=UserRequestStatus.PENDING
         )
 
+        # create code archive
         code_archive = CodeArchive()
         code_archive.user_request = user_request
+        # save file to disk
         code_archive.archive_file.save(
             name=archive_file.name,
             content=archive_file
         )
-
+        # extract file type
         archive_file_ext = os.path.splitext(archive_file.name)[1][1:].strip()
         code_archive.archive_format = archive_file_ext.upper()
         code_archive.save()
-
+        
+        # save user request
         user_request.save()
+
+        # update status to PENDING
         user_request.update_status(UserRequestStatus.PENDING)
+        
+        # return reference for further processing
         return user_request
 
     @property
     def folder(self):
+        """
+        Returns the absolute root folder of this request.
+        """
         return os.path.join(
             settings.MEDIA_ROOT, self.relative_folder
         )
 
     @property
     def relative_folder(self):
+        """
+        Returns the relative root folder of this request.
+
+        (relative to MEDIA_ROOT)
+        """
         return os.path.join(
             'user_{0}'.format(self.user.id), self.token
         )
 
     @property
     def code_archive_path(self):
+        """
+        Returns the absolute path to the code archive.
+        """
         return os.path.join(
             settings.MEDIA_ROOT, self.codearchive.archive_file.name
         )
@@ -93,17 +125,23 @@ class UserRequest(models.Model):
         return os.path.join(self.folder, *sub_folders)
      
     def parse_archive(self):
+        # VALIDATION phase starts now
         self.update_status(UserRequestStatus.VALIDATION)
+        
+        # == TESTING ===
         bugex_mon = BugExMonitor.Instance()
         bugex_mon.new_request(self)
         return
-        path = self._build_path(self.code_archive.name)
+        # ===============
+
+        # extract user archive
         path_extracted = self._build_path('tmp_extracted')
         try:
-            archive = ZipFile(path, 'r')
+            archive = ZipFile(self.code_archive_path, 'r')
             archive.extractall(path_extracted)
             archive.close()
         except:
+            # oops, no zip?
             self.update_status(UserRequestStatus.INVALID)
         else:
             #a better way to do this?
@@ -111,11 +149,21 @@ class UserRequest(models.Model):
             self.code_archive.traverse(path_extracted, root_folder)
         
     def update_status(self, new_status):
+        """
+        Updates the status of this user request and saves itself to the
+        database.
+        
+        Also triggers notification of the user.
+
+        Arguments:
+        new_status  -- the new status of the request (see UserRequestStatus)
+        """
         self.status = new_status
         self.save()
         print 'Status of {0} changed to: {1}'.format(
             self.token, UserRequestStatus.const_name(self.status))
-        #call notifier
+        
+        # TODO call notifier
 
 
 def archive_file_path(instance, filename):
@@ -144,8 +192,6 @@ class CodeArchive(models.Model):
     )
 
     user_request = models.OneToOneField('UserRequest',
-#        blank=True,
-#        null=True,
         help_text='The UserRequest instance associated with this CodeArchive'
     )
     archive_file = models.FileField(
