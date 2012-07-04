@@ -351,6 +351,12 @@ class Folder(models.Model):
         """Return a unicode representation for a Folder model object."""
         return '{0}'.format(self.name)
 
+    @property
+    def is_parent_folder(self):
+        if self.parent_folder_id is None:
+            return True
+        return False
+
 
 class ProjectFile(models.Model):
     """The ProjectFile model.
@@ -392,6 +398,10 @@ class SourceFile(ProjectFile):
         max_length=100,
         blank=True,
         help_text='The name of the package that this source file resides in.'
+    )
+
+    class_element = models.OneToOneField('ClassElement',
+        help_text='The class element associated with this source file.'
     )
 
     @staticmethod

@@ -107,16 +107,16 @@ class SourceFileAdmin(admin.ModelAdmin):
             'fields': ('name',)
         }),
         (None, {
-            'fields': ('code_archive', 'folder')
+            'fields': ('code_archive', 'class_element', 'folder')
         }),
         ('Optional', {
             'fields': ('package',)
         })
     )
-    list_display = ('name', 'code_archive', 'folder', 'package')
+    list_display = ('name', 'code_archive', 'class_element', 'folder', 'package')
     list_display_links = ('name',)
     ordering = ('code_archive', 'name')
-    search_fields = ('name', 'code_archive', 'folder')
+    search_fields = ('name', 'code_archive', 'class_element', 'folder')
 
 
 class ClassFileAdmin(admin.ModelAdmin):
