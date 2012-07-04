@@ -17,6 +17,7 @@ import os
 from xml.etree.ElementTree import fromstring
 from zipfile import ZipFile
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -24,9 +25,8 @@ from django.db import models
 from bugex_webapp import UserRequestStatus, XMLNode
 from bugex_webapp.validators import validate_source_file_extension
 from bugex_webapp.validators import validate_class_file_extension
-from bugex_webapp.validators import validate_archive_format
-from bugex_webapp.core_modules.core_config import WORKING_DIR
-
+from bugex_webapp.validators import validate_archive_file_extension
+from bugex_webapp.validators import validate_test_case_name
 
 class UserRequest(models.Model):
     """The UserRequest model.
@@ -34,9 +34,8 @@ class UserRequest(models.Model):
     The UserRequest model represents a single request to be sent to BugEx.
     """
     user = models.ForeignKey(User)
-    code_archive = models.OneToOneField('CodeArchive')
     test_case = models.OneToOneField('TestCase')
-    token = models.CharField(max_length=100)
+    token = models.CharField(max_length=36)
     status = models.PositiveIntegerField()
     result = models.OneToOneField('BugExResult', blank=True, null=True)
 
@@ -45,25 +44,41 @@ class UserRequest(models.Model):
         return u'{0}: {1}'.format(self.token, self.test_case)
 
     @staticmethod
-    def new(user, test_case_name, code_archive_name):
-        token = str(uuid.uuid4())
+    def new(user, test_case_name, archive_file):
         test_case = TestCase.objects.create(name=test_case_name)
-        code_archive_format = os.path.splitext(
-            code_archive_name)[1][1:].strip().upper()
-        code_archive = CodeArchive.objects.create(
-                name=code_archive_name, archive_format=code_archive_format)
-        return UserRequest(
-            user=user, code_archive=code_archive, test_case=test_case,
-            token=token, status=UserRequestStatus.PENDING)
+        token = str(uuid.uuid4())
+
+        user_request = UserRequest.objects.create(
+            user=user,
+            test_case=test_case,
+            token=token,
+            status=PENDING
+        )
+
+        code_archive = CodeArchive()
+        code_archive.user_request = user_request
+        code_archive.archive_file.save(
+            name=archive_file.name,
+            content=archive_file
+        )
+
+        archive_file_ext = os.path.splitext(archive_file.name)[1][1:].strip()
+        code_archive.archive_format = archive_file_ext.upper()
+        code_archive.save()
+
+        return user_request
 
     @property
     def folder(self):
         return os.path.join(
-            WORKING_DIR, 'user_%d' % self.user.id, self.token)
-        
+            settings.MEDIA_ROOT, self.relative_folder
+        )
+
     @property
-    def code_archive_path(self):
-        return self._build_path(self.folder,self.code_archive.name)
+    def relative_folder(self):
+        return os.path.join(
+            'user_{0}'.format(self.user.id), self.token
+        )
 
     def _build_path(self, *sub_folders):
         return os.path.join(self.folder, *sub_folders)
@@ -90,6 +105,21 @@ class UserRequest(models.Model):
         #call notifier
 
 
+def archive_file_path(instance, filename):
+    """
+    Dynamically generate the upload path for the FileField archive_file in
+    a single CodeArchive instance.
+
+    All code archives will be saved to MEDIA_ROOT/user_id/token/*.{zip|jar}
+
+    Arguments:
+    instance -- the respective CodeArchive instance
+    filename -- the file name of the archive file to be uploaded
+
+    """
+    return os.path.join(instance.user_request.relative_folder, filename)
+
+
 class CodeArchive(models.Model):
     """The CodeArchive model.
 
@@ -100,22 +130,24 @@ class CodeArchive(models.Model):
         ('ZIP', 'zip')
     )
 
-    name = models.CharField(
-        max_length=100,
-        validators=[validate_archive_format],
-        help_text='The name of this code archive.'
+    user_request = models.OneToOneField('UserRequest',
+        help_text='The UserRequest instance associated with this CodeArchive'
+    )
+    archive_file = models.FileField(
+        upload_to=archive_file_path,
+        validators=[validate_archive_file_extension],
+        help_text='The code archive file that should be uploaded.'
     )
     archive_format = models.CharField(
         max_length=3,
         choices=EXTENSIONS,
-        validators=[validate_archive_format],
         help_text='The format of this archive (either *.jar or *.zip)'
     )
 
     def __unicode__(self):
         """Return a unicode representation for a CodeArchive model object."""
-        return u'{0}'.format(self.name)
-  
+        return u'{0}'.format(self.archive_file.name)
+
     def _get_path_elements(self, my_path):
         '''Returns the current and parent folder names of a specified path
         
@@ -177,6 +209,7 @@ class TestCase(models.Model):
     by BugEx.
     """
     name = models.CharField(max_length=100,
+        validators=[validate_test_case_name],
         help_text='The name of this test case.'
     )
 
@@ -317,6 +350,12 @@ class Folder(models.Model):
         """Return a unicode representation for a Folder model object."""
         return '{0}'.format(self.name)
 
+    @property
+    def is_parent_folder(self):
+        if self.parent_folder_id is None:
+            return True
+        return False
+
 
 class ProjectFile(models.Model):
     """The ProjectFile model.
@@ -358,6 +397,10 @@ class SourceFile(ProjectFile):
         max_length=100,
         blank=True,
         help_text='The name of the package that this source file resides in.'
+    )
+
+    class_element = models.OneToOneField('ClassElement',
+        help_text='The class element associated with this source file.'
     )
 
     @staticmethod

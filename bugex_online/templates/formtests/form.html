@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form Test</title>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-2.0.4.css">
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-alert.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.alert').alert();
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+    <div class="row">
+    <div class="span12">
+    <div class="page-header"><h1>Form Test</h1></div>
+
+        {% if form.is_multipart %}
+            <form class="form-horizontal" enctype="multipart/form-data" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
+        {% else %}
+            <form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
+        {% endif %}
+
+
+        {% if messages %}
+
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <div class="alert alert-success fade in">
+                        <a class="close" data-dismiss="alert" href="#">&times;</a>
+                        {{ message }}
+                    </div>
+                {% endif %}
+
+                {% if message.tags == 'error' %}
+                    <div class="alert alert-error fade in">
+                        <a class="close" data-dismiss="alert" href="#">&times;</a>
+                        {{ message }}
+                    </div>
+                {% endif %}
+
+            {% endfor %}
+
+        {% endif %}
+
+        <fieldset>
+
+            {% for field in form %}
+
+                {% if field.errors %}
+                    <div class="control-group error">
+                {% else %}
+                    <div class="control-group">
+                {% endif %}
+
+                <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+
+
+                <div class="controls">
+                    {{ field }}
+                    <p class="help-block">{{ field.help_text }}</p>
+                    {% for error in field.errors %}
+                        <span class="label label-important">{{ error }}</span>
+                    {% endfor %}
+                </div> </div>
+                <br>
+            {% endfor %}
+
+            <div class="form-actions">
+
+                <button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
+                <button type="reset" class="btn"><i class="icon-remove"></i> Reset form</button>
+            </div>
+        </fieldset>
+        </form>
+    </div>
+    </div>
+    </div>
+
+</body>
+</html>

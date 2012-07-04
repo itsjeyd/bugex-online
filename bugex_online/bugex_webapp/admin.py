@@ -24,10 +24,10 @@ class UserRequestAdmin(admin.ModelAdmin):
             'fields': ('status', 'token')
         }),
         (None, {
-            'fields': ('code_archive', 'result', 'test_case', 'user')
+            'fields': ('result', 'test_case', 'user')
         })
     )
-    list_display = ('status', 'token', 'code_archive', 'result', 'test_case', 'user')
+    list_display = ('status', 'token', 'result', 'test_case', 'user')
     list_display_links = ('token',)
     list_filter = ('status', 'user__username')
     ordering = ('user', 'result')
@@ -35,12 +35,11 @@ class UserRequestAdmin(admin.ModelAdmin):
 
 class CodeArchiveAdmin(admin.ModelAdmin):
     """The admin site configuration for the CodeArchive model."""
-    fields = ('archive_format', 'name')
-    list_display = ('archive_format', 'name')
-    list_display_links = ('name',)
+    fields = ('archive_file', 'archive_format', 'user_request')
+    list_display = ('archive_file', 'archive_format', 'user_request')
+    list_display_links = ('archive_file',)
     list_filter = ('archive_format',)
-    ordering = ('archive_format', 'name')
-    search_fields = ('name',)
+    search_fields = ('archive_file',)
 
 
 class TestCaseAdmin(admin.ModelAdmin):
@@ -108,16 +107,16 @@ class SourceFileAdmin(admin.ModelAdmin):
             'fields': ('name',)
         }),
         (None, {
-            'fields': ('code_archive', 'folder')
+            'fields': ('code_archive', 'class_element', 'folder')
         }),
         ('Optional', {
             'fields': ('package',)
         })
     )
-    list_display = ('name', 'code_archive', 'folder', 'package')
+    list_display = ('name', 'code_archive', 'class_element', 'folder', 'package')
     list_display_links = ('name',)
     ordering = ('code_archive', 'name')
-    search_fields = ('name', 'code_archive', 'folder')
+    search_fields = ('name', 'code_archive', 'class_element', 'folder')
 
 
 class ClassFileAdmin(admin.ModelAdmin):

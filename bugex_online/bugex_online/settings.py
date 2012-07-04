@@ -28,6 +28,9 @@ DEBUG = True
 # a detailed report for any exception raised during template rendering.
 TEMPLATE_DEBUG = DEBUG
 
+# The backend to use for sending emails.
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 # A tuple that lists people who get code error notifications.
 # When DEBUG=False and a view raises an exception, Django will
 # email these people with the full exception information.

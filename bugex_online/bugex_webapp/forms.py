@@ -13,7 +13,9 @@ Authors: Amir Baradaran
 
 from django import forms
 
-from bugex_webapp.validators import validate_archive_format
+from bugex_webapp.validators import validate_archive_file_extension
+from bugex_webapp.validators import validate_archive_copyright
+from bugex_webapp.validators import validate_test_case_name
 
 class EmailBaseForm(forms.Form):
     """The EmailBaseForm form.
@@ -44,15 +46,18 @@ class UserRequestForm(EmailBaseForm):
     EmailBaseForm.
     """
     code_archive = forms.FileField(
-        validators=[validate_archive_format],
+        validators=[validate_archive_file_extension],
         help_text='The archive (ZIP or JAR) that contains your code.'
     )
     test_case = forms.CharField(
         max_length=100,
+        validators=[validate_test_case_name],
         help_text='The name of the failing test case related to your program.'
     )
     has_copyright = forms.BooleanField(
         required=False,
+        validators=[validate_archive_copyright],
+        label='Copyright confirmation',
         help_text='Please confirm that you own the copyright to the files' \
                   ' that you are going to upload.'
     )
