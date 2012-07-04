@@ -22,7 +22,19 @@ class Enum(object):
 
 
 class UserRequestStatus(Enum):
-    """ Collection of possible statuses for UserRequests """
+    """ Collection of possible statuses for UserRequests
+    
+    The possible values are:
+    PENDING:    User input data has been recieved, the archive is being
+                validated.
+    VALID:      The user archive has been processed and is valid.
+    INVALID:    The user archive has been processed and is invalid.
+    PROCESSING: BugEx is running.
+    FAILED:     BugEx failed unexpectedly.
+    FINISHED:   BugEx terminated sucessfully.
+    DELETED:    The user deleted the results.
+    
+    """
 
     PENDING = 1
     VALID = 2

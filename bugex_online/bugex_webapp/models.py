@@ -11,11 +11,9 @@ Authors: Amir Baradaran
          Peter Stahl
 """
 
-import os
 import re
 import uuid
 import os
-from os import path
 from xml.etree.ElementTree import fromstring
 from zipfile import ZipFile
 
@@ -83,7 +81,7 @@ class UserRequest(models.Model):
         )
 
     def _build_path(self, *sub_folders):
-        return path.join(self.folder, *sub_folders)
+        return os.path.join(self.folder, *sub_folders)
      
     def parse_archive(self):
         path = self._build_path(self.code_archive.name)
@@ -155,9 +153,9 @@ class CodeArchive(models.Model):
         
         my_path -- a path string
         '''
-        elements = path.split(path.abspath(my_path))
+        elements = os.path.split(os.path.abspath(my_path))
         this_f = elements[1] 
-        parent_f = path.split(path.abspath(elements[0]))[1]
+        parent_f = os.path.split(os.path.abspath(elements[0]))[1]
         return parent_f, this_f
     
     def traverse(self, my_path, parent):
@@ -183,11 +181,11 @@ class CodeArchive(models.Model):
             my_folder = Folder.objects.create(name=this_f, code_archive=self, 
                                            parent_folder=parent)            
         for f in os.listdir(my_path):
-            f_path = path.join(my_path, f)
+            f_path = os.path.join(my_path, f)
             
             #if f_path points to a class or java file, create it
-            if path.isfile(f_path):
-                ext = path.splitext(f)[1][1:].strip()
+            if os.path.isfile(f_path):
+                ext = os.path.splitext(f)[1][1:].strip()
                 if ext == 'java':
                     try:
                         sf = SourceFile.new(code_archive=self, name=f, 
@@ -250,8 +248,8 @@ class BugExResult(models.Model):
         else:
             #instantiate a BugExResult and save all corresponding Facts
             #setting the ForeignKey field of each Fact properly
-            be_res = BugExResult()
-            be_res.save()
+            be_res = BugExResult.objects.create()
+            #be_res.save()
             for f in facts:
                 f.bugex_result = be_res
                 f.save()
