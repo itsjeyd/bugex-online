@@ -52,7 +52,7 @@ class UserRequest(models.Model):
             user=user,
             test_case=test_case,
             token=token,
-            status=PENDING
+            status=UserRequestStatus.PENDING
         )
 
         code_archive = CodeArchive()
