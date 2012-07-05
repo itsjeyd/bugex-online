@@ -16,13 +16,14 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 
 from bugex_webapp.views import MainPageView, HowToPageView, ResultsPageView
-from bugex_webapp.views import DeletePageView, UserPageView, submit_user_request
+from bugex_webapp.views import DeletePageView, UserPageView, submit_user_request, change_email_request
 
 urlpatterns = patterns('',
-    url(r'main/$', MainPageView.as_view(), name='main-page'),
+    url(r'main/$', submit_user_request, name='main-page'),
     url(r'howto/$', HowToPageView.as_view(), name='howto-page'),
     url(r'results/$', ResultsPageView.as_view(), name='results-page'),
     url(r'delete/$', DeletePageView.as_view(), name='delete-page'),
+    url(r'user/$', change_email_request, name='user-page'),
     # When creating this URL pattern, the user page inside the admin
     # interface cannot be opened anymore. Have to examine that later on.
     #url(r'user/$', UserPageView.as_view(), name='user-page'),

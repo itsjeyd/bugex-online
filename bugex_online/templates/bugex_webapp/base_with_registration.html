@@ -25,11 +25,11 @@
 					<li><a href="{% url main-page %}">Home</a></li>
 					<li><a href="{% url howto-page %}">HowTo</a></li>
 <!-- I have to implement it with jquery. A pop up window on the middle of the page when the user clicks on Contact Us -->
-					<li><a href="{% url contact-page %}">Contact Us</a></li>
+					{% comment %}<li><a href="{% url contact-page %}">Contact Us</a></li>
 					{% if user.is_authenticated %}
 						<li><a href="{% url account-page %}">Account</a></li>
 						<li><a href="{% url logout-page %}">Log Out</a></li>
-					{% endif %}	
+					{% endif %}	{% endcomment %}
 				</ul>
 			</div>
 		</div>
@@ -37,14 +37,13 @@
 	{% endblock header %}
     {% block content %}{% endblock content %}
     {% block footer %}        
-    <div class="container-fluid">
+    <div id="footerContainer" class="container-fluid">
             <div class="row-fluid">
-                <div class="span12"></div>
                     <div id="footer">
                         <p>Copyright &copy; BugEx Online</p>
-                    </div>  
+                    </div>
             </div>	
-	</div>	
+	</div>
 	{% endblock footer %}
 </body>
 

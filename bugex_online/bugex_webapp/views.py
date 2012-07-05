@@ -20,7 +20,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import render
 
 from bugex_webapp.models import UserRequest, TestCase, CodeArchive
-from bugex_webapp.forms import UserRequestForm
+from bugex_webapp.forms import UserRequestForm, ChangeEmailForm
 
 class MainPageView(TemplateView):
     template_name = 'bugex_webapp/main.html'
@@ -40,6 +40,10 @@ class DeletePageView(TemplateView):
 
 class UserPageView(TemplateView):
     template_name = 'bugex_webapp/user.html'
+
+
+class ContactPageView(TemplateView):
+    template_name = 'bugex_webapp/contact.html'
 
 
 def create_new_user(email_address):
@@ -88,7 +92,7 @@ def submit_user_request(request):
 
             user_request.user.email_user(
                 subject='We successfully received your request',
-                message='Dear user,\n\nyour request for the code archive "' +
+                message='Dear user,\n\n your request for the code archive "' +
                         request.FILES['code_archive'].name +
                         '" was processed successfully.\n\nBest regards,\n'\
                         'The BugEx Online Group'
@@ -107,4 +111,43 @@ def submit_user_request(request):
     else:
         form = UserRequestForm()
 
-    return render(request, 'formtests/form.html', {'form': form})
+    return render(request, 'bugex_webapp/main.html', {'form': form,})
+
+
+def change_email_request(request):
+    """Change email request.
+
+    TODO the DOC here
+
+    """
+    if request.method == 'POST':
+        form = ChangeEmailForm(request.POST)
+
+        if form.is_valid():
+
+            user_request = UserRequest.new(
+                user=create_new_user(form.cleaned_data['email_address']),
+            )
+
+            user_request.user.email_user(
+                subject='You successfully changed your email',
+                message='Dear user,\n\n your new email address is "' +
+                        request.POST['email_address'].name +
+                        '" .\n\nBest regards,\n'\
+                        'The BugEx Online Group'
+            )
+
+            # ================================================
+            # NEXT STEP: Parse the content of the code archive
+            # user_request.parse_archive()
+            # ================================================
+
+            messages.success(request, 'Form submission was successful!')
+
+        else:
+            messages.error(request, 'Form submission failed!')
+
+    else:
+        form = ChangeEmailForm()
+
+    return render(request, 'bugex_webapp/user.html', {'form': form,})

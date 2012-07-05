@@ -11,35 +11,60 @@
             	<div id="welcomeText">
                 	<h1>User Page</h1>
                 </div>
-                            <div class="row-fluid">
-                            	<h1>Change email address</h1>
-                            	<p>If you wish to change your email address please fill the following fields out</p>
-								<form action="" method="POST" id="changeEmailForm" autocomplete="off" enctype="multipart/form-data">{% csrf_token %}
-									<table>
-										<tr>
-											<td class="field"><input type="text" id="email" name="email" value="" placeholder="New email address"/></td>
-											<td class="status"></td>
-										</tr>
-										<tr>
-											<td class="field"><input type="text" id="email_retype" name="email_retype" placeholder="Re-type email address"/></td>
-											<td class="status"></td>
-										</tr>
-										<tr>
-											<td class="field"><input type="text" id="password" name="password" placeholder="Your current password"/></td>
-											<td class="status"></td>
-										</tr>										
-										<tr>
-											<td class="field" colspan="2">
-												<button class="btn btn-primary" type="submit" value="Change Email!" title="Change Email!"></button>
-											</td>
-										</tr>
-									</table>
-								</form>
-                            	<h1>Change password</h1>
-                            	<p>If you wish to change your password please click on the following button</p>
-								<a class="btn" href="">Change Password!</a>
-                            	<p>The new password will be sent to your email address</p>
-                            </div>
+                <div class="row-fluid">
+                	<h2>Change email address</h2>
+                    <p>If you wish to change your email address please fill the following fields out</p>
+                    {% if form.is_multipart %}
+            			<form class="form-horizontal" enctype="multipart/form-data" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
+        			{% else %}
+            		<form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
+        			{% endif %}
+
+			        {% if messages %}
+						{% for message in messages %}
+                			{% if message.tags == 'success' %}
+                    			<div class="alert alert-success fade in">
+                        			<a class="close" data-dismiss="alert" href="#">&times;</a>
+                        	{{ message }}
+                    			</div>
+                			{% endif %}
+                			{% if message.tags == 'error' %}
+                    			<div class="alert alert-error fade in">
+                        			<a class="close" data-dismiss="alert" href="#">&times;</a>
+                        	{{ message }}
+                    			</div>
+                			{% endif %}
+            			{% endfor %}
+        			{% endif %}
+        			
+        			<fieldset>
+            			{% for field in form %}
+                			{% if field.errors %}
+                    			<div class="control-group error">
+                			{% else %}
+                    			<div class="control-group">
+                			{% endif %}
+                					<label class="control-label" for="{{ field.label }}">{{ field.label }} <p class="help-block">({{ field.help_text }})</p></label>
+                					<div class="controls">
+                    					{{ field }}
+                    					{% for error in field.errors %}
+                        					<span class="label label-important">{{ error }}</span>
+                    					{% endfor %}
+                					</div> 
+                				</div>
+            			{% endfor %}
+
+	            		<div class="form-actions">
+	                		<button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
+	                		<button type="reset" class="btn"><i class="icon-remove"></i> Reset form</button>
+	            		</div>
+        			</fieldset>
+        			</form>
+                    <h2>Change password</h2>
+                    <p>If you wish to change your password please click on the following button</p>
+					<a class="btn" href="">Change Password!</a>
+                    <p>The new password will be sent to your email address</p>
+            	</div>
             </div>                          
 		</div>
 	</div>	

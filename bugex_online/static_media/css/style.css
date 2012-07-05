@@ -1,35 +1,48 @@
+@font-face {
+	font-family: DroidSansMono;
+	src: url('../fonts/DroidSansMono.ttf');
+}
+
+/*********General*********/
+body { background: #DDEAF6; }
+/*********General*********/
+
 /*********Navigation*********/
 div.navbar ul.nav { float: right; padding: 20px 100px 20px 0; }
 div.navbar ul.nav li { margin: 0 1em; }
+div.navbar-inner { background: #75BCEF;  }
+div.container ul.nav li a { color: #555555; }
 /*********Navigation*********/
 
 /*********Main Content*********/
 div.container-fluid #welcomeText, div.container-fluid #howTo { text-align: center; }
 div.container-fluid #welcomeText h1, div.container-fluid #howTo h1 { font-size: 2em; font-weight: 800; }
 div.container-fluid #howTo img { margin: 1em 0; }
-div.container-fluid #leftColumnMain { width: 50%; margin: 5em auto 0 auto; }
-div.container-fluid #mainPageForm { width: 75%; margin: 5em auto 0 auto; }
+div.container-fluid #leftColumnMain { width: 90%; margin: 5em auto 0 auto; }
+div.container-fluid #mainPageForm { width: 90%; margin: 5em auto 0 auto; overflow: hidden; }
 
 div.row-fluid h1 {}
 div.row-fluid p {}
 /*********Main Content*********/
 
 /*********Footer*********/
-div.container-fluid #footer { width: 100%; margin: 4em auto 0 auto; background: url(../img/bg.jpg) repeat-x; padding: 1em 0; }
+div#footerContainer { background: #75BCEF; height: 2em; margin: 2em 0 0 0; padding: 1em 0; }
+div.container-fluid #footer { width: 100%; margin: 0 auto; background: #75BCEF;  padding: 0; }
 div.container-fluid #footer p { text-align: center; line-height: 1.5em; }
 /*********Footer*********/
 
 /*********Social*********/
-ul#social { list-style-type: none; float: left; clear: both; padding: 0; margin: 0; }
-ul#social li { display: inline; }
+ul#social { list-style-type: none; float: right; clear: both; padding: 0; margin: 0.8em 0 0 0; }
+ul#social li { display: inline; margin: 0 0.3em 0 0; }
 /*********Social*********/
 
 /*********Facts*********/
-#facts { height: 300px; background: #000; }
+#facts { height: auto; background: #fff; border: 1px solid #75BCEF; }
+#facts h1 { color: #ccc; }
 /*********Facts*********/
 
 /*********Code*********/
-#code { background: #000; }
+#code { background: #fff; font-family: DroidSansMono; border: 1px solid #75BCEF; }
 /*********Code*********/
 
 /*********Informing Text After Submitting something*********/
@@ -37,12 +50,13 @@ ul#social li { display: inline; }
 /*********Informing Text After Submitting something*********/
 
 /*********Forms*********/
-label { display: block; }
-label.valid { width: 24px; display: inline-block; text-indent: -9999px; }
-label.error { padding-left: 5px; display: inline-block; }
-input { display: inline-block; }
-form div { padding: 5px; float: left; clear: left; width: 100%; }
-button { margin-top: 10px; }
+div.control-group label.control-label { width: 100%; text-align: left; }
+form.form-horizontal div.controls { margin: 0; width: 70%; margin: 0; padding: 0; }
+form.form-horizontal div.controls input { width: 85%; }
+form.form-horizontal p.help-block { color: #555555; margin: 0; padding: 0; width: 70%; }
+form.form-horizontal div.form-actions { background: transparent; width: 70%; margin: 1em 0 0 0; padding: 0; }
+div.form-actions button { float: left; margin: 0 1em 0 0; }
+form.form-horizontal span.label { width: 50%; }
 /*********Forms*********/
 
 .navbar .nav > li > a { line-height: 62px; text-shadow:none; font-size: 16px; }

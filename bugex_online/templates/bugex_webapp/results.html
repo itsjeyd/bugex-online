@@ -7,7 +7,7 @@
 		<div class="row-fluid">
         	<div class="span4">
                <div id="facts">
-                   <h1>Facts</h1>
+                   <h2>Facts</h2>
                    <script>
                    $(document).ready(function(){
                 	   $(".collapse").collapse()
@@ -44,14 +44,9 @@
 									</div>
 					  			{% endfor %}
 							</div>
-							<br><br>
-							<button class="btn btn-primary"><i class="icon-download icon-white"></i> Download</button>
 						</div>						
-
 				</div>
-        		<hr/>
-        		<form>
-        		<input type="button" value="Download the facts" onClick="window.location.href=''" title="Download the facts"></form>
+				<button class="btn btn-primary"><i class="icon-download icon-white"></i>Download the facts</button>
 	            <ul id="social">
 	                  <li><a href="#"><img src="{{ STATIC_URL }}img/fb.png"></a></li>
 	                  <li><a href="#"><img src="{{ STATIC_URL }}img/go.png"></a></li>
