@@ -5,7 +5,7 @@ Created on Jun 29, 2012
 '''
 
 from django.core.mail import send_mail
-from bugex_webapp import *
+from bugex_webapp import Notifications, UserRequestStatus
 from bugex_webapp.models import UserRequest
 
 class Notifier(object):
@@ -36,20 +36,23 @@ class EmailNotifier(Notifier):
         
         user_request -- a UserRequest instance
         '''
+        status = user_request.status
+        subject = Notifications.CONTENT[status][0]
+        content = Notifications.HEADER_FOOTER %Notifications.CONTENT[status][1]
+        
+        if status == UserRequestStatus.FINISHED:
+            content %(user_request.result_url, user_request.delete_url)
+        
         try:
-            self.send_notification(user_request.status,
-                               user_request.user.email)
-        except:
-            #most probably the user email does not exist/is invalid;
-            #set the status of the UserRequest to INVALID
-            user_request.update_status(INVALID)
+            self.send_notification(status, user_request.user.email, 
+                                   subject, content)
+        except Exception as e:
+            # TODO log stuff
+            pass
             
-    def send_notification(self, ur_status, user_email):
+    def send_notification(self, status, user_email, subject, content):
         '''Send an email to the user.
         '''
-        subject = NOTIFICATIONS[ur_status][0]
-        content = NOTIFY_HEADER_FOOTER %NOTIFICATIONS[ur_status][1]
-        
         send_mail(subject, content, 'bugexonline@gmail.com', [user_email],
                   fail_silently=False)
         

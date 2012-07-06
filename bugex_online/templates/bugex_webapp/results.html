@@ -7,19 +7,18 @@
 		<div class="row-fluid">
         	<div class="span4">
                <div id="facts">
-                   <h1><small>Facts</small></h1>
+                   <h2>Facts</h2>
                    <script>
-                   {% comment %} to adjust this script to the real data. But i hope as it is it works. {% endcomment %}
                    $(document).ready(function(){
                 	   $(".collapse").collapse()
                    </script>
-		                <ul class="nav nav-tabs" id="myTab">
-		                	{% for fact_type in fact_type_list %}
-		                		<li class="{% if forloop.first %}active{% endif %}"><a href="#{{ forloop.counter }}" data-toggle="tab">{{ fact_type }}</a></li>
-		                	{% empty %}
-		                		<li class="active"><li>
-		                	{% endfor %}
-						</ul>
+		           <ul class="nav nav-tabs" id="myTab">
+		               	{% for fact_type in fact_type_list %}
+		               		<li class="{% if forloop.first %}active{% endif %}"><a href="#{{ forloop.counter }}" data-toggle="tab">{{ fact_type }}</a></li>
+		               	{% empty %}
+		               		<li class="active"><li>
+		               	{% endfor %}
+					</ul>
 						<div class="scrollable-facts">
 							<div class="tab-content">
 								{% for fact_type in fact_type_list %}
@@ -45,18 +44,24 @@
 									</div>
 					  			{% endfor %}
 							</div>
-							<br><br>
-							<button class="btn btn-primary"><i class="icon-download icon-white"></i> Download</button>
 						</div>						
-
 				</div>
-        		<hr/>
-        		<form>
-        		<input type="button" value="Download the facts" onClick="window.location.href=''" title="Download the facts"></form>
+				<button class="btn btn-primary"><i class="icon-download icon-white"></i>Download the facts</button>
 	            <ul id="social">
 	                  <li><a href="#"><img src="{{ STATIC_URL }}img/fb.png"></a></li>
 	                  <li><a href="#"><img src="{{ STATIC_URL }}img/go.png"></a></li>
-				</ul>    
+				</ul>  
+				<!-- outline functionality -->
+				<div id="outline">
+					<h1>{{ class_name }}</h1>
+					<ul>
+					{% for methods in class_methods_list %}
+						<li>{{ methods.name }}</li>
+					{% endfor %} 	
+					</ul>			
+				</div>  
+				<!-- outline functionality -->
+				
         	</div>
 			<div class="span8">
             	<div id="code">

@@ -6,18 +6,17 @@ Created on 19.06.2012
 # internal dependencies
 from bugex_decorators import Singleton
 from bugex_timer import PeriodicTask
-from bugex_base import UserRequest
 from bugex_instance import BugExProcessInstance
-from bugex_files import BugExFile
 import core_config
 
 # bugex webapp dependencies
-from bugex_webapp.models import BugExResult
-from bugex_webapp import FAILED, FINISHED
+#from bugex_webapp.models import BugExResult
+from bugex_webapp import UserRequestStatus
 
 # external dependencies
 from datetime import datetime
 import logging
+import sys, traceback
 
 @Singleton
 class BugExMonitor(object):
@@ -55,8 +54,8 @@ class BugExMonitor(object):
         request_path = user_request.folder
         
         # gather necessary data
-        user_archive_path = user_request.user_archive.path
-        failing_test_case = user_request.failing_test_case
+        user_archive_path = user_request.code_archive_path
+        failing_test_case = user_request.test_case
         token = user_request.token
         
         # get config options
@@ -176,11 +175,11 @@ class BugExMonitorJob(object):
             self._log.debug('BugEx is not ready yet..')
             return
         elif not status == 0:
-            self._user_request.status = FAILED
+            self._user_request.update_status(UserRequestStatus.FAILED)
             self.cancel(
-                'BugEx terminated unsuccessfully (status code %s)! \
-                Please check bugex.log in the request directory for more \
-                details.', status)
+                ("BugEx terminated unsuccessfully (status code %s)! " + 
+                "Please check bugex.log in the request directory for more " +
+                "details."), status)
             return
         
         # check result file
@@ -194,15 +193,18 @@ class BugExMonitorJob(object):
         
         # convert and store this to database
         try:
-	    BugExResult.new(xml_content)
+            #defered import to avoid circular dependency problems
+            from bugex_webapp.models import BugExResult
+            BugExResult.new(xml_content)
         except Exception as e:
-	    self._log.error('Could not store the BugExResult: %s',e)
-            self._user_request.status = FAILED
+            traceback.print_exc(file=sys.stdout)
+            self.cancel('Could not store the BugExResult: %s',e)
+            self._user_request.update_status(UserRequestStatus.FAILED)
             return
     
         # success
         self.cancel('Success!')
-        self._user_request.status = FINISHED
+        self._user_request.update_status(UserRequestStatus.FINISHED)
         pass # TODO anything else here?
     
 
@@ -237,6 +239,9 @@ class BugExMonitorJob(object):
 #
 #TESTING AREA
 #
+"""
+from django.contrib.auth.models import User
+
 
 # singleton tests
 #f = Foo() # Error, this isn't how you get the instance of a singleton
@@ -251,15 +256,23 @@ FORMAT = '%(asctime)-15s %(message)s'
 logging.basicConfig(format = FORMAT) # this has to be done somewhen!
 #logging.basicConfig() 
 
-user_request = UserRequest()
-user_request.token = '82230841-bcbe-451c-8b3e-e1365ad7f257'
+user = User(email='user@example.com')
+
+user_request = UserRequest(
+    user=user,
+    test_case='de.mypackage.TestMyClass#testGetMin',
+    token='82230841-bcbe-451c-8b3e-e1365ad7f257')
+
+#code_archive = CodeArchive()
+
 user_request.user_archive = BugExFile(user_request.folder+'failing-program-0.0.1-SNAPSHOT-jar-with-dependencies.jar','jar')
-user_request.failing_test_case = 'de.mypackage.TestMyClass#testGetMin'
 
 bug_mon = BugExMonitor.Instance()
 bug_mon.new_request(user_request)
+
 #bug_mon.new_request(UserRequest())
 #file_mon.new_request(UserRequest())
+"""
 
 """
 raw_shell_input_sh  = '/home/freddy/bugex.sh /home/freddy/bugex-mock-0.0.4-SNAPSHOT-jar-with-dependencies.jar /home/freddy/failing-program-0.0.1-SNAPSHOT-jar-with-dependencies.jar de.mypackage.TestMyClass#testGetMin /home/freddy/ 1'
