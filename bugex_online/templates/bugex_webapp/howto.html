@@ -5,21 +5,55 @@
 {% block content %}
 	<div class="container-fluid">
 		<div class="row-fluid">
-                    <div class="span1"></div>
-                    <div class="span1"></div>
+        	<div class="span1"></div>
+            <div class="span1"></div>
 			<div class="span8">
-                            <div id="howTo">
-                                <h1></h1>
-                                <p>blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah</p>
-                                <img src="{{ STATIC_URL }}img/DumpImage.png" />
-                                <p>blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah</p>
-                                <p>blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah </p>
-                                <p>blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah </p>
-                                <p>blah blah blah blah blah blah blah blah blah blah blah blah blah</p>      
-                                <img src="{{ STATIC_URL }}img/DumpImage.png" />
-                                <p>blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah </p>
-                                <p>blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah </p>
-                            </div> 
+            	<div id="howTo">
+                    <h2>HowTo</h2>
+                    <p></p>
+                    <h3>Submitting your input</h3>
+                    <p>To submit your input, please provide an email address, an  archive file and the fully qualified 
+						name  of the method of the failing test  case.  Please, provide a valid email address as it will 
+						be used to send you the link to your generated result.  The archive can be either of type JAR 
+						or of type ZIP. The archive file needs to contain:</p>
+					<p class="indent">(a) all dependencies of the project,</p>
+					<p class="indent">(b) both the source code and the binary files (*.java and *.class files).</p>
+					<p>The name for the failing test case should have the following format:</p>
+					<pre class="prettyprint">package.containing.test.case.Class#failingTest</pre>
+					<p>Please, mention that by submitting your code you apply that you are the owner of it and 
+						therefore are  to be held responsible for any copyright  violations that may result from the 
+						action.</p>
+                    <img src="{{ STATIC_URL }}img/DumpImage.png" />
+                    <hr/>
+  					<h3>Storing and presentation of your data</h3>
+  					<p>The provided files will be stored in BugEx Online system. Once you receive a notification link
+					    - it means that your  result will be anytime available to you.  The system  will  display  a list of 
+						facts as produced by BugEx that highlight different   important aspects of the failure.  You can 
+						click  on a single fact in the list of facts. The system  then will display  the code that  is 
+						associated with the fact, marking those lines to which the fact refers, and display the textual 
+						content of the fact.  You  can filter the facts according to their type. Then the results get 
+						visually  filtered by the system to only display the facts associated with the types chosen by
+						you.  Some  variable, method or class  may  not  be  defined  in the scope of the given source 
+						code. This issue occurs if one or more necessary  source code files  are missing from the 
+						uploaded archive, or if the variable, method or class belongs to third party code.</p>
+                    <img src="{{ STATIC_URL }}img/DumpImage.png" />
+                    <hr/>
+                    <h3>Sharing the BugEx result on social networks</h3>
+                    <p>It is possible to share your results from BugEx Online in Facebook or Google+. For that, 
+						please click the corresponding button on the result page and follow the instructions from 
+						your social network provider.</p>
+						<hr/>
+					<h3>Downloading the BugEx result</h3>	
+					<p>It is also possible to download the generated BugEx result as an XML document to your local 
+						machine.  For that, please click  the  "Download"  button on the result page and follow the 
+						instructions from your browser.</p>
+						<hr/>
+					<h3>Deleting the BugEx result</h3>
+					<p>If you want to delete the results, please use the link which will be sent to your email 
+						together with the link to the generated result.  You will be also notified if the  submission of 
+						your files fails or when the BugEx was not able to process them.</p>
+						<hr/>
+            	</div> 
 			</div>
 		</div>	
 	</div>

@@ -7,7 +7,26 @@
 /* body { background: #DDEAF6; } */
 /*********General*********/
 
+body { padding: 7em 0 2em 0; }
+
+@media screen{
+  body>div.navbar{
+   position:fixed;
+  }
+  body>div#footerContainer{
+   position:fixed;
+  }
+ 
+ * html body{
+  overflow:hidden;
+ } 
+ * html div.container-fluid {
+  height:100%;
+  overflow:auto;
+ }
+
 /*********Navigation*********/
+div.navbar { position:absolute; top:0; left:0;width: 100%; height: 3em; }
 div.navbar ul.nav { float: right; padding: 15px 100px 0px 0; }
 div.navbar ul.nav li { margin: 0 1em; }
 /* div.navbar-inner { background: #75BCEF;  } */
@@ -18,7 +37,12 @@ div.navbar ul.nav li { margin: 0 1em; }
 div.container-fluid #welcomeText, div.container-fluid #howTo { text-align: center; }
 div.container-fluid #welcomeText h1, div.container-fluid #howTo h1 { font-size: 2em; font-weight: 800; }
 div.container-fluid #howTo img { margin: 1em 0; }
+div.container-fluid #howTo p { text-align: left; }
+div.container-fluid #howTo h3 { text-align: left; }
+div.container-fluid #howTo p.indent {text-indent: 4em; }
+div.container-fluid #howTo pre.prettyprint { width: 40%; padding: 0; margin: 0 auto; }
 div.container-fluid #leftColumnMain { width: 90%; margin: 5em auto 0 auto; }
+div.container-fluid #leftColumnMain pre.prettyprint { width: 85%; padding: 0; margin: 0; }
 div.container-fluid #mainPageForm { width: 90%; margin: 5em auto 0 auto; overflow: hidden; }
 
 div.row-fluid h1 {}
@@ -26,7 +50,7 @@ div.row-fluid p {}
 /*********Main Content*********/
 
 /*********Footer*********/
-div#footerContainer { background: #75BCEF; height: 2em; margin: 2em 0 0 0; padding: 1em 0; }
+div#footerContainer { position:absolute; bottom:0; left:0; width:100%; background: #75BCEF; height: 2em; margin: 2em 0 0 0; padding: 0.4em 0; }
 div.container-fluid #footer { width: 100%; margin: 0 auto; background: #75BCEF;  padding: 0; }
 div.container-fluid #footer p { text-align: center; line-height: 1.5em; }
 /*********Footer*********/

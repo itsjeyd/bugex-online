@@ -163,7 +163,6 @@ def login_user(request):
     """Test function for login a user to the system
     
     We have to see in the database if the password and the email that he wrote, match one of the entries of our table
-    
     """
     
     username = request.POST['username']
@@ -172,18 +171,19 @@ def login_user(request):
     if user is not None:
         if user.is_active:
             login(request, user)
-            return HttpResponseRedirect("/main_with_login/")
+            return HttpResponseRedirect("/user/")
         else:
             messages.error(request, 'Your account is disabled!')
 
     else:
         messages.error(request, 'Your login is invalid!')
+        
+    return render(request, 'bugex_webapp/main_html_login.html', {'form': form,})
 
-
-def change_password_request(email_address):
+def change_password_request(request):
     """Test function for changing the user's password
-
     """    
+    email_address = request.POST['email_address']
     user = User.objects.get(username__exact=email_address)
     user.make_random_password(length=8)
     user.save()
@@ -205,7 +205,7 @@ def submit_contact_form(request):
         if form.is_valid():
 
             mail_admins('Email from the contact form',
-                'Name: ' + request.POST['name'].name + '\n\nMessage: '+ request.POST['message'].name
+                'Name: ' + request.POST['name'] + '\n\nMessage: '+ request.POST['message']
             )
 
             messages.success(request, 'We received your email!')
