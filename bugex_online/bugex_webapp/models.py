@@ -66,7 +66,7 @@ class UserRequest(models.Model):
 
         # create unique token for request
         token = str(uuid.uuid4())
-        log.info("Created token for incoming UserReqest: %s", token)
+        log.info("Created token for incoming UserRequest: %s", token)
         log.debug("Creating test case...")
 
         # create test case object
