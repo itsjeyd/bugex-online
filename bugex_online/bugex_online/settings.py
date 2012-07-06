@@ -29,7 +29,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 # The backend to use for sending emails.
-#only for debugging; prints emails to the console
+# Only for debugging; prints emails to the console
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # A tuple that lists people who get code error notifications.
