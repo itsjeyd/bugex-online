@@ -125,6 +125,16 @@ class UserRequest(models.Model):
         return user_request
 
     @property
+    def result_url(self):
+        return '{0}/result/{1}'.format(
+            settings.APPLICATION_BASE_URL, self.token)
+
+    @property
+    def delete_url(self):
+        return '{0}/delete/{1}'.format(
+            settings.APPLICATION_BASE_URL, self.delete_token)
+
+    @property
     def folder(self):
         """
         Returns the absolute root folder of this request.
