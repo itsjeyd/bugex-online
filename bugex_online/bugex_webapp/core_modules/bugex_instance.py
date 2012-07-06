@@ -52,8 +52,8 @@ class BugExInstance(object):
         #         failing_test_case_name, working_folder_path, artificial_delay, token, user_archive_path)
    
         if not self._user_archive.exists():
-            raise Exception('The defined user archive does not exist: \'%s\''
-                            ,self._user_archive.path)
+            raise Exception('The defined user archive does not exist: \'{0}\''.format(
+                            self._user_archive.path))
     
     def start(self):
         raise Exception('This is an abstract class!')

@@ -27,7 +27,6 @@ urlpatterns = patterns('',
     url(r'user/$', change_email_request, name='user-page'),
     url(r'main_with_login/$', MainPageLoginRegistrationView.as_view(), name='main_with_login-page'),
     url(r'contact/$', submit_contact_form, name='contact-page'),
-
     # When creating this URL pattern, the user page inside the admin
     # interface cannot be opened anymore. Have to examine that later on.
     #url(r'user/$', UserPageView.as_view(), name='user-page'),

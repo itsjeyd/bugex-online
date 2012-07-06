@@ -97,17 +97,21 @@ def submit_user_request(request):
                 archive_file=request.FILES['code_archive']
             )
 
-            user_request.user.email_user(
-                subject='We successfully received your request',
-                message='Dear user,\n\n your request for the code archive "' +
-                        request.FILES['code_archive'].name +
-                        '" was processed successfully.\n\nBest regards,\n'\
-                        'The BugEx Online Group'
-            )
+            # TODO this goes in the notifier
 
+            #user_request.user.email_user(
+            #    subject='We successfully received your request',
+            #    message='Dear user,\n\n your request for the code archive "' +
+            #            request.FILES['code_archive'].name +
+            #            '" was processed successfully.\n\nBest regards,\n'\
+            #            'The BugEx Online Group'
+            #)
+
+            # this has been moved to the new() constructor of the UserRequest
+            
             # ================================================
             # NEXT STEP: Parse the content of the code archive
-            # user_request.parse_archive()
+            #user_request.parse_archive()
             # ================================================
 
             messages.success(request, 'Form submission was successful!')
@@ -143,11 +147,6 @@ def change_email_request(request):
                         '" .\n\nBest regards,\n'\
                         'The BugEx Online Group'
             )
-
-            # ================================================
-            # NEXT STEP: Parse the content of the code archive
-            # user_request.parse_archive()
-            # ================================================
 
             messages.success(request, 'Form submission was successful!')
 
