@@ -250,15 +250,15 @@ class CodeArchive(models.Model):
                 ext = os.path.splitext(f)[1][1:].strip()
                 if ext == 'java':
                     try:
-                        sf = SourceFile.new(code_archive=self, name=f,
+                        SourceFile.new(code_archive=self, name=f,
                                        folder=my_folder, path=f_path)
                     except Exception as e:
                         print e
                         #if something goes wring during SourceFile creation,
                         #change UserRequest status to INVALID
                 elif ext == 'class':
-                    cf = ClassFile.objects.create(code_archive=self,
-                                                  folder=my_folder, name=f)
+                    ClassFile.objects.create(code_archive=self,
+                                             folder=my_folder, name=f)
             else:
                 #current file is a folder, continue traversing
                 self.traverse(f_path, my_folder)
