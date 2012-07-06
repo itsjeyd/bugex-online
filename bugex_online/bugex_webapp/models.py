@@ -192,11 +192,11 @@ class UserRequest(models.Model):
 
             # archive seems to be VALID!
             self.update_status(UserRequestStatus.VALID)
-            
+
             # delete temporary folder again
             shutil.rmtree(path_extracted)
 
-    
+
     def _run_bugex(self):
         """
         Creates and starts a BugEx Instance by notifying the BugExMonitor.
@@ -445,7 +445,7 @@ class Folder(models.Model):
         if self.parent_folder is None:
             return True
         return False
-    
+
     @property
     def absolute_path(self):
         if self.is_root_folder:
@@ -459,7 +459,7 @@ class Folder(models.Model):
 
 
     def _get_path_elements(self, my_path):
-        '''Returns the current and parent folder names of a specified path 
+        '''Returns the current and parent folder names of a specified path
         my_path -- a path string
         '''
         elements = os.path.split(os.path.abspath(my_path))
@@ -569,7 +569,7 @@ class SourceFile(ProjectFile):
             if line.startswith('package'):
                 #print 'package line: {0}'.format(line)
                 source_file.package = re.search('package +(.+);', line).group(1)
-        
+
         source_file.save()
 
 
