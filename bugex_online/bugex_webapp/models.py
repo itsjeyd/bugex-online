@@ -259,7 +259,6 @@ class CodeArchive(models.Model):
                 elif ext == 'class':
                     cf = ClassFile.objects.create(code_archive=self,
                                                   folder=my_folder, name=f)
-                    cf.save()
             else:
                 #current file is a folder, continue traversing
                 self.traverse(f_path, my_folder)
