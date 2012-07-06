@@ -6,7 +6,6 @@ Created on Jun 29, 2012
 
 from django.core.mail import send_mail
 from bugex_webapp import Notifications, UserRequestStatus
-from bugex_webapp.models import UserRequest
 import logging
 
 class Notifier(object):
@@ -28,7 +27,7 @@ class EmailNotifier(Notifier):
     - BugEx has failed to process their request due to invalid input (INVALID);
     - they have successfully deleted their BugEx result files (DELETED);
     '''
-    
+
     def __init__(self):
         self.__monitor_jobs = list()
 
@@ -44,6 +43,8 @@ class EmailNotifier(Notifier):
         
         user_request -- a UserRequest instance
         '''
+        from bugex_webapp.models import UserRequest
+
         status = UserRequestStatus.const_name(user_request.status)
         
         if status != 'VALID' and status != 'PROCESSING' and \

@@ -32,6 +32,7 @@ from bugex_webapp.validators import validate_archive_file_extension
 from bugex_webapp.validators import validate_test_case_name
 from bugex_webapp.core_modules.bugex_monitor import BugExMonitor
 from bugex_webapp.core_modules.bugex_timer import UserRequestThread
+from bugex_webapp.core_modules.bugex_notifier import EmailNotifier
 
 class UserRequest(models.Model):
     """The UserRequest model.
@@ -261,9 +262,10 @@ class UserRequest(models.Model):
         self.save()
         print 'Status of {0} changed to: {1}'.format(
             self.token, UserRequestStatus.const_name(self.status))
-
-        # TODO call notifier
-
+        
+        notifier = EmailNotifier()
+        notifier.notify_user(self)
+              
 
 def archive_file_path(instance, filename):
     """
