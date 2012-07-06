@@ -7,6 +7,7 @@ Created on Jun 29, 2012
 from django.core.mail import send_mail
 from bugex_webapp import Notifications, UserRequestStatus
 from bugex_webapp.models import UserRequest
+import logging
 
 class Notifier(object):
     
@@ -21,12 +22,19 @@ class EmailNotifier(Notifier):
     '''BugEx Online users notification via email.
     
     BugEx Online users will be notified via email when:
-    - their input to the system has been successfully received;
-    - BugEx has successfully finished processing their request;
-    - BugEx has failed to process their request due to internal error;
-    - BugEx has failed to process their request due to invalid input;
-    - they have successfully deleted their BugEx result files;
+    - their input to the system has been successfully received (PENDING);
+    - BugEx has successfully finished processing their request (FINISHED);
+    - BugEx has failed to process their request due to internal error (FAILED);
+    - BugEx has failed to process their request due to invalid input (INVALID);
+    - they have successfully deleted their BugEx result files (DELETED);
     '''
+    
+    def __init__(self):
+        self.__monitor_jobs = list()
+
+        # logging
+        self.__log = logging.getLogger("EmailNotifier")
+        self.__log.info('EmailNotifier created.')
     
     def notify_user(self, user_request):
         '''User is notified in case of a change in the UserRequest status
@@ -36,25 +44,24 @@ class EmailNotifier(Notifier):
         
         user_request -- a UserRequest instance
         '''
-        status = user_request.status
+        status = UserRequestStatus.const_name(user_request.status)
+        
+        if status != 'VALID' and status != 'PROCESSING' and \
+           status!='VALIDATING':
+            subject, content = self._get_content(user_request, status)
+            try:
+                send_mail(subject, content, 'bugexonline@gmail.com', 
+                          [user_request.user.email], fail_silently=False)
+            except Exception as e:
+                self.__log.info("Email notification failed: %s", e)
+                
+    def _get_content(self, user_request, status):
         subject = Notifications.CONTENT[status][0]
         content = Notifications.HEADER_FOOTER %Notifications.CONTENT[status][1]
-        
-        if status == UserRequestStatus.FINISHED:
+            
+        if status == 'FINISHED':
+            #include corresponding urls in the email content
             content %(user_request.result_url, user_request.delete_url)
         
-        try:
-            self.send_notification(status, user_request.user.email, 
-                                   subject, content)
-        except Exception as e:
-            # TODO log stuff
-            pass
-            
-    def send_notification(self, status, user_email, subject, content):
-        '''Send an email to the user.
-        '''
-        send_mail(subject, content, 'bugexonline@gmail.com', [user_email],
-                  fail_silently=False)
-        
-        
-        
+        return subject, content  
+

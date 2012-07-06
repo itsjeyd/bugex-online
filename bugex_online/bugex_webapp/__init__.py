@@ -68,18 +68,18 @@ class Notifications(object):
     '''
     HEADER_FOOTER = 'Dear BugEx Online user,\n\n%s\n\nBest,\nBugEx Online Team'
     CONTENT = {
-               1:('Input files successfully received',
+               'PENDING':('Input files successfully received',
                   'The input you\'ve submitted to BugEx Online has been ' +
                   'successfully uploaded and is being processed.'), 
-               3:('Your request could not be processed',
+               'INVALID':('Your request could not be processed',
                   'Unfortunately your request could not be processed.'),
-               5:('Your request could not be processed',
+               'FAILED':('Your request could not be processed',
                      'Unfortunately your request could not be processed.'),
-               6:('Your BugEx result is available',
+               'FINISHED':('Your BugEx result is available',
                   'BugEx has finished processing your request. You can ' + 
                   'access the result here: %s.\n You can delete the result' +
                   'here: %s.'),
-               7:('Your BugEx result has been deleted',
+               'DELETED':('Your BugEx result has been deleted',
                   'You have successfully deleted your BugEx result files.')
                }
     
