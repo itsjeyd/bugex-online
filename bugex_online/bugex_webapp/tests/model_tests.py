@@ -26,7 +26,7 @@ class UserRequestConstructorTest(TestCase):
     (UserRequest.new)
     """
 
-    test_case = 'FooTest.testFoo'
+    test_case = 'de.testpackage.TestClass#testMethod'
     code_archive = 'archive.jar'
 
     def setUp(self):
