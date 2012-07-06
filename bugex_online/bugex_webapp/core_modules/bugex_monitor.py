@@ -54,7 +54,7 @@ class BugExMonitor(object):
         request_path = user_request.folder
 
         # gather necessary data
-        user_archive_path = user_request.code_archive_path
+        user_archive_path = user_request.code_archive.path
         failing_test_case = user_request.test_case
         token = user_request.token
 

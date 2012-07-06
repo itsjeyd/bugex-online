@@ -152,15 +152,6 @@ class UserRequest(models.Model):
             'user_{0}'.format(self.user.id), self.token
         )
 
-    @property
-    def code_archive_path(self):
-        """
-        Returns the absolute path to the code archive.
-        """
-        return os.path.join(
-            settings.MEDIA_ROOT, self.codearchive.archive_file.name
-        )
-
     def _build_path(self, *sub_folders):
         return os.path.join(self.folder, *sub_folders)
 
@@ -178,7 +169,7 @@ class UserRequest(models.Model):
         # extract user archive
         path_extracted = self.codearchive.absolute_extracted_path #_build_path('tmp_extracted')
         try:
-            archive = ZipFile(self.code_archive_path, 'r')
+            archive = ZipFile(self.code_archive.path, 'r')
             archive.extractall(path_extracted)
             archive.close()
         except:
@@ -271,6 +262,9 @@ class CodeArchive(models.Model):
         """Return a unicode representation for a CodeArchive model object."""
         return u'{0}'.format(self.archive_file.name)
 
+    @property
+    def path(self):
+        return settings.MEDIA_ROOT, self.archive_file.name
 
     @property
     def absolute_extracted_path(self):
