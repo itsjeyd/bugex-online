@@ -231,12 +231,13 @@ class CodeArchive(models.Model):
         parent -- a folder instance; the parent folder of the current folder
         '''
         '''
-        TODO: save folders;
+        TODO: save folders; -> we *are* doing that (via Folder.objects.create)
         TODO: change UR status in case of an exception;
         '''
         parent_f, this_f = self._get_path_elements(my_path)
 
         #needs to be done in a nicer way without hardcoding the name
+        # TODO: Why can't parent_f be equal to 'tmp_extracted'?
         if this_f != 'tmp_extracted' and parent_f != 'tmp_extracted':
 
             #create a new folder with name=this_f and parent_folder=parent
