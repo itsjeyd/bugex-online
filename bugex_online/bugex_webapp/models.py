@@ -145,7 +145,8 @@ class UserRequest(models.Model):
             self.update_status(UserRequestStatus.INVALID)
         else:
             #a better way to do this?
-            root_folder = Folder.objects.create(name='ROOT', code_archive=self)
+            root_folder = Folder.objects.create(
+                name='ROOT', code_archive=self.code_archive)
             self.code_archive.traverse(path_extracted, root_folder)
 
     def update_status(self, new_status):
