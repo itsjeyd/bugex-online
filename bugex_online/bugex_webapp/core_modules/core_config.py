@@ -11,7 +11,7 @@ DEBUG = True
 
 # Defines the artificial delay for the BugEx Mockup in seconds.
 # Will only be used in DEBUG mode.
-ARTIFICIAL_DELAY = 20
+ARTIFICIAL_DELAY = 10
 
 
 # [ BUG EX ]

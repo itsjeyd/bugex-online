@@ -14,6 +14,7 @@ Authors: Amir Baradaran
 import re
 import uuid
 import os
+import logging
 from xml.etree.ElementTree import fromstring
 from zipfile import ZipFile
 
@@ -47,7 +48,10 @@ class UserRequest(models.Model):
     @staticmethod
     def new(user, test_case_name, archive_file):
         """
-        Creates a new UserRequest object and returns the reference to it.
+        Creates a new UserRequest object, saves it to database and returns a
+        reference to it.
+
+        Also triggers archive parsing and runs BugEx.
 
         Arguments:
 
@@ -56,12 +60,18 @@ class UserRequest(models.Model):
         archive_file    -- the uploaded file (user archive)
 
         """
-        # create test case object
-        test_case = TestCase.objects.create(name=test_case_name)
+        # logging
+        log = logging.getLogger(__name__)
+        log.setLevel('DEBUG')
         
         # create unique token for request
         token = str(uuid.uuid4())
+        log.info("Created token for incoming UserReqest: %s", token)
+        log.debug("Creating test case...")
 
+        # create test case object
+        test_case = TestCase.objects.create(name=test_case_name)
+        
         # create user request object
         user_request = UserRequest.objects.create(
             user=user,
@@ -69,6 +79,8 @@ class UserRequest(models.Model):
             token=token,
             status=UserRequestStatus.PENDING
         )
+
+        log.debug("Creating code archive..")
 
         # create code archive
         code_archive = CodeArchive()
@@ -89,7 +101,22 @@ class UserRequest(models.Model):
         # update status to PENDING
         user_request.update_status(UserRequestStatus.PENDING)
         
-        # return reference for further processing
+        log.debug("Parsing archive..")
+
+        # try to parse archive
+        try:
+            # TODO
+            pass
+            #user_request._parse_archive()
+        except Exception as e:
+            log.info("Parsing failed: %s", e)
+            user_request.update_status(UserRequestStatus.INVALID)
+        else:
+            log.debug("Running BugEx..")
+            # run BugEx
+            user_request._run_bugex()
+
+        # return reference to view
         return user_request
 
     @property
@@ -123,17 +150,19 @@ class UserRequest(models.Model):
 
     def _build_path(self, *sub_folders):
         return os.path.join(self.folder, *sub_folders)
-     
-    def parse_archive(self):
+
+
+    def _parse_archive(self):
+        """
+        Traverses the archive and parses its files.
+        Stores the folder structure, relevant files and file contents in the
+        database.
+
+        This step is important to display the source code later on.
+        """
         # VALIDATION phase starts now
         self.update_status(UserRequestStatus.VALIDATION)
         
-        # == TESTING ===
-        bugex_mon = BugExMonitor.Instance()
-        bugex_mon.new_request(self)
-        return
-        # ===============
-
         # extract user archive
         path_extracted = self._build_path('tmp_extracted')
         try:
@@ -142,12 +171,29 @@ class UserRequest(models.Model):
             archive.close()
         except:
             # oops, no zip?
-            self.update_status(UserRequestStatus.INVALID)
+            # raise exception for handlung
+            raise
         else:
-            #a better way to do this?
+            # TODO a better way to do this?
             root_folder = Folder.objects.create(name='ROOT', code_archive=self)
             self.code_archive.traverse(path_extracted, root_folder)
+            
+            # TODO delete temporary folder again
+
+
+    def _run_bugex(self):
+        """
+        Creates and starts a BugEx Instance by notifying the BugExMonitor.
         
+        """
+        # PROCESSING phase stars now
+        self.update_status(UserRequestStatus.PROCESSING)
+
+        # notify monitor
+        bugex_mon = BugExMonitor.Instance()
+        bugex_mon.new_request(self)
+
+
     def update_status(self, new_status):
         """
         Updates the status of this user request and saves itself to the

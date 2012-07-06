@@ -10,7 +10,12 @@ Authors: Amir Baradaran
          Iliana Simova
          Peter Stahl
 """
+# setup logging facilities
+import logging
 
+logging.basicConfig()
+
+# defining Enums
 class Enum(object):
     """ Parent class for all constant enums """
 
