@@ -15,6 +15,7 @@ import re
 import uuid
 import os
 import logging
+import shutil
 from xml.etree.ElementTree import fromstring
 from zipfile import ZipFile
 
@@ -105,12 +106,9 @@ class UserRequest(models.Model):
 
         # try to parse archive
         try:
-            # TODO
-            pass
-            #user_request._parse_archive()
+            user_request._parse_archive()
         except Exception as e:
             log.info("Parsing failed: %s", e)
-            user_request.update_status(UserRequestStatus.INVALID)
         else:
             log.debug("Running BugEx..")
             # run BugEx
@@ -163,23 +161,27 @@ class UserRequest(models.Model):
         self.update_status(UserRequestStatus.VALIDATING)
 
         # extract user archive
-        path_extracted = self._build_path('tmp_extracted')
+        path_extracted = self.codearchive.absolute_extracted_path #_build_path('tmp_extracted')
         try:
             archive = ZipFile(self.code_archive_path, 'r')
             archive.extractall(path_extracted)
             archive.close()
         except:
             # oops, no zip?
-            # raise exception for handling
+            self.update_status(UserRequestStatus.INVALID)
+            # raise exception for handling somewhere else
             raise
         else:
-            # TODO a better way to do this?
-            root_folder = Folder.objects.create(
-                name='ROOT', code_archive=self.code_archive)
-            self.code_archive.traverse(path_extracted, root_folder)
+            # trigger archive traversal
+            self.codearchive.traverse()
 
-        # TODO delete temporary folder again
+            # archive seems to be VALID!
+            self.update_status(UserRequestStatus.VALID)
+            
+            # delete temporary folder again
+            shutil.rmtree(path_extracted)
 
+    
     def _run_bugex(self):
         """
         Creates and starts a BugEx Instance by notifying the BugExMonitor.
@@ -191,6 +193,7 @@ class UserRequest(models.Model):
         # notify monitor
         bugex_mon = BugExMonitor.Instance()
         bugex_mon.new_request(self)
+
 
     def update_status(self, new_status):
         """
@@ -253,59 +256,26 @@ class CodeArchive(models.Model):
         """Return a unicode representation for a CodeArchive model object."""
         return u'{0}'.format(self.archive_file.name)
 
-    def _get_path_elements(self, my_path):
-        '''Returns the current and parent folder names of a specified path
 
-        my_path -- a path string
-        '''
-        elements = os.path.split(os.path.abspath(my_path))
-        this_f = elements[1]
-        parent_f = os.path.split(os.path.abspath(elements[0]))[1]
-        return parent_f, this_f
+    @property
+    def absolute_extracted_path(self):
+        """
+        Returns the absolute path to the extracted archive.
 
-    def traverse(self, my_path, parent):
-        '''Recursively traverse every file and directory in a directory tree.
+        """
+        return self.user_request._build_path('tmp_extracted')
 
-        Recursively traverse every file and directory in a directory tree
-        specified by a path. Save each folder, java and class file, preserving
-        the directory tree structure.
+    def traverse(self):
+        # ok, lets create the root folder
+        root_folder = Folder.objects.create(
+                # the name of the root folder does not really matter..
+                name = 'tmp_extracted',
+                parent_folder = None,
+                code_archive = self)
 
-        my_path -- a path (string) which points to the extracted archive folder
-        parent -- a folder instance; the parent folder of the current folder
-        '''
-        '''
-        TODO: save folders; -> we *are* doing that (via Folder.objects.create)
-        TODO: change UR status in case of an exception;
-        '''
-        parent_f, this_f = self._get_path_elements(my_path)
+        # easy enough, now let it traverse itself
+        root_folder.traverse()
 
-        #needs to be done in a nicer way without hardcoding the name
-        # TODO: Why can't parent_f be equal to 'tmp_extracted'?
-        if this_f != 'tmp_extracted' and parent_f != 'tmp_extracted':
-
-            #create a new folder with name=this_f and parent_folder=parent
-            my_folder = Folder.objects.create(name=this_f, code_archive=self,
-                                              parent_folder=parent)
-        for f in os.listdir(my_path):
-            f_path = os.path.join(my_path, f)
-
-            #if f_path points to a class or java file, create it
-            if os.path.isfile(f_path):
-                ext = os.path.splitext(f)[1][1:].strip()
-                if ext == 'java':
-                    try:
-                        SourceFile.new(code_archive=self, name=f,
-                                       folder=my_folder, path=f_path)
-                    except Exception as e:
-                        print e
-                        #if something goes wring during SourceFile creation,
-                        #change UserRequest status to INVALID
-                elif ext == 'class':
-                    ClassFile.objects.create(code_archive=self,
-                                             folder=my_folder, name=f)
-            else:
-                #current file is a folder, continue traversing
-                self.traverse(f_path, my_folder)
 
 class TestCase(models.Model):
     """The TestCase model.
@@ -460,10 +430,55 @@ class Folder(models.Model):
         if self.parent_folder is None:
             return True
         return False
+    
+    @property
+    def absolute_path(self):
+        if self.is_root_folder:
+            # just use absolute extracted path
+            return self.code_archive.absolute_extracted_path
+        else:
+            # recursively build path from parent
+            return os.path.join(
+                self.parent_folder.absolute_path,
+                self.name)
 
-#    @staticmethod
-#    def recursive_build(self, parent_folder):
-#        return folder
+
+    def _get_path_elements(self, my_path):
+        '''Returns the current and parent folder names of a specified path 
+        my_path -- a path string
+        '''
+        elements = os.path.split(os.path.abspath(my_path))
+        this_f = elements[1]
+        parent_f = os.path.split(os.path.abspath(elements[0]))[1]
+        return parent_f, this_f
+
+
+    def traverse(self):
+        #print 'in Folder.traverse(): name: {0}, path: {1}'.format(self.name,self.absolute_path)
+        for f in os.listdir(self.absolute_path):
+            f_path = os.path.join(self.absolute_path, f)
+            #if f_path points to a class or java file, create it
+            if os.path.isfile(f_path):
+                ext = os.path.splitext(f)[1][1:].strip()
+                if ext == 'java':
+                    try:
+                        SourceFile.new(code_archive=self.code_archive, name=f,
+                        folder=self, path=f_path)
+                    except Exception as e:
+                        print e
+                        #if something goes wring during SourceFile creation,
+                        #change UserRequest status to INVALID
+                elif ext == 'class':
+                    ClassFile.objects.create(code_archive=self.code_archive,
+                        folder=self, name=f)
+            else:
+                #current file is a folder, continue traversing
+                child = Folder.objects.create(
+                            name = f,
+                            code_archive = self.code_archive,
+                            parent_folder = self)
+                child.traverse()
+
 
 class ProjectFile(models.Model):
     """The ProjectFile model.
@@ -504,34 +519,42 @@ class SourceFile(ProjectFile):
     package = models.CharField(
         max_length=100,
         blank=True,
+        null=True,
         help_text='The name of the package that this source file resides in.'
     )
 
     class_element = models.OneToOneField('ClassElement',
+        blank=True,
+        null=True,
         help_text='The class element associated with this source file.'
     )
 
     @staticmethod
-    def new(code_archive, name, path, folder=None):
+    def new(code_archive, name, path, folder):
         """
         Creates a new SourceFile object, parses its lines and stores everything
         to database.
 
         Raises an IOError, if the file can not be opened.
         """
-        source_file = SourceFile(code_archive=code_archive, name=name)
+        source_file = SourceFile.objects.create(
+                code_archive=code_archive,
+                name=name,
+                folder=folder)
 
-        if folder:
-            source_file.folder = folder
+        print 'Parsing {0}..'.format(path)
 
+        # read and store lines and extract package name
         for number, line in enumerate(open(path).readlines(), 1):
+            #print 'line: {0}'.format(line)
             Line.objects.create(
-                code_archive=source_file.code_archive,
+                source_file=source_file,
                 number=number,
                 content=line.strip())
             if line.startswith('package'):
+                #print 'package line: {0}'.format(line)
                 source_file.package = re.search('package +(.+);', line).group(1)
-
+        
         source_file.save()
 
 
