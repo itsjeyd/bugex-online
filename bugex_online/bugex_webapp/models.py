@@ -58,7 +58,7 @@ class UserRequest(models.Model):
         """
         # create test case object
         test_case = TestCase.objects.create(name=test_case_name)
-        
+
         # create unique token for request
         token = str(uuid.uuid4())
 
@@ -82,13 +82,13 @@ class UserRequest(models.Model):
         archive_file_ext = os.path.splitext(archive_file.name)[1][1:].strip()
         code_archive.archive_format = archive_file_ext.upper()
         code_archive.save()
-        
+
         # save user request
         user_request.save()
 
         # update status to PENDING
         user_request.update_status(UserRequestStatus.PENDING)
-        
+
         # return reference for further processing
         return user_request
 
@@ -123,11 +123,11 @@ class UserRequest(models.Model):
 
     def _build_path(self, *sub_folders):
         return os.path.join(self.folder, *sub_folders)
-     
+
     def parse_archive(self):
         # VALIDATION phase starts now
-        self.update_status(UserRequestStatus.VALIDATION)
-        
+        self.update_status(UserRequestStatus.VALIDATING)
+
         # == TESTING ===
         bugex_mon = BugExMonitor.Instance()
         bugex_mon.new_request(self)
@@ -147,12 +147,12 @@ class UserRequest(models.Model):
             #a better way to do this?
             root_folder = Folder.objects.create(name='ROOT', code_archive=self)
             self.code_archive.traverse(path_extracted, root_folder)
-        
+
     def update_status(self, new_status):
         """
         Updates the status of this user request and saves itself to the
         database.
-        
+
         Also triggers notification of the user.
 
         Arguments:
@@ -162,7 +162,7 @@ class UserRequest(models.Model):
         self.save()
         print 'Status of {0} changed to: {1}'.format(
             self.token, UserRequestStatus.const_name(self.status))
-        
+
         # TODO call notifier
 
 
@@ -211,52 +211,52 @@ class CodeArchive(models.Model):
 
     def _get_path_elements(self, my_path):
         '''Returns the current and parent folder names of a specified path
-        
+
         my_path -- a path string
         '''
         elements = os.path.split(os.path.abspath(my_path))
-        this_f = elements[1] 
+        this_f = elements[1]
         parent_f = os.path.split(os.path.abspath(elements[0]))[1]
         return parent_f, this_f
-    
+
     def traverse(self, my_path, parent):
         '''Recursively traverse every file and directory in a directory tree.
-        
-        Recursively traverse every file and directory in a directory tree 
+
+        Recursively traverse every file and directory in a directory tree
         specified by a path. Save each folder, java and class file, preserving
         the directory tree structure.
-        
+
         my_path -- a path (string) which points to the extracted archive folder
         parent -- a folder instance; the parent folder of the current folder
         '''
         '''
-        TODO: save folders; 
+        TODO: save folders;
         TODO: change UR status in case of an exception;
         '''
         parent_f, this_f = self._get_path_elements(my_path)
-        
+
         #needs to be done in a nicer way without hardcoding the name
         if this_f != 'tmp_extracted' and parent_f != 'tmp_extracted':
-            
+
             #create a new folder with name=this_f and parent_folder=parent
-            my_folder = Folder.objects.create(name=this_f, code_archive=self, 
-                                           parent_folder=parent)            
+            my_folder = Folder.objects.create(name=this_f, code_archive=self,
+                                           parent_folder=parent)
         for f in os.listdir(my_path):
             f_path = os.path.join(my_path, f)
-            
+
             #if f_path points to a class or java file, create it
             if os.path.isfile(f_path):
                 ext = os.path.splitext(f)[1][1:].strip()
                 if ext == 'java':
                     try:
-                        sf = SourceFile.new(code_archive=self, name=f, 
+                        sf = SourceFile.new(code_archive=self, name=f,
                                        folder=my_folder, path=f_path)
                     except Exception as e:
                         print e
-                        #if something goes wring during SourceFile creation, 
+                        #if something goes wring during SourceFile creation,
                         #change UserRequest status to INVALID
                 elif ext == 'class':
-                    cf = ClassFile.objects.create(code_archive=self, 
+                    cf = ClassFile.objects.create(code_archive=self,
                                                   folder=my_folder, name=f)
                     cf.save()
             else:
