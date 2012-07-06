@@ -241,7 +241,7 @@ class CodeArchive(models.Model):
 
             #create a new folder with name=this_f and parent_folder=parent
             my_folder = Folder.objects.create(name=this_f, code_archive=self,
-                                           parent_folder=parent)
+                                              parent_folder=parent)
         for f in os.listdir(my_path):
             f_path = os.path.join(my_path, f)
 
