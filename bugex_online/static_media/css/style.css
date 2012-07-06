@@ -32,12 +32,12 @@ div.container-fluid #footer p { text-align: center; line-height: 1.5em; }
 /*********Footer*********/
 
 /*********Social*********/
-ul#social { list-style-type: none; float: right; clear: both; padding: 0; margin: 0.8em 0 0 0; }
+ul#social { list-style-type: none; float: right; clear: both; padding: 0; margin: 0; }
 ul#social li { display: inline; margin: 0 0.3em 0 0; }
 /*********Social*********/
 
 /*********Facts*********/
-#facts { height: auto; background: #fff; border: 1px solid #75BCEF; }
+#facts { height: auto; background: #fff; border: 1px solid #75BCEF; margin: 0 0 1em 0; }
 #facts h1 { color: #ccc; }
 /*********Facts*********/
 
@@ -57,6 +57,17 @@ form.form-horizontal p.help-block { color: #555555; margin: 0; padding: 0; width
 form.form-horizontal div.form-actions { background: transparent; width: 70%; margin: 1em 0 0 0; padding: 0; }
 div.form-actions button { float: left; margin: 0 1em 0 0; }
 form.form-horizontal span.label { width: 50%; }
+
+form.contact fieldset { margin: 0 auto; width: 60%; }
+form.contact div.control-group { width: 80%; margin: 0 auto; }
+form.contact div.control-group label { width: 100%; text-align: left; }
+form.contact div.controls { float: left; width: 70%; margin: 0; padding: 0; }
+form.contact div.controls input { float: left; width: 100%; }
+form.contact div.controls textarea { width: 100%; }
+form.contact p.help-block { color: #555555; margin: 0; padding: 0; width: 70%; }
+form.contact div.form-actions { background: transparent; width: 50%; margin: 1em 0 0 4em; padding: 0; }
+form.contact div.form-actions button { float: left; margin: 0 1em 0 0; }
+form.contact span.label { width: 50%; }
 /*********Forms*********/
 
 .navbar .nav > li > a { line-height: 62px; text-shadow:none; font-size: 16px; }

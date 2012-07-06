@@ -14,17 +14,20 @@ Authors: Amir Baradaran
 import os
 import uuid
 
+from django.core.mail import mail_admins
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.views.generic import TemplateView
 from django.shortcuts import render
+from django.contrib.auth import authenticate, login
+
 
 from bugex_webapp.models import UserRequest, TestCase, CodeArchive
-from bugex_webapp.forms import UserRequestForm, ChangeEmailForm
+from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm
 
 class MainPageView(TemplateView):
     template_name = 'bugex_webapp/main.html'
-
+     
 
 class HowToPageView(TemplateView):
     template_name = 'bugex_webapp/howto.html'
@@ -44,6 +47,10 @@ class UserPageView(TemplateView):
 
 class ContactPageView(TemplateView):
     template_name = 'bugex_webapp/contact.html'
+    
+
+class MainPageLoginRegistrationView(TemplateView):
+    template_name = 'bugex_webapp/main_with_login.html'
 
 
 def create_new_user(email_address):
@@ -151,3 +158,65 @@ def change_email_request(request):
         form = ChangeEmailForm()
 
     return render(request, 'bugex_webapp/user.html', {'form': form,})
+
+
+def login_user(request):
+    """Test function for login a user to the system
+    
+    We have to see in the database if the password and the email that he wrote, match one of the entries of our table
+    
+    """
+    
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            # Redirect to a success page.
+        else:
+            pass
+            # Return a 'disabled account' error message
+    else:
+        pass
+        # Return an 'invalid login' error message.
+
+
+
+def change_password_request(email_address):
+    """Test function for changing the user's password
+
+    """    
+    user = User.objects.get(username__exact=email_address)
+    user.make_random_password(length=8)
+    user.save()
+    user.email_user(
+                subject='you successfully changed your password',
+                message='dear user,\n\n your new password is "' + 
+                        user.password + 
+                        '" .\n\nbest regards,\n'\
+                        'the bugex online group'
+            )
+    
+
+def submit_contact_form(request):
+    """Submit a contact form request
+    """
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+
+        if form.is_valid():
+
+            mail_admins('Email from the contact form',
+                'Name: ' + request.POST['name'].name + '\n\nMessage: '+ request.POST['message'].name
+            )
+
+            messages.success(request, 'We received your email!')
+
+        else:
+            messages.error(request, 'Form submission failed!')
+
+    else:
+        form = ContactForm()
+
+    return render(request, 'bugex_webapp/contact.html', {'form': form,})

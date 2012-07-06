@@ -16,7 +16,7 @@ from django import forms
 from bugex_webapp.validators import validate_archive_file_extension
 from bugex_webapp.validators import validate_archive_copyright
 from bugex_webapp.validators import validate_test_case_name
-
+from bugex_webapp.validators import validate_name
 class EmailBaseForm(forms.Form):
     """The EmailBaseForm form.
 
@@ -82,3 +82,15 @@ class ChangeEmailForm(EmailPasswordBaseForm):
     new_email_address_2 = forms.EmailField(
         help_text='Please re-enter your new email address.'
     )
+    
+    
+class ContactForm(EmailBaseForm):
+    """Another test class, just for checking if i can do the contact form. CHRIS
+    """
+    name = forms.CharField(
+        max_length=50,
+        validators=[validate_name],
+        help_text='Your name'
+    )
+    message = forms.CharField(widget=forms.Textarea, help_text='Your message')
+    
