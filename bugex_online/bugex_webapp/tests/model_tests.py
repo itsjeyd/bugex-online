@@ -13,11 +13,11 @@ Authors: Amir Baradaran
 
 import os
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase
 
 from bugex_webapp import UserRequestStatus
-from bugex_webapp.core_modules.core_config import WORKING_DIR
 from bugex_webapp.models import UserRequest
 
 
@@ -56,7 +56,7 @@ class UserRequestConstructorTest(TestCase):
 
     def test_folder(self):
         ur = UserRequest.objects.get(id=1)
-        path = os.path.join(WORKING_DIR, 'user_1', ur.token)
+        path = os.path.join(settings.MEDIA_ROOT, 'user_1', ur.token)
         self.assertEqual(ur.folder, path)
 
 
