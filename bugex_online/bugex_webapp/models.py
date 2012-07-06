@@ -39,6 +39,7 @@ class UserRequest(models.Model):
     user = models.ForeignKey(User)
     test_case = models.OneToOneField('TestCase')
     token = models.CharField(max_length=36)
+    delete_token = models.CharField(max_length=36)
     status = models.PositiveIntegerField()
     result = models.OneToOneField('BugExResult', blank=True, null=True)
 
@@ -67,7 +68,10 @@ class UserRequest(models.Model):
 
         # create unique token for request
         token = str(uuid.uuid4())
-        log.info("Created token for incoming UserReqest: %s", token)
+        log.info("Created token for incoming UserRequest: %s", token)
+        delete_token = str(uuid.uuid4())
+        log.info("Created delete token for incoming UserRequest: %s", token)
+
         log.debug("Creating test case...")
 
         # create test case object
@@ -78,6 +82,7 @@ class UserRequest(models.Model):
             user=user,
             test_case=test_case,
             token=token,
+            delete_token=delete_token,
             status=UserRequestStatus.PENDING
         )
 
@@ -116,6 +121,16 @@ class UserRequest(models.Model):
 
         # return reference to view
         return user_request
+
+    @property
+    def result_url(self):
+        return '{0}/result/{1}'.format(
+            settings.APPLICATION_BASE_URL, self.token)
+
+    @property
+    def delete_url(self):
+        return '{0}/delete/{1}'.format(
+            settings.APPLICATION_BASE_URL, self.delete_token)
 
     @property
     def folder(self):
