@@ -173,14 +173,12 @@ def login_user(request):
     if user is not None:
         if user.is_active:
             login(request, user)
-            # Redirect to a success page.
+            return HttpResponseRedirect("/main_with_login/")
         else:
-            pass
-            # Return a 'disabled account' error message
-    else:
-        pass
-        # Return an 'invalid login' error message.
+            messages.error(request, 'Your account is disabled!')
 
+    else:
+        messages.error(request, 'Your login is invalid!')
 
 
 def change_password_request(email_address):
