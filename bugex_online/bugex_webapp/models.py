@@ -412,8 +412,8 @@ class Folder(models.Model):
         return '{0}'.format(self.name)
 
     @property
-        if self.parent_folder_id is None:
     def is_root_folder(self):
+        if self.parent_folder is None:
             return True
         return False
 
