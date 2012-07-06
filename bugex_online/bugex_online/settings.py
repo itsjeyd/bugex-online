@@ -204,3 +204,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'bugexonline@gmail.com'
 EMAIL_HOST_PASSWORD = 'eniln0xeguB'
+#Admin variable.
+#Here sees man the emails that are going to get emails when
+#1)an HTTP error occurs
+#2)a user submits the contact form
+ADMINS = (('Admin', 'chr_mon_@hotmail.com'))

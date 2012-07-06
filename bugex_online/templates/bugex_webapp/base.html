@@ -49,12 +49,11 @@
     <div class="navbar">
 		<div class="navbar-inner">
 			<div class="container">
-				<a class="brand" href="#"><img src="{{ STATIC_URL }}img/logo50px.png"></a>
+				<a class="brand" href="{% url main-page %}"><img src="{{ STATIC_URL }}img/logo50px.png"></a>
 				<ul class="nav">
 					<li><a href="{% url main-page %}">Home</a></li>
 					<li><a href="{% url howto-page %}">HowTo</a></li>
-<!-- I have to implement it with jquery. A pop up window on the middle of the page when the user clicks on Contact Us -->
-					<li><a href="{% url contact-page %}">Contact Us</a></li>
+					 <li><a href="{% url contact-page %}">Contact Us</a></li>
 				</ul>
 			</div>
 		</div>

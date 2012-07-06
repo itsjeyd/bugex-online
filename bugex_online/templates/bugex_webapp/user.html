@@ -28,12 +28,6 @@
                         	{{ message }}
                     			</div>
                 			{% endif %}
-                			{% if message.tags == 'error' %}
-                    			<div class="alert alert-error fade in">
-                        			<a class="close" data-dismiss="alert" href="#">&times;</a>
-                        	{{ message }}
-                    			</div>
-                			{% endif %}
             			{% endfor %}
         			{% endif %}
         			
@@ -56,13 +50,22 @@
 
 	            		<div class="form-actions">
 	                		<button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
-	                		<button type="reset" class="btn"><i class="icon-remove"></i> Reset form</button>
 	            		</div>
         			</fieldset>
         			</form>
                     <h2>Change password</h2>
                     <p>If you wish to change your password please click on the following button</p>
-					<a class="btn" href="">Change Password!</a>
+                    {% if form.is_multipart %}
+            		<form class="form-horizontal" enctype="multipart/form-data" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
+        			{% else %}
+            		<form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
+        			{% endif %}
+        			<fieldset>
+						<div class="form-actions">
+	                		<button type="submit" class="btn btn-primary">Change Password!</button>
+	            		</div>
+        			</fieldset>
+        			</form>
                     <p>The new password will be sent to your email address</p>
             	</div>
             </div>                          

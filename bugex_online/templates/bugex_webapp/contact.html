@@ -10,6 +10,55 @@
 			<div class="span8">
             	<div id="welcomeText">
                 	<h2>Contact Page</h2>
+                	{% if form.is_multipart %}
+            <form class="form-horizontal contact" enctype="multipart/form-data" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
+        {% else %}
+            <form class="form-horizontal contact" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
+        {% endif %}
+
+
+        {% if messages %}
+
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <div class="alert alert-success fade in">
+                        <a class="close" data-dismiss="alert" href="#">&times;</a>
+                        {{ message }}
+                    </div>
+                {% endif %}
+
+            {% endfor %}
+
+        {% endif %}
+
+        <fieldset>
+
+            {% for field in form %}
+
+                {% if field.errors %}
+                    <div class="control-group error">
+                {% else %}
+                    <div class="control-group">
+                {% endif %}
+
+                <label class="control-label" for="{{ field.label }}">{{ field.label }} <p class="help-block">({{ field.help_text }})</p></label>
+
+
+                <div class="controls">
+                    {{ field }}
+                    
+                    {% for error in field.errors %}
+                        <span class="label label-important">{{ error }}</span>
+                    {% endfor %}
+                </div> </div>
+            {% endfor %}
+
+            <div class="form-actions">
+
+                <button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
+            </div>
+        </fieldset>
+        </form>
                 </div>
             </div>                          
 		</div>
