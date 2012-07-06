@@ -29,7 +29,8 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 # The backend to use for sending emails.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Only for debugging; prints emails to the console
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # A tuple that lists people who get code error notifications.
 # When DEBUG=False and a view raises an exception, Django will
@@ -195,3 +196,11 @@ LOGGING = {
         },
     }
 }
+
+APPLICATION_BASE_URL = 'http://localhost:8000'
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'bugexonline@gmail.com'
+EMAIL_HOST_PASSWORD = 'eniln0xeguB'
