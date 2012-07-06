@@ -4,14 +4,14 @@
 }
 
 /*********General*********/
-body { background: #DDEAF6; }
+/* body { background: #DDEAF6; } */
 /*********General*********/
 
 /*********Navigation*********/
-div.navbar ul.nav { float: right; padding: 20px 100px 20px 0; }
+div.navbar ul.nav { float: right; padding: 15px 100px 0px 0; }
 div.navbar ul.nav li { margin: 0 1em; }
-div.navbar-inner { background: #75BCEF;  }
-div.container ul.nav li a { color: #555555; }
+/* div.navbar-inner { background: #75BCEF;  } */
+/* div.container ul.nav li a { color: #555555; } */
 /*********Navigation*********/
 
 /*********Main Content*********/

@@ -15,7 +15,7 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 
-from bugex_webapp.views import MainPageView, HowToPageView, ResultsPageView
+from bugex_webapp.views import MainPageView, HowToPageView, ResultsPageView, ContactPageView
 from bugex_webapp.views import DeletePageView, UserPageView, submit_user_request, change_email_request
 
 urlpatterns = patterns('',
@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     url(r'results/$', ResultsPageView.as_view(), name='results-page'),
     url(r'delete/$', DeletePageView.as_view(), name='delete-page'),
     url(r'user/$', change_email_request, name='user-page'),
+    url(r'contact/$', ContactPageView.as_view(), name='contact-page')
     # When creating this URL pattern, the user page inside the admin
     # interface cannot be opened anymore. Have to examine that later on.
     #url(r'user/$', UserPageView.as_view(), name='user-page'),
