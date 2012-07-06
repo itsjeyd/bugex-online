@@ -27,6 +27,7 @@ class UserRequestStatus(Enum):
     The possible values are:
     PENDING:    User input data has been recieved, the archive is being
                 validated.
+    VALIDATION: The user archive is being validated.
     VALID:      The user archive has been processed and is valid.
     INVALID:    The user archive has been processed and is invalid.
     PROCESSING: BugEx is running.
@@ -37,12 +38,13 @@ class UserRequestStatus(Enum):
     """
 
     PENDING = 1
-    VALID = 2
-    INVALID = 3
-    PROCESSING = 4
-    FAILED = 5
-    FINISHED = 6
-    DELETED = 7
+    VALIDATION = 2
+    VALID = 3
+    INVALID = 4
+    PROCESSING = 5
+    FAILED = 6
+    FINISHED = 7
+    DELETED = 8
 
 
 class XMLNode(Enum):

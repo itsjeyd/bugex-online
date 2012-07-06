@@ -10,7 +10,7 @@ from bugex_instance import BugExProcessInstance
 import core_config
 
 # bugex webapp dependencies
-from bugex_webapp.models import BugExResult
+#from bugex_webapp.models import BugExResult
 from bugex_webapp import UserRequestStatus
 
 # external dependencies
@@ -54,8 +54,7 @@ class BugExMonitor(object):
         request_path = user_request.folder
         
         # gather necessary data
-        user_archive_path = user_request._build_path(
-                                user_request.code_archive.name)
+        user_archive_path = user_request.code_archive_path
         failing_test_case = user_request.test_case
         token = user_request.token
         
@@ -194,6 +193,8 @@ class BugExMonitorJob(object):
         
         # convert and store this to database
         try:
+            #defered import to avoid circular dependency problems
+            from bugex_webapp.models import BugExResult
             BugExResult.new(xml_content)
         except Exception as e:
             traceback.print_exc(file=sys.stdout)

@@ -2,7 +2,7 @@
 
 # Working directory of BugExOnline.
 # It holds all user data.
-WORKING_DIR = '/tmp/bugex'
+#WORKING_DIR = '/tmp/bugex'
 
 # A boolean that turns on/off debug mode.
 # It determines if bugex instances run in debug mode,
@@ -11,7 +11,7 @@ DEBUG = True
 
 # Defines the artificial delay for the BugEx Mockup in seconds.
 # Will only be used in DEBUG mode.
-ARTIFICIAL_DELAY = 3
+ARTIFICIAL_DELAY = 20
 
 
 # [ BUG EX ]
@@ -27,7 +27,7 @@ EXECUTABLE = '/home/freddy/bugex-mock-0.0.5-SNAPSHOT-jar-with-dependencies.jar'
 
 # Interval in seconds, in which the system will check if a BugEx process has finished.
 # Default is 30.0 seconds.
-CHECK_INTERVAL = 1.0
+CHECK_INTERVAL = 5.0
 
 # Maximum lifetime in seconds a monitor job will live.
 # Default is 12 hours.
