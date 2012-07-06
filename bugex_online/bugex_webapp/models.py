@@ -16,6 +16,7 @@ import uuid
 import os
 import logging
 import shutil
+import threading
 from xml.etree.ElementTree import fromstring
 from zipfile import ZipFile
 
@@ -30,6 +31,8 @@ from bugex_webapp.validators import validate_class_file_extension
 from bugex_webapp.validators import validate_archive_file_extension
 from bugex_webapp.validators import validate_test_case_name
 from bugex_webapp.core_modules.bugex_monitor import BugExMonitor
+from bugex_webapp.core_modules.bugex_timer import UserRequestThread
+from bugex_webapp.core_modules.bugex_notifier import EmailNotifier
 
 class UserRequest(models.Model):
     """The UserRequest model.
@@ -107,6 +110,43 @@ class UserRequest(models.Model):
         # update status to PENDING
         user_request.update_status(UserRequestStatus.PENDING)
 
+        # Now the user input has been validated, and thus
+        # the http request should respond.
+        # Therefore, further action will be carried out asynchronously
+        log.debug("Starting threaded execution..")
+        
+        thread = UserRequestThread(user_request)
+        thread.start()
+
+        """
+        log.debug("Parsing archive..")
+
+        # try to parse archive
+        try:
+            user_request._parse_archive()
+        except Exception as e:
+            log.info("Parsing failed: %s", e)
+        else:
+            log.debug("Running BugEx..")
+            # run BugEx
+            user_request._run_bugex()
+        """
+
+        log.debug("Returning to view..")
+        
+        # return reference to view
+        return user_request
+
+
+    def _async_processing(self, user_request):
+        """
+        This method is to be called by a Thread.
+
+        It starts parsing the archive asynchronously, so that the HTTP request
+        can terminate.
+
+        """
+        log = logging.getLogger(__name__)
         log.debug("Parsing archive..")
 
         # try to parse archive
@@ -119,8 +159,6 @@ class UserRequest(models.Model):
             # run BugEx
             user_request._run_bugex()
 
-        # return reference to view
-        return user_request
 
     @property
     def result_url(self):
@@ -224,9 +262,10 @@ class UserRequest(models.Model):
         self.save()
         print 'Status of {0} changed to: {1}'.format(
             self.token, UserRequestStatus.const_name(self.status))
-
-        # TODO call notifier
-
+        
+        notifier = EmailNotifier()
+        notifier.notify_user(self)
+              
 
 def archive_file_path(instance, filename):
     """
