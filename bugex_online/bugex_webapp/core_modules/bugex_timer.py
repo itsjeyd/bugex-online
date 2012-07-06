@@ -43,3 +43,14 @@ class PeriodicTask(threading._Timer):
         # even a periodic task needs to be canceled sometimes!
         self._canceled = True
         #print 'Canceled task..'
+
+
+class UserRequestThread(threading.Thread):
+
+    def __init__(self, user_request):
+        super(UserRequestThread, self).__init__(group = None)
+        self.user_request = user_request
+
+    def run(self):
+        self.user_request._parse_archive()
+        self.user_request._run_bugex()

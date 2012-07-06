@@ -84,7 +84,7 @@ def submit_user_request(request):
 
         if form.is_valid():
 
-            user_request = UserRequest.new(
+            UserRequest.new(
                 user=create_new_user(form.cleaned_data['email_address']),
                 test_case_name=form.cleaned_data['test_case'],
                 archive_file=request.FILES['code_archive']
@@ -99,13 +99,6 @@ def submit_user_request(request):
             #            '" was processed successfully.\n\nBest regards,\n'\
             #            'The BugEx Online Group'
             #)
-
-            # this has been moved to the new() constructor of the UserRequest
-            
-            # ================================================
-            # NEXT STEP: Parse the content of the code archive
-            #user_request.parse_archive()
-            # ================================================
 
             messages.success(request, 'Form submission was successful!')
 
