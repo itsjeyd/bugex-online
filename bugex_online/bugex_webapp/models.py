@@ -311,7 +311,7 @@ class CodeArchive(models.Model):
 
     @property
     def path(self):
-        return settings.MEDIA_ROOT, self.archive_file.name
+        return os.path.join(settings.MEDIA_ROOT, self.archive_file.name)
 
     @property
     def absolute_extracted_path(self):
