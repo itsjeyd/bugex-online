@@ -32,7 +32,7 @@ class UserRequestStatus(Enum):
     The possible values are:
     PENDING:    User input data has been recieved, the archive is being
                 validated.
-    VALIDATION: The user archive is being validated.
+    VALIDATING: The user archive is being validated.
     VALID:      The user archive has been processed and is valid.
     INVALID:    The user archive has been processed and is invalid.
     PROCESSING: BugEx is running.
