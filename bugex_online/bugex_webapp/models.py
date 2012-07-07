@@ -16,7 +16,6 @@ import uuid
 import os
 import logging
 import shutil
-import threading
 from xml.etree.ElementTree import fromstring
 from zipfile import ZipFile
 
