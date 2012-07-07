@@ -68,19 +68,29 @@ class Notifications(object):
     '''
     HEADER_FOOTER = 'Dear BugEx Online user,\n\n%s\n\nBest,\nBugEx Online Team'
     CONTENT = {
-               'PENDING':('Input files successfully received',
-                  'The input you\'ve submitted to BugEx Online has been ' +
-                  'successfully uploaded and is being processed.'),
-               'INVALID':('Your request could not be processed',
-                  'Unfortunately your request could not be processed.'),
-               'FAILED':('Your request could not be processed',
-                     'Unfortunately your request could not be processed.'),
-               'FINISHED':('Your BugEx result is available',
-                  'BugEx has finished processing your request. You can ' +
-                  'access the result here: %s.\n You can delete the result' +
-                  'here: %s.'),
-               'DELETED':('Your BugEx result has been deleted',
-                  'You have successfully deleted your BugEx result files.')
-               }
+        'PENDING': {
+            'subject': 'Input files successfully received',
+            'content': 'The input you\'ve submitted to BugEx Online has been ' +
+                       'successfully uploaded and is being processed.'
+        },
+        'INVALID': {
+            'subject': 'Your request could not be processed',
+            'content': 'Unfortunately your request could not be processed.'
+        },
+        'FAILED': {
+            'subject': 'Your request could not be processed',
+            'content': 'Unfortunately your request could not be processed.'
+        },
+        'FINISHED': {
+            'subject': 'Your BugEx result is available',
+            'content': 'BugEx has finished processing your request. You can ' +
+                       'access the result here: %s.\n' +
+                       'You can delete the result here: %s.'
+        },
+        'DELETED': {
+            'subject': 'Your BugEx result has been deleted',
+            'content': 'You have successfully deleted your BugEx result files.'
+        }
+    }
 
 
