@@ -1,5 +1,10 @@
 # [ BUG EX ONLINE ]
 
+from os import getcwd
+
+# The absolute path to the bugex_online directory
+ROOT_PATH = getcwd()
+
 # Working directory of BugExOnline.
 # It holds all user data.
 #WORKING_DIR = '/tmp/bugex'
@@ -20,8 +25,7 @@ ARTIFICIAL_DELAY = 10
 RESULT_FILE_NAME = 'bugex-results.xml'
 
 # Absolute path of the BugEx executable.
-EXECUTABLE = '/home/freddy/bugex-mock-0.0.5-SNAPSHOT-jar-with-dependencies.jar'
-
+EXECUTABLE = '{0}/../java_mock/bin/bugex-mock-0.0.5-SNAPSHOT-jar-with-dependencies.jar'.format(ROOT_PATH)
 
 # [ MONITORING ]
 
