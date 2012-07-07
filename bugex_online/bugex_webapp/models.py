@@ -114,7 +114,7 @@ class UserRequest(models.Model):
         # the http request should respond.
         # Therefore, further action will be carried out asynchronously
         log.debug("Starting threaded execution..")
-        
+
         thread = UserRequestThread(user_request)
         thread.start()
 
@@ -133,7 +133,7 @@ class UserRequest(models.Model):
         """
 
         log.debug("Returning to view..")
-        
+
         # return reference to view
         return user_request
 
@@ -253,10 +253,10 @@ class UserRequest(models.Model):
         self.save()
         print 'Status of {0} changed to: {1}'.format(
             self.token, UserRequestStatus.const_name(self.status))
-        
+
         notifier = EmailNotifier()
         notifier.notify_user(self)
-              
+
 
 def archive_file_path(instance, filename):
     """
