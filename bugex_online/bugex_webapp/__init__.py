@@ -66,7 +66,7 @@ class XMLNode(Enum):
 class Notifications(object):
     '''Messages for user email notification mapped to UserRequest statuses
     '''
-    HEADER_FOOTER = 'Dear BugEx Online user,\n\n%s\n\nBest,\nBugEx Online Team'
+    HEADER_FOOTER = 'Dear BugEx Online user,\n\n{0}\n\nBest,\nBugEx Online Team'
     CONTENT = {
         'PENDING': {
             'subject': 'Input files successfully received',
@@ -83,9 +83,9 @@ class Notifications(object):
         },
         'FINISHED': {
             'subject': 'Your BugEx result is available',
-            'content': 'BugEx has finished processing your request. You can ' +
-                       'access the result here: %s.\n' +
-                       'You can delete the result here: %s.'
+            'content': 'BugEx has finished processing your request.\n' +
+                       'You can access the result here: {0}\n' +
+                       'You can delete the result here: {1}'
         },
         'DELETED': {
             'subject': 'Your BugEx result has been deleted',

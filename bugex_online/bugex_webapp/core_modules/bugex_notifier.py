@@ -57,11 +57,16 @@ class EmailNotifier(Notifier):
                 
     def _get_content(self, user_request, status):
         subject = Notifications.CONTENT[status]['subject']
-        content = Notifications.HEADER_FOOTER %Notifications.CONTENT[status]['content']
+        content = Notifications.HEADER_FOOTER.format(
+            Notifications.CONTENT[status]['content']
+        )
             
         if status == 'FINISHED':
             #include corresponding urls in the email content
-            content %(user_request.result_url, user_request.delete_url)
+            content = content.format(
+                user_request.result_url,
+                user_request.delete_url
+            )
         
         return subject, content  
 
