@@ -215,7 +215,7 @@ class UserRequest(models.Model):
         # extract user archive
         path_extracted = self.codearchive.absolute_extracted_path #_build_path('tmp_extracted')
         try:
-            archive = ZipFile(self.code_archive.path, 'r')
+            archive = ZipFile(self.codearchive.path, 'r')
             archive.extractall(path_extracted)
             archive.close()
         except:
