@@ -12,6 +12,7 @@ from datetime import datetime
 import logging
 import subprocess
 import os
+import shlex
 #from py4j.java_gateway import JavaGateway
 
 class BugExInstance(object):
@@ -212,19 +213,18 @@ class BugExProcessInstance(BugExInstance):
             <working_folder> (<artificial_delay>)
 
         """
-        args = "java -jar {0} {1} {2} {3}"
-        fargs = ""
 
+        args = 'java -jar "{0}" "{1}" "{2}" "{3}"'
         if self.debug:
             # consider delay
-            args += " {4}"
-            fargs = args.format(
+            args += ' "{4}"'
+            args = args.format(
                 self._bug_ex_executable, self._user_archive.path,
                 self._failing_test_case, self._working_folder,
                 self._artificial_delay)
         else:
             # ignore delay
-            fargs = args.format(
+            args = args.format(
                 self._bug_ex_executable, self._user_archive.path,
                 self._failing_test_case, self._working_folder)
-        return fargs.split()
+        return shlex.split(args)
