@@ -162,11 +162,19 @@ class UserRequest(models.Model):
 
     @property
     def result_url(self):
+        """
+        Return URL associated with the results produced by BugEx for a
+        specific UserRequest
+        """
         return '{0}/result/{1}'.format(
             settings.APPLICATION_BASE_URL, self.token)
 
     @property
     def delete_url(self):
+        """
+        Return URL for deleting user input data for a specific
+        UserRequest
+        """
         return '{0}/delete/{1}'.format(
             settings.APPLICATION_BASE_URL, self.delete_token)
 
