@@ -16,11 +16,13 @@ import uuid
 
 from django.core.mail import mail_admins
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login
-
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 
 from bugex_webapp.models import UserRequest, TestCase, CodeArchive
 from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm
@@ -53,7 +55,7 @@ class MainPageLoginRegistrationView(TemplateView):
     template_name = 'bugex_webapp/main_with_login.html'
 
 
-def create_new_user(email_address):
+def get_or_create_user(email_address):
     """Create and return a new user.
 
     If the user is already present in the database, return this user.
@@ -92,20 +94,10 @@ def submit_user_request(request):
         if form.is_valid():
 
             UserRequest.new(
-                user=create_new_user(form.cleaned_data['email_address']),
+                user=get_or_create_user(form.cleaned_data['email_address']),
                 test_case_name=form.cleaned_data['test_case'],
                 archive_file=request.FILES['code_archive']
             )
-
-            # TODO this goes in the notifier
-
-            #user_request.user.email_user(
-            #    subject='We successfully received your request',
-            #    message='Dear user,\n\n your request for the code archive "' +
-            #            request.FILES['code_archive'].name +
-            #            '" was processed successfully.\n\nBest regards,\n'\
-            #            'The BugEx Online Group'
-            #)
 
             messages.success(request, 'Form submission was successful!')
 
@@ -118,28 +110,31 @@ def submit_user_request(request):
     return render(request, 'bugex_webapp/main.html', {'form': form,})
 
 
-def change_email_request(request):
-    """Change email request.
-
-    TODO the DOC here
-
-    """
+def change_email_address(request):
+    """Change a user's current email address."""
     if request.method == 'POST':
         form = ChangeEmailForm(request.POST)
 
         if form.is_valid():
 
-            user_request = UserRequest.new(
-                user=create_new_user(form.cleaned_data['email_address']),
-            )
+            current_email_address = form.cleaned_data['email_address']
+            password = form.cleaned_data['password']
+            new_email_address_1 = form.cleaned_data['new_email_address_1']
+            new_email_address_2 = form.cleaned_data['new_email_address_2']
 
-            user_request.user.email_user(
-                subject='You successfully changed your email',
-                message='Dear user,\n\n your new email address is "' +
-                        request.POST['email_address'].name +
-                        '" .\n\nBest regards,\n'\
-                        'The BugEx Online Group'
-            )
+            user = User.objects.get(username=current_email_address)
+
+            if user.check_password(password):
+                if new_email_address_1 == new_email_address_2:
+
+                    user.username = new_email_address_2
+                    user.email = new_email_address_2
+                    user.save()
+
+                    messages.success(request,
+                        'Your new email address has been set.'
+                    )
+
 
             messages.success(request, 'Form submission was successful!')
 
@@ -152,26 +147,37 @@ def change_email_request(request):
     return render(request, 'bugex_webapp/user.html', {'form': form,})
 
 
-def login_user(request):
-    """Test function for login a user to the system
-    
-    We have to see in the database if the password and the email that he wrote, match one of the entries of our table
-    """
-    
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        if user.is_active:
-            login(request, user)
-            return HttpResponseRedirect("/user/")
+def log_user_in(request):
+    """Log a user in."""
+    error_message = ''
+    if request.method == 'POST':
+        form = AuthenticationForm(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect('/user/')
+            else:
+                error_message = 'not_active'
         else:
-            messages.error(request, 'Your account is disabled!')
+            error_message = 'not_authenticated'
 
     else:
-        messages.error(request, 'Your login is invalid!')
-        
-    return render(request, 'bugex_webapp/main_html_login.html', {'form': form,})
+        form = AuthenticationForm()
+
+    dictionary = {'form': form, 'error': error_message}
+
+    return render(request, '', dictionary)
+
+
+def log_user_out(request):
+    """Log a currently logged in user out."""
+    logout(request)
+    return render(request, '')
+
 
 def change_password_request(request):
     """Test function for changing the user's password
