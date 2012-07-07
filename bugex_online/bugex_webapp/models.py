@@ -190,15 +190,6 @@ class UserRequest(models.Model):
             'user_{0}'.format(self.user.id), self.token
         )
 
-    @property
-    def code_archive_path(self):
-        """
-        Returns the absolute path to the code archive.
-        """
-        return os.path.join(
-            settings.MEDIA_ROOT, self.codearchive.archive_file.name
-        )
-
     def _build_path(self, *sub_folders):
         return os.path.join(self.folder, *sub_folders)
 
@@ -216,7 +207,7 @@ class UserRequest(models.Model):
         # extract user archive
         path_extracted = self.codearchive.absolute_extracted_path #_build_path('tmp_extracted')
         try:
-            archive = ZipFile(self.code_archive_path, 'r')
+            archive = ZipFile(self.code_archive.path, 'r')
             archive.extractall(path_extracted)
             archive.close()
         except:
@@ -230,11 +221,11 @@ class UserRequest(models.Model):
 
             # archive seems to be VALID!
             self.update_status(UserRequestStatus.VALID)
-            
+
             # delete temporary folder again
             shutil.rmtree(path_extracted)
 
-    
+
     def _run_bugex(self):
         """
         Creates and starts a BugEx Instance by notifying the BugExMonitor.
@@ -310,6 +301,9 @@ class CodeArchive(models.Model):
         """Return a unicode representation for a CodeArchive model object."""
         return u'{0}'.format(self.archive_file.name)
 
+    @property
+    def path(self):
+        return settings.MEDIA_ROOT, self.archive_file.name
 
     @property
     def absolute_extracted_path(self):
@@ -484,7 +478,7 @@ class Folder(models.Model):
         if self.parent_folder is None:
             return True
         return False
-    
+
     @property
     def absolute_path(self):
         if self.is_root_folder:
@@ -498,7 +492,7 @@ class Folder(models.Model):
 
 
     def _get_path_elements(self, my_path):
-        '''Returns the current and parent folder names of a specified path 
+        '''Returns the current and parent folder names of a specified path
         my_path -- a path string
         '''
         elements = os.path.split(os.path.abspath(my_path))
@@ -608,7 +602,7 @@ class SourceFile(ProjectFile):
             if line.startswith('package'):
                 #print 'package line: {0}'.format(line)
                 source_file.package = re.search('package +(.+);', line).group(1)
-        
+
         source_file.save()
 
 
