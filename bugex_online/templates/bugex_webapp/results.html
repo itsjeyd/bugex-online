@@ -39,35 +39,35 @@
 									            </div>
 									         {% empty %}
 					    						<p>You had no errors in your code!</p>
-											 {% endfor %}            								
-            							</div>								
+											 {% endfor %}
+            							</div>
 									</div>
 					  			{% endfor %}
 							</div>
-						</div>						
+						</div>
 				</div>
 				<button class="btn btn-primary"><i class="icon-download icon-white"></i>Download the facts</button>
 	            <ul id="social">
 	                  <li><a href="#"><img src="{{ STATIC_URL }}img/fb.png"></a></li>
 	                  <li><a href="#"><img src="{{ STATIC_URL }}img/go.png"></a></li>
-				</ul>  
+				</ul>
 				<!-- outline functionality -->
 				<div id="outline">
 					<h1>{{ class_name }}</h1>
 					<ul>
 					{% for methods in class_methods_list %}
 						<li>{{ methods.name }}</li>
-					{% endfor %} 	
-					</ul>			
-				</div>  
+					{% endfor %}
+					</ul>
+				</div>
 				<!-- outline functionality -->
-				
+
         	</div>
 			<div class="span8">
             	<div id="code">
-            	
-            	</div>                
+
+            	</div>
 			</div>
-		</div>	
+		</div>
 	</div>
 {% endblock content %}
