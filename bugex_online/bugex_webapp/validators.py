@@ -121,7 +121,6 @@ def validate_test_case_name(test_case_name):
             u'needed format "de.mypackage.TestMyClass#testGetMin"'
         )
         
-        
 def validate_name(name):
     """
     Validate the name of a user in the contact form.
@@ -132,12 +131,9 @@ def validate_name(name):
     name -- value of the name of the user
 
     """
-    name_pattern = re.compile(r"""
-        ^[a-zA-Z][a-zA-Z\d]*$""",
-        re.VERBOSE
-    )
+    name_pattern = re.compile(ur'^\w+$', re.UNICODE)
+
     if not name_pattern.match(name):
         raise ValidationError(
-            u'Your entered a name does not have the ' +
-            u'letters or numbers only'
+            u'Your entered name contains invalid characters.'
         )
