@@ -618,6 +618,13 @@ class SourceFile(ProjectFile):
         """Return a unicode representation for a SourceFile model object."""
         return '{0}'.format(self.name)
 
+    @property
+    def content(self):
+        """
+        Return a string representation of the content of a SourceFile
+        """
+        return '\n'.join(self.line_set.all())
+
 
 class ClassFile(ProjectFile):
     """The ClassFile model.
