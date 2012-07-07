@@ -24,7 +24,7 @@ class Enum(object):
         for const, value in vars(cls).items():
             if value == const_value:
                 return const
-    
+
 
 class UserRequestStatus(Enum):
     """ Collection of possible statuses for UserRequests
@@ -70,17 +70,17 @@ class Notifications(object):
     CONTENT = {
                'PENDING':('Input files successfully received',
                   'The input you\'ve submitted to BugEx Online has been ' +
-                  'successfully uploaded and is being processed.'), 
+                  'successfully uploaded and is being processed.'),
                'INVALID':('Your request could not be processed',
                   'Unfortunately your request could not be processed.'),
                'FAILED':('Your request could not be processed',
                      'Unfortunately your request could not be processed.'),
                'FINISHED':('Your BugEx result is available',
-                  'BugEx has finished processing your request. You can ' + 
+                  'BugEx has finished processing your request. You can ' +
                   'access the result here: %s.\n You can delete the result' +
                   'here: %s.'),
                'DELETED':('Your BugEx result has been deleted',
                   'You have successfully deleted your BugEx result files.')
                }
-    
-    
+
+
