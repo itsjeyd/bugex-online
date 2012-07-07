@@ -11,11 +11,11 @@ Authors: Amir Baradaran
          Peter Stahl
 """
 
-import re
-import uuid
-import os
 import logging
+import re
+import os
 import shutil
+import uuid
 from xml.etree.ElementTree import fromstring
 from zipfile import ZipFile
 
@@ -25,13 +25,14 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from bugex_webapp import UserRequestStatus, XMLNode
-from bugex_webapp.validators import validate_source_file_extension
-from bugex_webapp.validators import validate_class_file_extension
-from bugex_webapp.validators import validate_archive_file_extension
-from bugex_webapp.validators import validate_test_case_name
 from bugex_webapp.core_modules.bugex_monitor import BugExMonitor
-from bugex_webapp.core_modules.bugex_timer import UserRequestThread
 from bugex_webapp.core_modules.bugex_notifier import EmailNotifier
+from bugex_webapp.core_modules.bugex_timer import UserRequestThread
+from bugex_webapp.validators import validate_archive_file_extension
+from bugex_webapp.validators import validate_class_file_extension
+from bugex_webapp.validators import validate_source_file_extension
+from bugex_webapp.validators import validate_test_case_name
+
 
 class UserRequest(models.Model):
     """The UserRequest model.
