@@ -22,7 +22,7 @@ from bugex_webapp.views import submit_contact_form, log_user_out
 urlpatterns = patterns('',
     url(r'^$', process_main_page_forms, name='main-page'),
     url(r'^howto/$', HowToPageView.as_view(), name='howto-page'),
-    url(r'^results/$', ResultsPageView.as_view(), name='results-page-overview'),
+    # url(r'^results/$', ResultsPageView.as_view(), name='results-page-overview'),
     url(r'^result/(?P<token>[a-z0-9\-]{36})$', ResultsPageView.as_view(), name='results-page'),
     url(r'^delete/$', DeletePageView.as_view(), name='delete-page'),
     url(r'^account/$', change_user_credentials, name='user-page'),

@@ -56,7 +56,7 @@
 					<li><a href="{% url contact-page %}">Contact Us</a></li>
 
                     {% if user.is_authenticated %}
-                        <li><a href="{% url results-page-overview %}">Results</a></li>
+                        {% comment %}<li><a href="{% url results-page-overview %}">Results</a></li>{% endcomment %}
                         <li><a href="{% url user-page %}">My Account</a></li>
                         <li><a href="{% url logout %}">Logout</a></li>
                         <li class="active"><a><i class="icon-user icon-white"></i> {{ user.username }}</a></li>
