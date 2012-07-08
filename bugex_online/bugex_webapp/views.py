@@ -24,7 +24,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 
-from bugex_webapp.models import UserRequest, TestCase, CodeArchive
+from bugex_webapp.models import UserRequest, TestCase, CodeArchive, Fact
 from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm
 
 class MainPageView(TemplateView):
@@ -104,7 +104,7 @@ def _submit_user_request(request):
     if user_req_form.is_valid():
 
         UserRequest.new(
-            user=get_or_create_user(user_req_form.cleaned_data['email_address']),
+            user=get_or_create_user(request.user.email),
             test_case_name=user_req_form.cleaned_data['test_case'],
             archive_file=request.FILES['code_archive']
         )
@@ -229,6 +229,10 @@ def submit_contact_form(request):
 
 def show_bugex_result(request, token):
     """Prepare the results data to be shown for a single user request."""
-    pass
+    user_request = UserRequest.objects.get(token=token)
+    fact_type_list = [fact_type[0] for fact_type in Fact.FACT_TYPES]
+    fact_list = Fact.objects.all()
 
-    return render(request, 'bugex_webapp/results.html')
+    template_context = {'fact_type_list': fact_type_list, 'fact_list': fact_list}
+
+    return render(request, 'bugex_webapp/results.html', template_context)
