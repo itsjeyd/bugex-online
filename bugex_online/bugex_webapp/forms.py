@@ -40,7 +40,7 @@ class EmailPasswordBaseForm(EmailBaseForm):
     )
 
 
-class UserRequestForm(EmailBaseForm):
+class UserRequestForm(forms.Form):
     """The UserRequestForm form for uploading user requests.
 
     The UserRequestForm inherits the field `email_address` from

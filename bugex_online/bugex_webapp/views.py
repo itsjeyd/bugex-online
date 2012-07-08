@@ -18,7 +18,7 @@ from django.core.mail import mail_admins
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -73,51 +73,60 @@ def get_or_create_user(email_address):
     return User.objects.get(username=email_address)
 
 
-def submit_user_request(request):
-    """Submit a user request.
-
-    1. Bind the entered data to the UserRequestForm.
-    2. Validate the form.
-    3. Create a new user instance or get it from the database, if present.
-    4. Create and save a new TestCase instance.
-    5. Create and save a new CodeArchive instance.
-    6. Create and save a new UserRequest instance.
-    7. Send a confirmation email to the user.
-       (Email will be sent to the console for testing purposes.)
-    8. Render a template with the given form context.
-       (Just for testing purposes.)
-
-    """
+def process_main_page_forms(request):
     if request.method == 'POST':
-        form = UserRequestForm(request.POST, request.FILES)
+        if request.POST['form-type'] == u'login-form':
+            error_message = _log_user_in(request)
+            template_context = {
+                'auth_form': AuthenticationForm(),
+                'user_req_form': UserRequestForm(),
+                'error': error_message
+            }
 
-        if form.is_valid():
-
-            UserRequest.new(
-                user=get_or_create_user(form.cleaned_data['email_address']),
-                test_case_name=form.cleaned_data['test_case'],
-                archive_file=request.FILES['code_archive']
-            )
-
-            messages.success(request, 'Form submission was successful!')
-
-        else:
-            messages.error(request, 'Form submission failed!')
+        elif request.POST['form-type'] == u'user-request-form':
+            template_context = _submit_user_request(request)
 
     else:
-        form = UserRequestForm()
+        template_context = {
+            'auth_form': AuthenticationForm(),
+            'user_req_form': UserRequestForm()
+        }
 
-    return render(request, 'bugex_webapp/main.html', {'form': form,})
+
+    return render(request, 'bugex_webapp/main.html', template_context)
 
 
-@login_required(login_url='/account/login')
+def _submit_user_request(request):
+    """Submit a user request."""
+
+    user_req_form = UserRequestForm(request.POST, request.FILES)
+
+    if user_req_form.is_valid():
+
+        UserRequest.new(
+            user=get_or_create_user(user_req_form.cleaned_data['email_address']),
+            test_case_name=user_req_form.cleaned_data['test_case'],
+            archive_file=request.FILES['code_archive']
+        )
+
+        messages.success(request, 'Form submission was successful!')
+
+    else:
+        messages.error(request, 'Form submission failed!')
+
+    template_context = {'user_req_form': user_req_form}
+
+    return template_context
+
+
+@login_required(login_url='/')
 def change_user_credentials(request):
     """Change a user's credentials, i.e. email address and password."""
     if request.method == 'POST':
         if request.POST['form-type'] == u'change-email-form':
-            change_email_form = change_email_address(request)
+            change_email_form = _change_email_address(request)
         elif request.POST['form-type'] == u'change-password-form':
-            change_password(request)
+            _change_password(request)
             change_email_form = ChangeEmailForm()
 
     else:
@@ -129,7 +138,7 @@ def change_user_credentials(request):
     )
 
 
-def change_password(request):
+def _change_password(request):
     """Change a user's password."""
     new_password = User.objects.make_random_password(length=8)
     print new_password
@@ -139,7 +148,7 @@ def change_password(request):
     messages.success(request, 'Your new password has been set.')
 
 
-def change_email_address(request):
+def _change_email_address(request):
     """Change a user's current email address."""
 
     change_email_form = ChangeEmailForm(request.POST)
@@ -168,30 +177,25 @@ def change_email_address(request):
     return change_email_form
 
 
-def log_user_in(request):
+def _log_user_in(request):
     """Log a user in."""
     error_message = ''
-    if request.method == 'POST':
-        form = AuthenticationForm(request.POST)
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
+    print request.POST
+    auth_form = AuthenticationForm(request.POST)
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username=username, password=password)
 
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect('/')
-            else:
-                error_message = 'not_active'
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            return redirect('/')
         else:
-            error_message = 'not_authenticated'
-
+            error_message = 'not_active'
     else:
-        form = AuthenticationForm()
+        error_message = 'not_authenticated'
 
-    dictionary = {'form': form, 'error': error_message}
-
-    return render(request, 'bugex_webapp/login.html', dictionary)
+    return error_message
 
 
 def log_user_out(request):
@@ -221,3 +225,10 @@ def submit_contact_form(request):
         form = ContactForm()
 
     return render(request, 'bugex_webapp/contact.html', {'form': form,})
+
+
+def show_bugex_result(request, token):
+    """Prepare the results data to be shown for a single user request."""
+    pass
+
+    return render(request, 'bugex_webapp/results.html')
