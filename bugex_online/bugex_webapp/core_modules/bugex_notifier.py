@@ -62,7 +62,8 @@ class EmailNotifier(Notifier):
             
         if status == 'FINISHED':
             #include corresponding urls in the email content
-            content %(user_request.result_url, user_request.delete_url)
+            content = content %(user_request.result_url,
+                                 user_request.delete_url)
         
         return subject, content  
 

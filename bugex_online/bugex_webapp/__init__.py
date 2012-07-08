@@ -78,7 +78,7 @@ class Notifications(object):
                'FINISHED':('Your BugEx result is available',
                   'BugEx has finished processing your request. You can ' +
                   'access the result here: %s.\n You can delete the result' +
-                  'here: %s.'),
+                  ' here: %s.'),
                'DELETED':('Your BugEx result has been deleted',
                   'You have successfully deleted your BugEx result files.')
                }
