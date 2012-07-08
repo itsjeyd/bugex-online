@@ -11,9 +11,9 @@ Authors: Amir Baradaran
          Peter Stahl
 """
 
-import os
-import uuid
+import shutil
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import mail_admins
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -24,35 +24,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 
-from bugex_webapp.models import UserRequest, TestCase, CodeArchive, Fact
+from bugex_webapp import UserRequestStatus
+from bugex_webapp.models import UserRequest, Fact
 from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm
-
-class MainPageView(TemplateView):
-    template_name = 'bugex_webapp/main.html'
-     
 
 class HowToPageView(TemplateView):
     template_name = 'bugex_webapp/howto.html'
-
-
-class ResultsPageView(TemplateView):
-    template_name = 'bugex_webapp/results.html'
-
-
-class DeletePageView(TemplateView):
-    template_name = 'bugex_webapp/delete.html'
-
-
-class UserPageView(TemplateView):
-    template_name = 'bugex_webapp/user.html'
-
-
-class ContactPageView(TemplateView):
-    template_name = 'bugex_webapp/contact.html'
-    
-
-class MainPageLoginRegistrationView(TemplateView):
-    template_name = 'bugex_webapp/main_with_login.html'
 
 
 def get_or_create_user(email_address):
@@ -231,8 +208,37 @@ def show_bugex_result(request, token):
     """Prepare the results data to be shown for a single user request."""
     user_request = UserRequest.objects.get(token=token)
     fact_type_list = [fact_type[0] for fact_type in Fact.FACT_TYPES]
-    fact_list = Fact.objects.all()
+    fact_list = user_request.result.fact_set.all()
+    if fact_list:
+        template_context = {'fact_type_list': fact_type_list, 'fact_list': fact_list}
+        return render(request, 'bugex_webapp/results.html', template_context)
 
-    template_context = {'fact_type_list': fact_type_list, 'fact_list': fact_list}
+    message = 'This BugEx result has already been deleted.'
+    return render(request, 'bugex_webapp/delete.html', {'message': message})
 
-    return render(request, 'bugex_webapp/results.html', template_context)
+
+def delete_bugex_result(request, delete_token):
+    """Delete the results data for a specific user request."""
+
+    # TODO: TestCase and BugExResult can not be deleted because of
+    # one-to-one relations. Make relations optional?
+    try:
+        user_request = UserRequest.objects.get(delete_token=delete_token)
+        # Deleting underlying archive file
+        user_request.codearchive.archive_file.delete()
+        # Deleting CodeArchive, all SourceFiles, all ClassFiles, all Folders, all Lines
+        user_request.codearchive.delete()
+        # Deleting all Facts
+        user_request.result.fact_set.all().delete()
+        # Delete the entire directory where the archive file was stored
+        shutil.rmtree(user_request.folder)
+        # Set user request status to DELETED
+        user_request.status = UserRequestStatus.DELETED
+        user_request.save()
+
+        message = 'Your BugEx result has been deleted successfully.'
+
+    except ObjectDoesNotExist:
+        message = 'This BugEx result has already been deleted.'
+
+    return render(request, 'bugex_webapp/delete.html', {'message': message})
