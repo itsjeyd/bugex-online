@@ -32,14 +32,14 @@
 
               {% if messages %}
 
-              {% for message in messages %}
-              {% if message.tags == 'success' %}
-              <div class="alert alert-success fade in">
-                <a class="close" data-dismiss="alert" href="#">&times;</a>
-                {{ message }}
-              </div>
-              {% endif %}
-              {% endfor %}
+                {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                        <div class="alert alert-success fade in">
+                            <a class="close" data-dismiss="alert" href="#">&times;</a>
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
               {% endif %}
 
               <fieldset>
@@ -52,10 +52,21 @@
                   <div class="control-group">
                     {% endif %}
 
-                    <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+                    {% if field.html_name == "email_address" and not user.is_authenticated or field.html_name == "code_archive" or field.html_name == "test_case" or field.html_name == "has_copyright" %}
+                      <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+                    {% endif %}
 
                     <div class="controls">
-                      {{ field }}
+                      {% if field.html_name == "email_address" %}
+                        {% if user.is_authenticated %}
+                        <input type="hidden" name="email_address" value="{{ user.email }}" id="id_email_address" />
+                        {% else %}
+                        <input type="text" name="email_address" id="id_email_address" />
+                        {% endif %}
+                      {% else %}
+                        {{ field }}
+                      {% endif %}
+
                       {% for error in field.errors %}
                       <span class="label label-important">{{ error }}</span>
                       {% endfor %}
