@@ -1,4 +1,4 @@
-{% extends "bugex_webapp/base_with_registration.html" %}
+{% extends "bugex_webapp/base.html" %}
 
 {% block title %}BugEx User Page{% endblock title %}
 
@@ -7,66 +7,88 @@
 		<div class="row-fluid">
         	<div class="span1"></div>
             <div class="span1"></div>
-			<div class="span8">
+
+            <div class="span8">
             	<div id="welcomeText">
                 	<h1>User Page</h1>
                 </div>
-                <div class="row-fluid">
-                	<h2>Change email address</h2>
-                    <p>If you wish to change your email address please fill the following fields out</p>
-                    {% if form.is_multipart %}
-            			<form class="form-horizontal" enctype="multipart/form-data" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
-        			{% else %}
-            		<form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
-        			{% endif %}
 
-			        {% if messages %}
-						{% for message in messages %}
-                			{% if message.tags == 'success' %}
-                    			<div class="alert alert-success fade in">
-                        			<a class="close" data-dismiss="alert" href="#">&times;</a>
-                        	{{ message }}
-                    			</div>
-                			{% endif %}
-            			{% endfor %}
-        			{% endif %}
+                <div class="row-fluid">
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                    <div class="alert alert-success fade in">
+                        <a class="close" data-dismiss="alert" href="#">&times;</a>
+                        {{ message }}
+                    </div>
+
+                    {% elif message.tags == 'error' %}
+                    <div class="alert alert-error fade in">
+                        <a class="close" data-dismiss="alert" href="#">&times;</a>
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+
+                	<h3>Change email address</h3>
+                    <p>If you wish to change your email address please fill the following fields out</p>
+
+            		<form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
+
+
         			
         			<fieldset>
-            			{% for field in form %}
-                			{% if field.errors %}
+
+                        {% for field in form %}
+
+                            {% if field.errors %}
                     			<div class="control-group error">
                 			{% else %}
                     			<div class="control-group">
                 			{% endif %}
-                					<label class="control-label" for="{{ field.label }}">{{ field.label }} <p class="help-block">({{ field.help_text }})</p></label>
-                					<div class="controls">
-                    					{{ field }}
-                    					{% for error in field.errors %}
-                        					<span class="label label-important">{{ error }}</span>
+
+                                    <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+
+                                    <div class="controls">
+                                        {% if field.html_name == "password" %}
+                                            <input id="id_password" type="password" name="password" maxlength="8" />
+                                        {% else %}
+                    				        {{ field }}
+                                        {% endif %}
+
+                                        {% for error in field.errors %}
+                        				    <span class="label label-important">{{ error }}</span>
                     					{% endfor %}
                 					</div> 
-                				</div>
+
+                                </div>
             			{% endfor %}
 
 	            		<div class="form-actions">
+                            <input type="hidden" name="form-type" value="change-email-form" />
 	                		<button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
 	            		</div>
         			</fieldset>
         			</form>
-                    <h2>Change password</h2>
-                    <p>If you wish to change your password please click on the following button</p>
-                    {% if form.is_multipart %}
-            		<form class="form-horizontal" enctype="multipart/form-data" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
-        			{% else %}
+
+                    <br>
+                    <h3>Change password</h3>
+                    <p>If you wish to change your password please click on the following button.</p>
+                    <p>The new password will be sent to your email address.</p>
             		<form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
-        			{% endif %}
+
         			<fieldset>
+
 						<div class="form-actions">
+                            <input type="hidden" name="form-type" value="change-password-form" />
 	                		<button type="submit" class="btn btn-primary">Change Password!</button>
 	            		</div>
-        			</fieldset>
+
+                    </fieldset>
         			</form>
-                    <p>The new password will be sent to your email address</p>
+
             	</div>
             </div>                          
 		</div>
