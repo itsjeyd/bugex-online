@@ -19,7 +19,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'bugex_online.views.home', name='home'),
-    url(r'^', include('bugex_webapp.urls')),
+    url(r'', include('bugex_webapp.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
