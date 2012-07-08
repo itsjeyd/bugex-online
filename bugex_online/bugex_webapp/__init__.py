@@ -92,5 +92,3 @@ class Notifications(object):
             'content': 'You have successfully deleted your BugEx result files.'
         }
     }
-
-
