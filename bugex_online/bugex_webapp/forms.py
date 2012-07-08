@@ -71,7 +71,7 @@ class AdditionalTestCaseForm(forms.Form):
     )
 
 
-class ChangeEmailForm(EmailPasswordBaseForm):
+class ChangeEmailForm(forms.Form):
     """The ChangeEmailForm for changing a user's email address.
 
     The ChangeEmailForm inherits the fields `email_address` and `password`
