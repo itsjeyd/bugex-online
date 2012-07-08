@@ -110,41 +110,62 @@ def submit_user_request(request):
     return render(request, 'bugex_webapp/main.html', {'form': form,})
 
 
-def change_email_address(request):
-    """Change a user's current email address."""
+@login_required(login_url='/account/login')
+def change_user_credentials(request):
+    """Change a user's credentials, i.e. email address and password."""
     if request.method == 'POST':
-        form = ChangeEmailForm(request.POST)
-
-        if form.is_valid():
-
-            current_email_address = form.cleaned_data['email_address']
-            password = form.cleaned_data['password']
-            new_email_address_1 = form.cleaned_data['new_email_address_1']
-            new_email_address_2 = form.cleaned_data['new_email_address_2']
-
-            user = User.objects.get(username=current_email_address)
-
-            if user.check_password(password):
-                if new_email_address_1 == new_email_address_2:
-
-                    user.username = new_email_address_2
-                    user.email = new_email_address_2
-                    user.save()
-
-                    messages.success(request,
-                        'Your new email address has been set.'
-                    )
-
-
-            messages.success(request, 'Form submission was successful!')
-
-        else:
-            messages.error(request, 'Form submission failed!')
+        if request.POST['form-type'] == u'change-email-form':
+            change_email_form = change_email_address(request)
+        elif request.POST['form-type'] == u'change-password-form':
+            change_password(request)
+            change_email_form = ChangeEmailForm()
 
     else:
-        form = ChangeEmailForm()
+        change_email_form = ChangeEmailForm()
 
-    return render(request, 'bugex_webapp/user.html', {'form': form,})
+    return render(request,
+        'bugex_webapp/user.html',
+        {'form': change_email_form}
+    )
+
+
+def change_password(request):
+    """Change a user's password."""
+    new_password = User.objects.make_random_password(length=8)
+    print new_password
+    request.user.set_password(new_password)
+    request.user.save()
+
+    messages.success(request, 'Your new password has been set.')
+
+
+def change_email_address(request):
+    """Change a user's current email address."""
+
+    change_email_form = ChangeEmailForm(request.POST)
+
+    if change_email_form.is_valid():
+
+        new_email_address_1 = change_email_form.cleaned_data['new_email_address_1']
+        new_email_address_2 = change_email_form.cleaned_data['new_email_address_2']
+
+        if new_email_address_1 == new_email_address_2:
+
+            request.user.username = new_email_address_2
+            request.user.email = new_email_address_2
+            request.user.save()
+
+            messages.success(request,
+                'Your new email address has been set.'
+            )
+
+        else:
+            messages.error(request, 'Your entered email addresses are not identical.')
+
+    else:
+        messages.error(request, 'This form is not valid.')
+
+    return change_email_form
 
 
 def log_user_in(request):
@@ -159,7 +180,7 @@ def log_user_in(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/user/')
+                return HttpResponseRedirect('/')
             else:
                 error_message = 'not_active'
         else:
@@ -170,30 +191,14 @@ def log_user_in(request):
 
     dictionary = {'form': form, 'error': error_message}
 
-    return render(request, '', dictionary)
+    return render(request, 'bugex_webapp/login.html', dictionary)
 
 
 def log_user_out(request):
     """Log a currently logged in user out."""
     logout(request)
-    return render(request, '')
+    return HttpResponseRedirect('/')
 
-
-def change_password_request(request):
-    """Test function for changing the user's password
-    """    
-    email_address = request.POST['email_address']
-    user = User.objects.get(username__exact=email_address)
-    user.make_random_password(length=8)
-    user.save()
-    user.email_user(
-                subject='you successfully changed your password',
-                message='dear user,\n\n your new password is "' + 
-                        user.password + 
-                        '" .\n\nbest regards,\n'\
-                        'the bugex online group'
-            )
-    
 
 def submit_contact_form(request):
     """Submit a contact form request
