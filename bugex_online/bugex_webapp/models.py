@@ -366,7 +366,7 @@ class BugExResult(models.Model):
         return '{0}'.format(self.date)
 
     @staticmethod
-    def new(xml_string):
+    def new(xml_string, user_request):
         '''Creates a new instance of BugExResult.
 
         xml_string -- a string containing the xml output of BugEx
@@ -380,6 +380,8 @@ class BugExResult(models.Model):
             #instantiate a BugExResult and save all corresponding Facts
             #setting the ForeignKey field of each Fact properly
             be_res = BugExResult.objects.create()
+            user_request.result = be_res
+            user_request.save()
             #be_res.save()
             for f in facts:
                 f.bugex_result = be_res

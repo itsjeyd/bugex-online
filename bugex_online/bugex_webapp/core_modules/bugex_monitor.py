@@ -195,7 +195,7 @@ class BugExMonitorJob(object):
         try:
             #defered import to avoid circular dependency problems
             from bugex_webapp.models import BugExResult
-            BugExResult.new(xml_content)
+            BugExResult.new(xml_content, self._user_request)
         except Exception as e:
             traceback.print_exc(file=sys.stdout)
             self.cancel('Could not store the BugExResult: %s',e)
