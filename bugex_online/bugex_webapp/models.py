@@ -406,7 +406,7 @@ class BugExResult(models.Model):
                         method_name=f.find(XMLNode.METHOD).text.strip(),
                         line_number=int(f.find(XMLNode.LINE).text.strip()),
                         explanation=f.find(XMLNode.EXPL).text.strip(),
-                        fact_type=f.find(XMLNode.TYPE).text.strip())
+                        fact_type=f.find(XMLNode.TYPE).text.strip()[-1])
                 except Exception:
                     #nodes are missing
                     raise
