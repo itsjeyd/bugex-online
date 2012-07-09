@@ -19,7 +19,7 @@ body { padding: 7em 0 2em 0; }
  * html div.container-fluid {
   height:100%;
   overflow:auto;
- }
+ }}
 
 /*********Navigation*********/
 div.navbar { position:absolute; top:0; left:0;width: 100%; height: 3em; }
@@ -53,10 +53,10 @@ ul#social li { display: inline; margin: 0 0.3em 0 0; }
 /*********Social*********/
 
 /*********Facts*********/
-#facts { height: 70%; background: #fff; border: 1px solid #75BCEF; margin: 0 0 1em 0; overflow-y: scrollbar; }
+#facts { background: #fff; border: 1px solid #75BCEF; margin: 0 0 1em 0; overflow-y: scrollbar; }
 #facts h1 { color: #ccc; }
-#facts ul.factBasics, #facts ul.factBasics li { text-decoration: none; list-style:none;  }
-#facts ul.factBasics li { float: left; display:inline; }
+#facts ul.factBasic, #facts ul.factBasic li { text-decoration: none; list-style:none;  }
+#facts ul.factBasic li { float: left; display:inline; margin: 0 20px 0 0; }
 /*********Facts*********/
 
 /*********Code*********/
@@ -89,6 +89,14 @@ form.contact div.form-actions button { float: left; margin: 0 1em 0 0; }
 /*********Forms*********/
 
 .navbar .nav > li > a { line-height: 50px; text-shadow:none; font-size: 14px; font-weight: bold; }
+
+/*********Accordion*********/
+div.accordion-group { width: 95%; margin: 0 auto; }
+div.accordion-heading { background: #DDEAF6; width: 100%; border: 1px solid #75BCEF; }
+div.accordion-heading p { float: left; margin: 0 30px 0 0; }
+#collapse { background: #F5F5F5; width: 100%; border: 1px solid #75BCEF; }
+/*********Accordion*********/
+
 .scrollable-code { height: 470px; overflow: auto; }
 .scrollable-facts { height: 120px; overflow: auto; }
 .scrollable-outline { height: 220px; overflow: auto; }

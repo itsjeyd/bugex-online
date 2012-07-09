@@ -31,7 +31,7 @@ urlpatterns = patterns('',
 
     url(r'^account/logout/$', log_user_out, name='logout'),
 
-    url(r'^source/(?P<token>[a-z0-9\-]{36})/(?P<class_name>([a-z0-9]+\.)+[A-Z][A-Za-z0-9]+)$', get_source_file_content),
+    url(r'^source/(?P<token>[a-z0-9\-]{36})/(?P<class_name>([a-z0-9]+\.)+[A-Z][A-Za-z0-9]+)$', get_source_file_content, name='source-page'),
 
     # This is for serving uploaded user files in development mode.
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

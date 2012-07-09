@@ -25,6 +25,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render_to_response
+from django.core.mail import send_mail
 
 from bugex_webapp import UserRequestStatus, Notifications
 from bugex_webapp.models import UserRequest, Fact
@@ -283,10 +284,13 @@ def submit_contact_form(request):
         form = ContactForm(request.POST)
 
         if form.is_valid():
-
-            mail_admins('Email from the contact form',
-                'Name: ' + request.POST['name'] + '\n\nMessage: '+ request.POST['message']
-            )
+            
+            content = 'Name:\n' + request.POST['name'] + \
+                      '\n\nEmail:\n' + request.POST['email_address'] + \
+                      '\n\nMessage:\n'+ request.POST['message']
+            send_mail('[Contact Form] from ' + request.POST['name'], content, 
+                      request.POST['email_address'], ['bugexonline@gmail.com'], 
+                      fail_silently=True)
 
             messages.success(request, 'We received your email!')
 
@@ -306,7 +310,7 @@ def show_bugex_result(request, token):
     fact_type_list = [fact_type[0] for fact_type in Fact.FACT_TYPES]
     fact_list = user_request.result.fact_set.all()
     if fact_list:
-        template_context = {'fact_type_list': fact_type_list, 'fact_list': fact_list}
+        template_context = {'fact_type_list': fact_type_list, 'fact_list': fact_list, 'token': token}
         return render(request, 'bugex_webapp/results.html', template_context)
 
     message = 'This BugEx result has already been deleted.'
