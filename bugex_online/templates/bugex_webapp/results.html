@@ -14,7 +14,9 @@
                     </script>
                     <ul class="nav nav-tabs" id="myTab">
                         {% for fact_type in fact_type_list %}
-                            <li class="{% if forloop.first %}active{% endif %}"><a href="#{{ forloop.counter }}" data-toggle="tab">{{ fact_type }}</a></li>
+                            <li class="{% if forloop.first %}active{% endif %}">
+                            	<a href="#{{ forloop.counter }}" data-toggle="tab">{% if forloop.last %}All Fact Types{% else %}Fact Type {{ fact_type }}{% endif %}</a>
+                           	</li>
                             {% empty %}
                             <li class="active"><li>
                         {% endfor %}
