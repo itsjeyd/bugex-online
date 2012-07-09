@@ -26,7 +26,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from bugex_webapp import UserRequestStatus
 from bugex_webapp.models import UserRequest, Fact
-from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm
+from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm, RegistrationForm
 
 class HowToPageView(TemplateView):
     template_name = 'bugex_webapp/howto.html'
@@ -57,16 +57,46 @@ def process_main_page_forms(request):
             template_context = {
                 'auth_form': AuthenticationForm(),
                 'user_req_form': UserRequestForm(),
-                'error': error_message
+                'error': error_message,
+                'registration_form': RegistrationForm()
             }
 
         elif request.POST['form-type'] == u'user-request-form':
             template_context = _submit_user_request(request)
 
+        elif request.POST['form-type'] == u'registration-form':
+            registration_form = RegistrationForm(request.POST)
+            message = ''
+
+            if registration_form.is_valid():
+                email_address = registration_form.cleaned_data['email_address']
+
+                if not User.objects.filter(username=email_address).count():
+                    password = User.objects.make_random_password(length=8)
+                    print password
+                    User.objects.create_user(
+                        username=email_address,
+                        email=email_address,
+                        password=password
+                    )
+
+                    # messages.success(request, 'User has been created successfully.')
+                    message = 'User "{0}" has been created successfully.'.format(email_address)
+            else:
+                # messages.error(request, 'User could not be created.')
+                message = 'User could not be created. Please try again.'
+
+            template_context = {
+                'auth_form': AuthenticationForm(),
+                'registration_form': registration_form,
+                'message': message
+            }
+
     else:
         template_context = {
             'auth_form': AuthenticationForm(),
-            'user_req_form': UserRequestForm()
+            'user_req_form': UserRequestForm(),
+            'registration_form': RegistrationForm()
         }
 
 

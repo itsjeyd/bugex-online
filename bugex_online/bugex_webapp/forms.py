@@ -12,6 +12,7 @@ Authors: Amir Baradaran
 """
 
 from django import forms
+from captcha.fields import CaptchaField
 
 from bugex_webapp.validators import validate_archive_file_extension
 from bugex_webapp.validators import validate_archive_copyright
@@ -25,6 +26,10 @@ class EmailBaseForm(forms.Form):
     RecoverPasswordForm and RegistrationForm.
     """
     email_address = forms.EmailField(help_text='Your current email address')
+
+
+class RegistrationForm(EmailBaseForm):
+    captcha = CaptchaField()
 
 
 class EmailPasswordBaseForm(EmailBaseForm):

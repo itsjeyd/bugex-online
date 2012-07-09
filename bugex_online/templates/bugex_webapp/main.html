@@ -24,22 +24,45 @@
                             <h3>Test case</h3>
                             <p>The failing test case you want BugEx to analyze needs to be a JUnit test method and must be specified as a string of the following form: <pre class="prettyprint">package.containing.test.case.Class#failingTest</pre></p>
                         {% else %}
-                            <h3>Sign In</h3>
 
-                            <form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
+                            {% if message %}
+
+                                {% if "has been created successfully." in message %}
+                                    <div class="alert alert-success fade in">
+                                        <a class="close" data-dismiss="alert" href="#">&times;</a>
+                                        {{ message }}
+                                    </div>
+                                {% elif message == "User could not be created. Please try again." %}
+                                    <div class="alert alert-error fade in">
+                                        <a class="close" data-dismiss="alert" href="#">&times;</a>
+                                        {{ message }}
+                                    </div>
+                                {% endif %}
+
+                            {% endif %}
+
+
+                            {% if error %}
 
                                 {% if error == "not_active" %}
                                     <div class="alert alert-error fade in">
                                         <a class="close" data-dismiss="alert" href="#">&times;</a>
-                                            Your account has been disabled. Please contact the administrator.
+                                        Your account has been disabled. Please contact the administrator.
                                     </div>
 
                                 {% elif error == "not_authenticated" %}
                                     <div class="alert alert-error fade in">
                                         <a class="close" data-dismiss="alert" href="#">&times;</a>
                                         Your username and password didn't match. Please try again.
-                                    </div>
+                                </div>
                                 {% endif %}
+
+                            {% endif %}
+
+
+                            <h3>Sign In</h3>
+
+                            <form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
 
                                 <fieldset>
 
@@ -75,6 +98,55 @@
                                         </div>
                                 </fieldset>
                             </form>
+
+                            <ul class="nav nav-pills">
+                                <li class="dropdown" id="menu1">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#menu1">
+                                        Register
+                                        <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                    <form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
+
+                                        {% for field in registration_form %}
+                                            {% if field.errors %}
+                                                <div class="control-group error">
+                                            {% else %}
+                                                <div class="control-group">
+                                            {% endif %}
+
+                                                    <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+
+                                                    {{ field }}
+
+                                                    {% for error in field.errors %}
+                                                        <span class="label label-important">{{ error }}</span>
+                                                    {% endfor %}
+
+                                                </div>
+
+                                        {% endfor %}
+
+                                            <div class="form-actions">
+                                                <input type="hidden" name="form-type" value="registration-form" />
+                                                <button type="submit" class="btn btn-primary"><i class="icon-user icon-white"></i> Register</button>
+                                            </div>
+                                        </form>
+                                    </ul>
+                                </li>
+
+                                <li class="dropdown" id="menu2">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#menu2">
+                                        Forgot password ?
+                                        <b class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <!-- Forgot password form comes here -->
+                                    </ul>
+                                </li>
+                            </ul>
+
+
                         {% endif %}
                     </div>
                 </div>
