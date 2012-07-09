@@ -313,16 +313,14 @@ def show_bugex_result(request, token):
 def delete_bugex_result(request, delete_token):
     """Delete the results data for a specific user request."""
 
-    # TODO: TestCase and BugExResult can not be deleted because of
-    # one-to-one relations. Make relations optional?
+    # TODO: TestCase cannot be deleted. Make relation optional?
     try:
         user_request = UserRequest.objects.get(delete_token=delete_token)
         # Deleting underlying archive file
         user_request.codearchive.archive_file.delete()
-        # Deleting CodeArchive, all SourceFiles, all ClassFiles, all Folders, all Lines
-        user_request.codearchive.delete()
-        # Deleting all Facts
-        user_request.result.fact_set.all().delete()
+        # Deleting BugExResult, CodeArchive, all Facts, all SourceFiles,
+        # all ClassFiles, all Folders, all Lines
+        user_request.result.delete()
         # Delete the entire directory where the archive file was stored
         shutil.rmtree(user_request.folder)
         # Set user request status to DELETED
