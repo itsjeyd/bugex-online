@@ -100,5 +100,10 @@ class Notifications(object):
             'subject': 'Your account password has been changed',
             'content': 'You have successfully changed your account password.\n' +
                        'Your new password is: {0}'
+        },
+        'RECOVERED_PASSWORD': {
+            'subject': 'Your account password has been recovered',
+            'content': 'Your account password has been recovered for you.\n' +
+                       'Your new password is: {0}'
         }
     }

@@ -13,6 +13,7 @@ Authors: Amir Baradaran
 
 import shutil
 
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import mail_admins, send_mail
 from django.contrib import messages
@@ -26,7 +27,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from bugex_webapp import UserRequestStatus, Notifications
 from bugex_webapp.models import UserRequest, Fact
-from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm, RegistrationForm
+from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm, RegistrationForm, EmailBaseForm
 
 class HowToPageView(TemplateView):
     template_name = 'bugex_webapp/howto.html'
@@ -58,7 +59,8 @@ def process_main_page_forms(request):
                 'auth_form': AuthenticationForm(),
                 'user_req_form': UserRequestForm(),
                 'error': error_message,
-                'registration_form': RegistrationForm()
+                'registration_form': RegistrationForm(),
+                'password_recovery_form': EmailBaseForm()
             }
 
         elif request.POST['form-type'] == u'user-request-form':
@@ -89,14 +91,56 @@ def process_main_page_forms(request):
             template_context = {
                 'auth_form': AuthenticationForm(),
                 'registration_form': registration_form,
+                'password_recovery_form': EmailBaseForm(),
                 'message': message
             }
+
+        elif request.POST['form-type'] == u'password-recovery-form':
+            password_recovery_form = EmailBaseForm(request.POST)
+            message = ''
+
+            if password_recovery_form.is_valid():
+                email_address = password_recovery_form.cleaned_data['email_address']
+
+                try:
+                    user = User.objects.get(username=email_address)
+                    new_password = User.objects.make_random_password(length=8)
+                    user.set_password(new_password)
+                    user.save()
+
+                    send_mail(
+                        subject=Notifications.CONTENT['RECOVERED_PASSWORD']['subject'],
+                        message=Notifications.HEADER_FOOTER.format(
+                            Notifications.CONTENT['RECOVERED_PASSWORD']['content'].format(new_password)
+                        ),
+                        from_email=settings.EMAIL_HOST_USER,
+                        recipient_list=[user.email]
+                    )
+
+                    message = 'The password for user "{0}" has been recovered ' \
+                              'successfully and will be sent to your email address.'.format(email_address)
+
+                except User.DoesNotExist:
+                    message = 'The user "{0}" does not exist in the database.'.format(email_address)
+
+            else:
+                message = 'You have not entered a valid email address.'
+
+            template_context = {
+                'auth_form': AuthenticationForm(),
+                'registration_form': RegistrationForm(),
+                'password_recovery_form': password_recovery_form,
+                'message': message
+            }
+
+
 
     else:
         template_context = {
             'auth_form': AuthenticationForm(),
             'user_req_form': UserRequestForm(),
-            'registration_form': RegistrationForm()
+            'registration_form': RegistrationForm(),
+            'password_recovery_form': EmailBaseForm()
         }
 
 
@@ -156,7 +200,7 @@ def _change_password(request):
         message=Notifications.HEADER_FOOTER.format(
             Notifications.CONTENT['CHANGED_PASSWORD']['content'].format(new_password)
         ),
-        from_email='bugexonline@gmail.com',
+        from_email=settings.EMAIL_HOST_USER,
         recipient_list=[request.user.email],
     )
 
@@ -185,7 +229,7 @@ def _change_email_address(request):
                 message=Notifications.HEADER_FOOTER.format(
                     Notifications.CONTENT['CHANGED_EMAIL_ADDRESS']['content'].format(new_email_address_2)
                 ),
-                from_email='bugexonline@gmail.com',
+                from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[old_email_address],
             )
 
