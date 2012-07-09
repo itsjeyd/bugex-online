@@ -117,10 +117,12 @@ def _submit_user_request(request):
             archive_file=request.FILES['code_archive']
         )
 
-        messages.success(request, 'Form submission was successful!')
+        messages.success(
+            request, 'Upload successful! We have received your code.')
 
     else:
-        messages.error(request, 'Form submission failed!')
+        messages.error(
+            request, 'Unfortunately, your request could not be processed.')
 
     template_context = {'user_req_form': user_req_form}
 
@@ -227,7 +229,8 @@ def submit_contact_form(request):
             messages.success(request, 'We received your email!')
 
         else:
-            messages.error(request, 'Form submission failed!')
+            messages.error(
+                request, 'Unfortunately, your request could not be processed!')
 
     else:
         form = ContactForm()
