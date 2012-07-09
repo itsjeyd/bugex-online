@@ -44,7 +44,6 @@ div.container-fluid #howTo pre.prettyprint { width: 40%; padding: 0; margin: 0 a
 div.container-fluid #leftColumnMain { width: 90%; margin: 5em auto 0 auto; }
 div.container-fluid #leftColumnMain pre.prettyprint { width: 85%; padding: 0; margin: 0; }
 div.container-fluid #mainPageForm { width: 90%; margin: 5em auto 0 auto; overflow: hidden; }
-
 div.row-fluid h1 {}
 div.row-fluid p {}
 /*********Main Content*********/
@@ -61,8 +60,10 @@ ul#social li { display: inline; margin: 0 0.3em 0 0; }
 /*********Social*********/
 
 /*********Facts*********/
-#facts { height: auto; background: #fff; border: 1px solid #75BCEF; margin: 0 0 1em 0; }
+#facts { height: 70%; background: #fff; border: 1px solid #75BCEF; margin: 0 0 1em 0; overflow-y: scrollbar; }
 #facts h1 { color: #ccc; }
+#facts ul.factBasics, #facts ul.factBasics li { text-decoration: none; list-style:none;  }
+#facts ul.factBasics li { float: left; display:inline; }
 /*********Facts*********/
 
 /*********Code*********/
