@@ -3,10 +3,6 @@
 	src: url('../fonts/DroidSansMono.ttf');
 }
 
-/*********General*********/
-/* body { background: #DDEAF6; } */
-/*********General*********/
-
 body { padding: 7em 0 2em 0; }
 
 @media screen{
@@ -27,10 +23,7 @@ body { padding: 7em 0 2em 0; }
 
 /*********Navigation*********/
 div.navbar { position:absolute; top:0; left:0;width: 100%; height: 3em; }
-div.navbar ul.nav { float: right; padding: 15px 100px 0px 0; }
 div.navbar ul.nav li { margin: 0 1em; }
-/* div.navbar-inner { background: #75BCEF;  } */
-/* div.container ul.nav li a { color: #555555; } */
 /*********Navigation*********/
 
 /*********Main Content*********/
@@ -95,7 +88,7 @@ form.contact div.form-actions { background: transparent; width: 50%; margin: 1em
 form.contact div.form-actions button { float: left; margin: 0 1em 0 0; }
 /*********Forms*********/
 
-.navbar .nav > li > a { line-height: 62px; text-shadow:none; font-size: 16px; }
+.navbar .nav > li > a { line-height: 50px; text-shadow:none; font-size: 14px; font-weight: bold; }
 .scrollable-code { height: 470px; overflow: auto; }
 .scrollable-facts { height: 120px; overflow: auto; }
 .scrollable-outline { height: 220px; overflow: auto; }
