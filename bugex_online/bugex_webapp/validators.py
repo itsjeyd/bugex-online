@@ -125,13 +125,15 @@ def validate_name(name):
     """
     Validate the name of a user in the contact form.
     
-    We are accepting only letters and numbers as valid name
+    A valid name is one which contains minimally one alphanumeric character.
+    In addition it may contain whitespaces and dashes.
 
     Arguments:
     name -- value of the name of the user
 
     """
-    name_pattern = re.compile(ur'^\w+$', re.UNICODE)
+    name = name.strip()
+    name_pattern = re.compile(ur'\w+[\w\-\s]*', re.UNICODE)
 
     if not name_pattern.match(name):
         raise ValidationError(
