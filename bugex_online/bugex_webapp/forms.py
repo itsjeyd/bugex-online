@@ -63,7 +63,7 @@ class UserRequestForm(forms.Form):
     has_copyright = forms.BooleanField(
         required=False,
         validators=[validate_archive_copyright],
-        label='Copyright confirmation',
+        label='I confirm that I own all necessary rights to the code I am going to upload and that I alone am to be held responsible for any copyright violations that may result from the action.',
         help_text='Please confirm that you own the copyright to the files' \
                   ' that you are going to upload.'
     )
