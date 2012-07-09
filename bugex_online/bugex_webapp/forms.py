@@ -88,8 +88,8 @@ class ChangeEmailForm(forms.Form):
     new_email_address_2 = forms.EmailField(
         help_text='Please re-enter your new email address.'
     )
-    
-    
+
+
 class ContactForm(EmailBaseForm):
     """ The ContactForm for users to send questions, suggestions, etc.
 
@@ -104,4 +104,4 @@ class ContactForm(EmailBaseForm):
         widget=forms.Textarea,
         help_text='Your message'
     )
-    
+
