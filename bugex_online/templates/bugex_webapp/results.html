@@ -1,6 +1,6 @@
 {% extends "bugex_webapp/base.html" %}
 
-{% block title %}Results Page{% endblock title %}
+{% block title %}Result Page{% endblock title %}
 
 {% block content %}
     <div class="container-fluid">
@@ -10,37 +10,52 @@
                     <h2>Facts</h2>
                     <script>
                         $(document).ready(function(){
-                        $(".collapse").collapse();
+                        	$.ajaxSetup ({  
+                                cache: false  
+                            });  
+                        	$(".collapse").collapse();
+                        	
+                        	$('#myTab a').click(function (e) {
+                                e.preventDefault();
+                                $(this).tab('show');
+                        	});                      
+                        });
                     </script>
                     <ul class="nav nav-tabs" id="myTab">
                         {% for fact_type in fact_type_list %}
                             <li class="{% if forloop.first %}active{% endif %}">
-                            	<a href="#{{ forloop.counter }}" data-toggle="tab">{% if forloop.last %}All Fact Types{% else %}Fact Type {{ fact_type }}{% endif %}</a>
+                            	<a href="#cat{{ forloop.counter }}" data-toggle="tab">{% if forloop.last %}All Fact Types{% else %}Fact Type {{ fact_type }}{% endif %}</a>
                            	</li>
                             {% empty %}
                             <li class="active"><li>
                         {% endfor %}
                     </ul>
-                    <div class="scrollable-facts">
-                        <div class="tab-content">
+					<div class="scrollable-facts">
+						<div class="tab-content">
                             {% for fact_type in fact_type_list %}
-                                <div class="tab-pane fade{% if forloop.first %} in active{% endif %}" id="#{{ forloop.counter }}">
-                                    <div class="accordion" id="accordion">
-                                        {% for fact in fact_list %}
+                                <div class="tab-pane fade{% if forloop.first %} in active{% endif %}" id="cat{{ forloop.counter }}">                                
+                                    <div id="accordion2" class="accordion">
+                                         {% for fact in fact_list %}
+                                         	{% if fact.fact_type == fact_type %}
                                             <div class="accordion-group">
                                                 <div class="accordion-heading">
-                                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#{{ fact.counter }}">
-                                                        <ul class="factBasic"><li>{{ fact.id }}</li><li>{{ fact.class_name }}#{{ fact.method_name }}</li><li>{{ fact.fact_type }}</li></ul>
-                                                    </a>
+                                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ fact.counter }}">
+                                                    	{{ fact.id }} - {{ fact.class_name }}#{{ fact.method_name }} - TYPE_{{ fact.fact_type }}
+                                                   	</a>
+                                                        	<!-- <ul class="factBasic"> -->
+<!-- 														<p><a href="#" onClick="$('pre').html('loading...').load('{% url source-page token fact.class_name %}')"></a></p> -->
+                                                        		
+                                                        	<!--</ul>-->
                                                 </div>
                                                 <div id="collapse{{ fact.counter }}" class="accordion-body collapse {% if forloop.first %}in{% endif %}">
                                                     <div class="accordion-inner">
-                                                        {{ fact.explanation }}
+                                                        {{ fact.explanation }}<a href="#" onClick="$('pre').html('loading...').load('{% url source-page token fact.class_name %}')">See the class</a>
                                                     </div>
                                                 </div>
                                             </div>
-                                            {% empty %}
-                                                <p>You had no errors in your code!</p>
+                                            {% else %}
+                                                <p>You had no errors for this fact type!</p>
+                                            {% endif %}    
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -48,11 +63,11 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-primary"><i class="icon-download icon-white"></i>Download Results</button>
+                <!-- <button class="btn btn-primary"><i class="icon-download icon-white"></i>Download Results</button>
                 <ul id="social">
                     <li><a href="#"><img src="{{ STATIC_URL }}img/fb.png"></a></li>
                     <li><a href="#"><img src="{{ STATIC_URL }}img/go.png"></a></li>
-                </ul>
+                </ul>-->
                 <!-- outline functionality -->
                 <div id="outline">
                     <h1>{{ class_name }}</h1>
@@ -67,9 +82,22 @@
             </div>
             <div class="span8">
                 <div id="code">
+                	<pre class="prettyprint linenums">
 
+					</pre>
                 </div>
             </div>
         </div>
     </div>
 {% endblock content %}
+
+
+                                                        		<!-- <a href="#" onClick='$("#code pre").html("loading....");
+                                                        		$.get(
+                                                        			"{% url source-page token fact.class_name %}",
+                                                        			function(responseText){
+                                                        				prettyPrint();
+                                                        				$("#code pre").html(responseText);
+                                                        			},
+                                                        			"html"
+                                                        		);'>-->

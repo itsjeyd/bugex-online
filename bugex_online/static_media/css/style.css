@@ -60,10 +60,10 @@ ul#social li { display: inline; margin: 0 0.3em 0 0; }
 /*********Social*********/
 
 /*********Facts*********/
-#facts { height: 70%; background: #fff; border: 1px solid #75BCEF; margin: 0 0 1em 0; overflow-y: scrollbar; }
+#facts { background: #fff; border: 1px solid #75BCEF; margin: 0 0 1em 0; overflow-y: scrollbar; }
 #facts h1 { color: #ccc; }
-#facts ul.factBasics, #facts ul.factBasics li { text-decoration: none; list-style:none;  }
-#facts ul.factBasics li { float: left; display:inline; }
+#facts ul.factBasic, #facts ul.factBasic li { text-decoration: none; list-style:none;  }
+#facts ul.factBasic li { float: left; display:inline; margin: 0 20px 0 0; }
 /*********Facts*********/
 
 /*********Code*********/
@@ -94,6 +94,14 @@ form.contact p.help-block { color: #555555; margin: 0; padding: 0; width: 70%; }
 form.contact div.form-actions { background: transparent; width: 50%; margin: 1em 0 0 4em; padding: 0; }
 form.contact div.form-actions button { float: left; margin: 0 1em 0 0; }
 /*********Forms*********/
+
+/*********Accordion*********/
+div.accordion-group { width: 95%; margin: 0 auto; }
+div.accordion-heading { background: #DDEAF6; width: 100%; border: 1px solid #75BCEF; }
+div.accordion-heading p { float: left; margin: 0 30px 0 0; }
+#collapse { background: #F5F5F5; width: 100%; border: 1px solid #75BCEF; }
+/*********Accordion*********/
+
 
 .navbar .nav > li > a { line-height: 62px; text-shadow:none; font-size: 16px; }
 .scrollable-code { height: 470px; overflow: auto; }
