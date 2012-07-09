@@ -161,10 +161,12 @@ def _submit_user_request(request):
             archive_file=request.FILES['code_archive']
         )
 
-        messages.success(request, 'Form submission was successful!')
+        messages.success(
+            request, 'Upload successful! We have received your code.')
 
     else:
-        messages.error(request, 'Form submission failed!')
+        messages.error(
+            request, 'Unfortunately, your request could not be processed.')
 
     template_context = {'user_req_form': user_req_form}
 
@@ -289,7 +291,8 @@ def submit_contact_form(request):
             messages.success(request, 'We received your email!')
 
         else:
-            messages.error(request, 'Form submission failed!')
+            messages.error(
+                request, 'Unfortunately, your request could not be processed!')
 
     else:
         form = ContactForm()
@@ -342,5 +345,5 @@ def get_source_file_content(request, token, class_name):
     class_name = class_name.split('.')[-1] + '.java'
 
     source_file = ur.codearchive.sourcefile_set.get(package=package_name, name=class_name)
-    
+
     return HttpResponse(source_file.content, content_type="text/plain")
