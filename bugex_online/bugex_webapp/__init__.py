@@ -95,5 +95,10 @@ class Notifications(object):
             'subject': 'Your email address has been changed',
             'content': 'You have successfully changed your email address.\n' +
                        'Your new email address is: {0}'
+        },
+        'CHANGED_PASSWORD': {
+            'subject': 'Your account password has been changed',
+            'content': 'You have successfully changed your account password.\n' +
+                       'Your new password is: {0}'
         }
     }

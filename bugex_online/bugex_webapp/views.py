@@ -148,9 +148,17 @@ def change_user_credentials(request):
 def _change_password(request):
     """Change a user's password."""
     new_password = User.objects.make_random_password(length=8)
-    print new_password
     request.user.set_password(new_password)
     request.user.save()
+
+    send_mail(
+        subject=Notifications.CONTENT['CHANGED_PASSWORD']['subject'],
+        message=Notifications.HEADER_FOOTER.format(
+            Notifications.CONTENT['CHANGED_PASSWORD']['content'].format(new_password)
+        ),
+        from_email='bugexonline@gmail.com',
+        recipient_list=[request.user.email],
+    )
 
     messages.success(request, 'Your new password has been set.')
 
