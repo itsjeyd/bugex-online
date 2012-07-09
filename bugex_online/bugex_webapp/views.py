@@ -14,7 +14,7 @@ Authors: Amir Baradaran
 import shutil
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import mail_admins
+from django.core.mail import mail_admins, send_mail
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView
@@ -24,7 +24,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 
-from bugex_webapp import UserRequestStatus
+from bugex_webapp import UserRequestStatus, Notifications
 from bugex_webapp.models import UserRequest, Fact
 from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm, RegistrationForm
 
@@ -167,9 +167,19 @@ def _change_email_address(request):
 
         if new_email_address_1 == new_email_address_2:
 
+            old_email_address = request.user.email
             request.user.username = new_email_address_2
             request.user.email = new_email_address_2
             request.user.save()
+
+            send_mail(
+                subject=Notifications.CONTENT['CHANGED_EMAIL_ADDRESS']['subject'],
+                message=Notifications.HEADER_FOOTER.format(
+                    Notifications.CONTENT['CHANGED_EMAIL_ADDRESS']['content'].format(new_email_address_2)
+                ),
+                from_email='bugexonline@gmail.com',
+                recipient_list=[old_email_address],
+            )
 
             messages.success(request,
                 'Your new email address has been set.'

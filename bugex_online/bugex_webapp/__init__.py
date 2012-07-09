@@ -90,5 +90,10 @@ class Notifications(object):
         'DELETED': {
             'subject': 'Your BugEx result has been deleted',
             'content': 'You have successfully deleted your BugEx result files.'
+        },
+        'CHANGED_EMAIL_ADDRESS': {
+            'subject': 'Your email address has been changed',
+            'content': 'You have successfully changed your email address.\n' +
+                       'Your new email address is: {0}'
         }
     }
