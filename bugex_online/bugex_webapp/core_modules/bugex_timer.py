@@ -46,11 +46,25 @@ class PeriodicTask(threading._Timer):
 
 
 class UserRequestThread(threading.Thread):
+    """
+    The UserRequestThread is responsible for calling _parse_archive()
+    and _run_bugex() on the user request.
+
+    This runs in a separate thread and allows the (browser) view to render
+    before the archive is processed.
+
+    """
 
     def __init__(self, user_request):
+        """
+        Arguments:
+
+        user_request -- the user request to be used
+        """
         super(UserRequestThread, self).__init__(group = None)
         self.user_request = user_request
 
     def run(self):
-        self.user_request._parse_archive()
-        self.user_request._run_bugex()
+        self.user_request._async_processing()
+        #self.user_request._parse_archive()
+        #self.user_request._run_bugex()

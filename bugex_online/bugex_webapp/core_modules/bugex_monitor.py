@@ -3,20 +3,19 @@ Created on 19.06.2012
 
 @author: Frederik Leonhardt <frederik.leonhardt@googlemail.com>
 '''
+# stdlib dependencies
+import logging
+import sys, traceback
+from datetime import datetime
+
+# django dependencies
+from bugex_webapp import UserRequestStatus
+
 # internal dependencies
+import core_config
 from bugex_decorators import Singleton
 from bugex_timer import PeriodicTask
 from bugex_instance import BugExProcessInstance
-import core_config
-
-# bugex webapp dependencies
-#from bugex_webapp.models import BugExResult
-from bugex_webapp import UserRequestStatus
-
-# external dependencies
-from datetime import datetime
-import logging
-import sys, traceback
 
 @Singleton
 class BugExMonitor(object):
@@ -193,7 +192,7 @@ class BugExMonitorJob(object):
 
         # convert and store this to database
         try:
-            #defered import to avoid circular dependency problems
+            # defered import to avoid circular dependency problems
             from bugex_webapp.models import BugExResult
             BugExResult.new(xml_content, self._user_request)
         except Exception as e:
@@ -205,7 +204,6 @@ class BugExMonitorJob(object):
         # success
         self.cancel('Success!')
         self._user_request.update_status(UserRequestStatus.FINISHED)
-        pass # TODO anything else here?
 
 
     def schedule(self, interval):
@@ -235,73 +233,3 @@ class BugExMonitorJob(object):
         """
         self._log.info(message, *args)
         self._task.cancel()
-
-#
-#TESTING AREA
-#
-"""
-from django.contrib.auth.models import User
-
-
-# singleton tests
-#f = Foo() # Error, this isn't how you get the instance of a singleton
-#f = FileMonitor.Instance() # Good. Being explicit is in line with the Python Zen
-#g = FileMonitor.Instance() # Returns already created instance
-#print f is g # True
-
-#test_file = BugExFile('/home/freddy/bugex-results.xml','xml')
-#status_file = BugExFile('/home/freddy/bugex-results.xml','xml')
-
-FORMAT = '%(asctime)-15s %(message)s'
-logging.basicConfig(format = FORMAT) # this has to be done somewhen!
-#logging.basicConfig()
-
-user = User(email='user@example.com')
-
-user_request = UserRequest(
-    user=user,
-    test_case='de.mypackage.TestMyClass#testGetMin',
-    token='82230841-bcbe-451c-8b3e-e1365ad7f257')
-
-#code_archive = CodeArchive()
-
-user_request.user_archive = BugExFile(user_request.folder+'failing-program-0.0.1-SNAPSHOT-jar-with-dependencies.jar','jar')
-
-bug_mon = BugExMonitor.Instance()
-bug_mon.new_request(user_request)
-
-#bug_mon.new_request(UserRequest())
-#file_mon.new_request(UserRequest())
-"""
-
-"""
-raw_shell_input_sh  = '/home/freddy/bugex.sh /home/freddy/bugex-mock-0.0.4-SNAPSHOT-jar-with-dependencies.jar /home/freddy/failing-program-0.0.1-SNAPSHOT-jar-with-dependencies.jar de.mypackage.TestMyClass#testGetMin /home/freddy/ 1'
-raw_shell_input_jv  = 'java -jar /home/freddy/bugex-mock-0.0.4-SNAPSHOT-jar-with-dependencies.jar /home/freddy/failing-program-0.0.1-SNAPSHOT-jar-with-dependencies.jar de.mypackage.TestMyClass#testGetMin /home/freddy/ 1'
-raw_shell_input_jv2 = 'java -jar /home/freddy/bugex-mock-0.0.4-SNAPSHOT-jar-with-dependencies.jar failing-program-0.0.1-SNAPSHOT-jar-with-dependencies.jar de.mypackage.TestMyClass#testGetMin /home/freddy/ 1'
-"""
-"""
-subprocess.Popen(['java'
-                  ,'-jar'
-                  ,'/home/freddy/bugex-mock-0.0.4-SNAPSHOT-jar-with-dependencies.jar'
-                  ,'/home/freddy/failing-program-0.0.1-SNAPSHOT-jar-with-dependencies.jar'
-                  ,'de.mypackage.TestMyClass#testGetMin'
-                  ,'/home/freddy/'
-                  ,'10'])
-"""
-"""
-args = raw_shell_input_jv.split()
-sp = subprocess.Popen(args)
-
-args2 = raw_shell_input_jv2.split()
-sp2 = subprocess.Popen(args2, cwd='/home/freddy/')
-print sp2.poll()
-
-import time
-time.sleep(5)
-
-#streamdata = sp2.communicate()[0]
-print sp2.poll()
-print sp2.returncode
-
-#subprocess.Popen([raw_shell_input_sh], shell=True)
-"""

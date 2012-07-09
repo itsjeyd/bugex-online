@@ -3,17 +3,20 @@ Created on 21.06.2012
 
 @author: Frederik Leonhardt <frederik.leonhardt@googlemail.com>
 '''
-# internal dependencies
-from bugex_files import BugExFile, BugExResultFile
-import core_config
-
-# external dependencies
-from datetime import datetime
+# stdlib
 import logging
 import subprocess
 import os
 import shlex
+from datetime import datetime
+
+# external dependencies
 #from py4j.java_gateway import JavaGateway
+
+# internal dependencies
+import core_config
+from bugex_files import BugExFile, BugExResultFile
+
 
 class BugExInstance(object):
     '''
@@ -48,10 +51,7 @@ class BugExInstance(object):
         self.debug = False      # in debug mode, consider delay
         self._start_date = None # start with start() method
 
-        #print "ok, guys."
-        #print "der case is {0}, der folder is {1}, das delay betraegt {2}, token is wompe? {3}, das user archive findeste hier {4}".format(
-        #         failing_test_case_name, working_folder_path, artificial_delay, token, user_archive_path)
-
+        # throw exception, if the user archive does not exist
         if not self._user_archive.exists():
             raise Exception('The defined user archive does not exist: \'{0}\''.format(
                             self._user_archive.path))
@@ -122,10 +122,6 @@ class BugExProcessInstance(BugExInstance):
         self._bug_ex_executable = bug_ex_executable
         # process variable
         self.__process = None
-
-        #print "und bugex is hier {0}".format(
-        #         bug_ex_executable)
-
 
         # logging
         self._log = logging.getLogger(self.name)

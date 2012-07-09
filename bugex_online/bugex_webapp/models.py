@@ -118,27 +118,13 @@ class UserRequest(models.Model):
         thread = UserRequestThread(user_request)
         thread.start()
 
-        """
-        log.debug("Parsing archive..")
-
-        # try to parse archive
-        try:
-            user_request._parse_archive()
-        except Exception as e:
-            log.info("Parsing failed: %s", e)
-        else:
-            log.debug("Running BugEx..")
-            # run BugEx
-            user_request._run_bugex()
-        """
-
         log.debug("Returning to view..")
 
         # return reference to view
         return user_request
 
 
-    def _async_processing(self, user_request):
+    def _async_processing(self):
         """
         This method is to be called by a Thread.
 
@@ -151,13 +137,13 @@ class UserRequest(models.Model):
 
         # try to parse archive
         try:
-            user_request._parse_archive()
+            self.__parse_archive()
         except Exception as e:
             log.info("Parsing failed: %s", e)
         else:
             log.debug("Running BugEx..")
             # run BugEx
-            user_request._run_bugex()
+            self.__run_bugex()
 
 
     @property
@@ -201,7 +187,7 @@ class UserRequest(models.Model):
     def _build_path(self, *sub_folders):
         return os.path.join(self.folder, *sub_folders)
 
-    def _parse_archive(self):
+    def __parse_archive(self):
         """
         Traverses the archive and parses its files.
         Stores the folder structure, relevant files and file contents in the
@@ -234,7 +220,7 @@ class UserRequest(models.Model):
             shutil.rmtree(path_extracted)
 
 
-    def _run_bugex(self):
+    def __run_bugex(self):
         """
         Creates and starts a BugEx Instance by notifying the BugExMonitor.
 
@@ -608,7 +594,7 @@ class SourceFile(ProjectFile):
             Line.objects.create(
                 source_file=source_file,
                 number=number,
-                content=line.strip())
+                content=line.rstrip())
             if line.startswith('package'):
                 #print 'package line: {0}'.format(line)
                 source_file.package = re.search('package +(.+);', line).group(1)
