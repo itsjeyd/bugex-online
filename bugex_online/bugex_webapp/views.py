@@ -16,13 +16,14 @@ import shutil
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import mail_admins
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render_to_response
 
 from bugex_webapp import UserRequestStatus
 from bugex_webapp.models import UserRequest, Fact
@@ -272,3 +273,14 @@ def delete_bugex_result(request, delete_token):
         message = 'This BugEx result has already been deleted.'
 
     return render(request, 'bugex_webapp/delete.html', {'message': message})
+
+
+def get_source_file_content(request, token, class_name):
+    ur = UserRequest.objects.get(token=token)
+
+    package_name = '.'.join(class_name.split('.')[:-1])
+    class_name = class_name.split('.')[-1] + '.java'
+
+    source_file = ur.codearchive.sourcefile_set.get(package=package_name, name=class_name)
+    
+    return HttpResponse(source_file.content, content_type="text/plain")

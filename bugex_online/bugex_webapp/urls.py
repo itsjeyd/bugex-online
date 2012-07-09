@@ -17,7 +17,8 @@ from django.conf.urls.static import static
 
 from bugex_webapp.views import HowToPageView
 from bugex_webapp.views import change_user_credentials, process_main_page_forms
-from bugex_webapp.views import submit_contact_form, log_user_out, show_bugex_result, delete_bugex_result
+from bugex_webapp.views import submit_contact_form, log_user_out, show_bugex_result
+from bugex_webapp.views import delete_bugex_result, get_source_file_content
 
 urlpatterns = patterns('',
     url(r'^$', process_main_page_forms, name='main-page'),
@@ -29,6 +30,8 @@ urlpatterns = patterns('',
     url(r'^contact/$', submit_contact_form, name='contact-page'),
 
     url(r'^account/logout/$', log_user_out, name='logout'),
+
+    url(r'^source/(?P<token>[a-z0-9\-]{36})/(?P<class_name>([a-z0-9]+\.)+[A-Z][A-Za-z0-9]+)$', get_source_file_content),
 
     # This is for serving uploaded user files in development mode.
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

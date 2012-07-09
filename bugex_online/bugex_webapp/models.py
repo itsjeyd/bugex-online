@@ -594,7 +594,7 @@ class SourceFile(ProjectFile):
             Line.objects.create(
                 source_file=source_file,
                 number=number,
-                content=line.strip())
+                content=line.rstrip())
             if line.startswith('package'):
                 #print 'package line: {0}'.format(line)
                 source_file.package = re.search('package +(.+);', line).group(1)
