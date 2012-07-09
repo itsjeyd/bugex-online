@@ -12,6 +12,7 @@ Authors: Amir Baradaran
 """
 
 from django import forms
+from captcha.fields import CaptchaField
 
 from bugex_webapp.validators import validate_archive_file_extension
 from bugex_webapp.validators import validate_archive_copyright
@@ -27,6 +28,10 @@ class EmailBaseForm(forms.Form):
     email_address = forms.EmailField(help_text='Your current email address')
 
 
+class RegistrationForm(EmailBaseForm):
+    captcha = CaptchaField()
+
+
 class EmailPasswordBaseForm(EmailBaseForm):
     """The EmailPasswordBaseForm form.
 
@@ -40,7 +45,7 @@ class EmailPasswordBaseForm(EmailBaseForm):
     )
 
 
-class UserRequestForm(EmailBaseForm):
+class UserRequestForm(forms.Form):
     """The UserRequestForm form for uploading user requests.
 
     The UserRequestForm inherits the field `email_address` from
@@ -71,7 +76,7 @@ class AdditionalTestCaseForm(forms.Form):
     )
 
 
-class ChangeEmailForm(EmailPasswordBaseForm):
+class ChangeEmailForm(forms.Form):
     """The ChangeEmailForm for changing a user's email address.
 
     The ChangeEmailForm inherits the fields `email_address` and `password`

@@ -12,6 +12,13 @@
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/prettify.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-alert.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap-dropdown.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.dropdown-toggle').dropdown();
+            $('.alert').alert();
+        });
+    </script>
     <!--
     ======================================================================
     There are alternatives for including the basic Bootstrap CSS file above.
@@ -53,8 +60,16 @@
 				<ul class="nav">
 					<li><a href="{% url main-page %}">Home</a></li>
 					<li><a href="{% url howto-page %}">HowTo</a></li>
-					 <li><a href="{% url contact-page %}">Contact Us</a></li>
+					<li><a href="{% url contact-page %}">Contact Us</a></li>
+
+                    {% if user.is_authenticated %}
+                        {% comment %}<li><a href="{% url results-page-overview %}">Results</a></li>{% endcomment %}
+                        <li><a href="{% url user-page %}">My Account</a></li>
+                        <li><a href="{% url logout %}">Logout</a></li>
+                        <li class="active"><a><i class="icon-user icon-white"></i> {{ user.username }}</a></li>
+                    {% endif %}
 				</ul>
+
 			</div>
 		</div>
 	</div>

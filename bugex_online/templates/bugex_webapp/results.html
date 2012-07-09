@@ -10,7 +10,7 @@
                     <h2>Facts</h2>
                     <script>
                         $(document).ready(function(){
-                        $(".collapse").collapse()
+                        $(".collapse").collapse();
                     </script>
                     <ul class="nav nav-tabs" id="myTab">
                         {% for fact_type in fact_type_list %}
@@ -28,7 +28,7 @@
                                             <div class="accordion-group">
                                                 <div class="accordion-heading">
                                                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#{{ fact.counter }}">
-                                                        <ul class="factBasic"><li>{{ fact.id }}</li><li>{{ fact.class_name }}#{{ fact.method_name }}</li><li>{{ fact.type }}</li></ul>
+                                                        <ul class="factBasic"><li>{{ fact.id }}</li><li>{{ fact.class_name }}#{{ fact.method_name }}</li><li>{{ fact.fact_type }}</li></ul>
                                                     </a>
                                                 </div>
                                                 <div id="collapse{{ fact.counter }}" class="accordion-body collapse {% if forloop.first %}in{% endif %}">

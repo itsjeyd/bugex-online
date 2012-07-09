@@ -166,6 +166,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'bugex_webapp',
+    'captcha'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -208,4 +209,4 @@ EMAIL_HOST_PASSWORD = 'eniln0xeguB'
 #Here sees man the emails that are going to get emails when
 #1)an HTTP error occurs
 #2)a user submits the contact form
-ADMINS = (('Admin', 'chr_mon_@hotmail.com'))
+ADMINS = (('Admin', 'pemistahl@gmail.com'))

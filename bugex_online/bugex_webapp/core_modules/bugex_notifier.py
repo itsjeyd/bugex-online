@@ -47,8 +47,7 @@ class EmailNotifier(Notifier):
 
         status = UserRequestStatus.const_name(user_request.status)
         
-        if status != 'VALID' and status != 'PROCESSING' and \
-           status!='VALIDATING':
+        if status not in ('VALID', 'PROCESSING', 'VALIDATING'):
             subject, content = self._get_content(user_request, status)
             try:
                 send_mail(subject, content, 'bugexonline@gmail.com', 
@@ -57,13 +56,17 @@ class EmailNotifier(Notifier):
                 self.__log.info("Email notification failed: %s", e)
                 
     def _get_content(self, user_request, status):
-        subject = Notifications.CONTENT[status][0]
-        content = Notifications.HEADER_FOOTER %Notifications.CONTENT[status][1]
+        subject = Notifications.CONTENT[status]['subject']
+        content = Notifications.HEADER_FOOTER.format(
+            Notifications.CONTENT[status]['content']
+        )
             
         if status == 'FINISHED':
             #include corresponding urls in the email content
-            content = content %(user_request.result_url,
-                                 user_request.delete_url)
+            content = content.format(
+                user_request.result_url,
+                user_request.delete_url
+            )
         
         return subject, content  
 
