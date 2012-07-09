@@ -220,11 +220,20 @@
                                                 </div>
                                             </div>
                                     {% endfor %}
-
+									<script>
+			                        $(document).ready(function(){
+			                        	$('#informingText').hide();
+			                            $('#submit').click(function() {
+			                                $('#informingText').fadeIn(200);
+			                            });			                        	
+			                        });
+									</script>									
                                     <div class="form-actions">
                                         <input type="hidden" name="form-type" value="user-request-form" />
-                                        <button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
+                                        <button id="submit" type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
+                                        <button id="informingText" class="btn btn-danger">Uploading... Please do not close the Browser!</button>
                                     </div>
+                                    
                                 </fieldset>
                             </form>
                         {% endif %}

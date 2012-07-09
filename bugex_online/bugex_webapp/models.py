@@ -419,6 +419,7 @@ class Fact(models.Model):
         ('A', 'TYPE_A'),
         ('B', 'TYPE_B'),
         ('C', 'TYPE_C'),
+        ('ALL', 'ALL FACT TYPES')
         # ...
     ]
 

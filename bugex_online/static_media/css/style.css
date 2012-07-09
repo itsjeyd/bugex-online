@@ -3,27 +3,22 @@
 	src: url('../fonts/DroidSansMono.ttf');
 }
 
+/*********General*********/
 body { padding: 7em 0 2em 0; }
+/*********General*********/
 
-@media screen{
-  body>div.navbar{
-   position:fixed;
-  }
-  body>div#footerContainer{
-   position:fixed;
-  }
- 
- * html body{
-  overflow:hidden;
- } 
- * html div.container-fluid {
-  height:100%;
-  overflow:auto;
- }}
+/*********Fixed Header-Footer*********/
+@media screen {
+  body>div.navbar { position:fixed; }
+  body>div#footerContainer { position:fixed; }
+ * html body { overflow:hidden; } 
+ * html div.container-fluid { height:90%; overflow:auto; }
+/*********Fixed Header-Footer*********/
 
 /*********Navigation*********/
 div.navbar { position:absolute; top:0; left:0;width: 100%; height: 3em; }
 div.navbar ul.nav li { margin: 0 1em; }
+.navbar .nav > li > a { text-shadow:none; font-size: 16px; }
 /*********Navigation*********/
 
 /*********Main Content*********/
@@ -52,19 +47,24 @@ ul#social { list-style-type: none; float: right; clear: both; padding: 0; margin
 ul#social li { display: inline; margin: 0 0.3em 0 0; }
 /*********Social*********/
 
+/*********Testing*********/
+div.container-fluid { height: 100%; }
+div.row-fluid { height: 100%; }
+div.fullHeight { height: 100%; }
+/*********Testing*********/
+
 /*********Facts*********/
-#facts { background: #fff; border: 1px solid #75BCEF; margin: 0 0 1em 0; overflow-y: scrollbar; }
-#facts h1 { color: #ccc; }
-#facts ul.factBasic, #facts ul.factBasic li { text-decoration: none; list-style:none;  }
-#facts ul.factBasic li { float: left; display:inline; margin: 0 20px 0 0; }
+#facts { background: #fff; border: 1px solid #75BCEF; margin: 0 0 1em 0; overflow-y: scrollbar; height: 90%; min-height: 15em; }
+#facts h2 { color: #555555; margin: 0 0 1em 0; }
+div.scrollable-facts { height: 25em;  }
 /*********Facts*********/
 
 /*********Code*********/
-#code { background: #fff; font-family: DroidSansMono; border: 1px solid #75BCEF; }
+#code { background: #F5F5F5; font-family: DroidSansMono; height: 33.5em; border: 1px solid #75BCEF; }
 /*********Code*********/
 
 /*********Informing Text After Submitting something*********/
-#informingText { display:none; background: #C11B17; color: #fff; width: 25%; height: 5%; padding: 5px; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;  }
+#informingText { float: left; color: #fff; margin: 0; }
 /*********Informing Text After Submitting something*********/
 
 /*********Forms*********/
@@ -93,13 +93,18 @@ form.contact div.form-actions button { float: left; margin: 0 1em 0 0; }
 /*********Accordion*********/
 div.accordion-group { width: 95%; margin: 0 auto; }
 div.accordion-heading { background: #DDEAF6; width: 100%; border: 1px solid #75BCEF; }
-div.accordion-heading p { float: left; margin: 0 30px 0 0; }
+div.accordion-heading table, div.accordion-group table { width: 100%; }
+div.accordion-heading table tr, div.accordion-group table tr { width: 100%; }
+div.accordion-heading table tr th.small, div.accordion-group table tr th.small { width: 20%; }
+div.accordion-heading table tr th.big, div.accordion-group table tr th.big { width: 50%; }
 #collapse { background: #F5F5F5; width: 100%; border: 1px solid #75BCEF; }
+span.noErrors p { color: #347C17; margin: 0 0 0 2em; font-weight: 900; }
+div.accordion-heading .accordion-toggle { padding: 8px 0 ; }
+a.seeCode { float: right; font-weight: 900; color: #FF0000; clear: both; text-decoration: underline; }
+a.seeCode:hover { color: #FF0000; }
 /*********Accordion*********/
 
-.scrollable-code { height: 470px; overflow: auto; }
+/*.scrollable-code { height: 470px; overflow: auto; }
 .scrollable-facts { height: 120px; overflow: auto; }
-.scrollable-outline { height: 220px; overflow: auto; }
-.scrollable-code>p { padding-right: 15px; }
-.navbar-fixed-bottom { height: 40px; }
+.scrollable-outline { height: 220px; overflow: auto; }*/
 div.row-fluid:after { clear: both; }
