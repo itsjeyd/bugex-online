@@ -118,20 +118,6 @@ class UserRequest(models.Model):
         thread = UserRequestThread(user_request)
         thread.start()
 
-        """
-        log.debug("Parsing archive..")
-
-        # try to parse archive
-        try:
-            user_request._parse_archive()
-        except Exception as e:
-            log.info("Parsing failed: %s", e)
-        else:
-            log.debug("Running BugEx..")
-            # run BugEx
-            user_request._run_bugex()
-        """
-
         log.debug("Returning to view..")
 
         # return reference to view
