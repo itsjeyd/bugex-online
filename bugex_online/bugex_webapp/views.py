@@ -282,5 +282,5 @@ def get_source_file_content(request, token, class_name):
     class_name = class_name.split('.')[-1] + '.java'
 
     source_file = ur.codearchive.sourcefile_set.get(package=package_name, name=class_name)
-    
+
     return HttpResponse(source_file.content, content_type="text/plain")
