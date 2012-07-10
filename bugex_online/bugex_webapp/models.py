@@ -418,7 +418,7 @@ class Fact(models.Model):
     FACT_TYPES = [
         ('A', 'TYPE_A'),
         ('B', 'TYPE_B'),
-        ('ALL', 'ALL FACT TYPES')
+        ('ALL', 'ALL FACT TYPES') # TODO (Fix): This is not the right way to handle displaying "All" facts
         # ...
     ]
 
