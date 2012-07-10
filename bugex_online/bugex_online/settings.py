@@ -21,7 +21,7 @@ ROOT_PATH = getcwd()
 # A boolean that turns on/off debug mode.
 # One of the main features of debug mode is
 # the display of detailed error pages.
-DEBUG = True
+DEBUG = False
 
 # A boolean that turns on/off template debug mode.
 # If this is True, the fancy error page will display
