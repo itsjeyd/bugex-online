@@ -59,13 +59,13 @@
 			<div class="container">
 				<a class="brand" href="{% url main-page %}"><img src="{{ STATIC_URL }}img/logo50px.png"></a>
 				<ul class="nav pull-right">
-					<li><a href="{% url main-page %}"><i class="icon-home"></i> Home</a></li>
-					<li><a href="{% url howto-page %}"><i class="icon-question-sign"></i> HowTo</a></li>
-					<li><a href="{% url contact-page %}"><i class="icon-comment"></i> Contact Us</a></li>
+					{% block home %}<li><a href="{% url main-page %}">{% endblock home %}<i class="icon-home"></i> Home</a></li>
+                    {% block howto %}<li><a href="{% url howto-page %}">{% endblock howto %}<i class="icon-question-sign"></i> HowTo</a></li>
+                    {% block contact %}<li><a href="{% url contact-page %}">{% endblock contact %}<i class="icon-comment"></i> Contact Us</a></li>
 
                     {% if user.is_authenticated %}
                         {% comment %}<li><a href="{% url results-page-overview %}">Results</a></li>{% endcomment %}
-                        <li><a href="{% url user-page %}"><i class="icon-user"></i> My Account</a></li>
+                        {% block user %}<li><a href="{% url user-page %}">{% endblock user %}<i class="icon-user"></i> My Account</a></li>
                         <li><a href="{% url logout %}"><i class="icon-remove"></i> Logout</a></li>
                         <li class="divider-vertical"></li>
                         <li class="active"><a><i class="icon-user icon-white"></i> {{ user.username }}</a></li>
