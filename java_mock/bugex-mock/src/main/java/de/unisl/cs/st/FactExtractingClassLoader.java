@@ -69,7 +69,8 @@ public class FactExtractingClassLoader extends ClassLoader {
 		}
 
 		private String generateExplanation() {
-			return "this is just shitty code...";
+			//return "this is just shitty code...";
+			return BugExMock.getRandomExplanation();
 		}
 	}
 

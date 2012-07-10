@@ -19,7 +19,7 @@
 #
 # bugex.sh failing-program.jar de.mypackage.TestMyClass#testGetMin /home/freddy/
 
-BUGEX_CURRENT=0.0.5
+BUGEX_CURRENT=0.0.6
 
 if [ $# -lt 3 ]
 then
