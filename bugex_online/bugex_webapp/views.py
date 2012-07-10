@@ -18,7 +18,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import mail_admins, send_mail
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
-from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -29,10 +28,6 @@ from bugex_webapp import UserRequestStatus, Notifications
 from bugex_webapp.models import UserRequest, Fact
 from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm
 from bugex_webapp.forms import RegistrationForm, EmailBaseForm
-
-class HowToPageView(TemplateView):
-    template_name = 'bugex_webapp/howto.html'
-
 
 def get_or_create_user(email_address):
     """Create and return a new user.
