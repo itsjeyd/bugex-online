@@ -105,5 +105,12 @@ class Notifications(object):
             'subject': 'Your account password has been recovered',
             'content': 'Your account password has been recovered for you.\n' +
                        'Your new password is: {0}'
+        },
+        'USER_REGISTERED': {
+            'subject': 'Your registration at BugEx Online',
+            'content': 'You have successfully created an account at BugEx Online. ' +
+                       'Your credentials are the following:\n\n' +
+                       'User name: {0}\n' +
+                       'Password: {1}'
         }
     }
