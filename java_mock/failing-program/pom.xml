@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.mypackage</groupId>
   <artifactId>failing-program</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <name>Failing Program for BugEx</name>
   <description>This project contains a failing test case. It is used to test the BugEx-Online implementation.</description>
   <dependencies>

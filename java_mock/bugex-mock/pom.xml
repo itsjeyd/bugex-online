@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.unisl.cs.st</groupId>
   <artifactId>bugex-mock</artifactId>
-  <version>0.0.5-SNAPSHOT</version>
+  <version>0.0.6-SNAPSHOT</version>
   <name>Mockup for BugEx</name>
   <dependencies>
   	<dependency>

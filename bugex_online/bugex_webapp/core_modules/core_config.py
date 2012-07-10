@@ -16,7 +16,7 @@ DEBUG = True
 
 # Defines the artificial delay for the BugEx Mockup in seconds.
 # Will only be used in DEBUG mode.
-ARTIFICIAL_DELAY = 10
+ARTIFICIAL_DELAY = 15
 
 
 # [ BUG EX ]
@@ -25,7 +25,7 @@ ARTIFICIAL_DELAY = 10
 RESULT_FILE_NAME = 'bugex-results.xml'
 
 # Absolute path of the BugEx executable.
-EXECUTABLE = '{0}/../java_mock/bin/bugex-mock-0.0.5-SNAPSHOT-jar-with-dependencies.jar'.format(ROOT_PATH)
+EXECUTABLE = '{0}/../java_mock/bin/bugex-mock-0.0.6-SNAPSHOT-jar-with-dependencies.jar'.format(ROOT_PATH)
 
 # [ MONITORING ]
 

@@ -26,6 +26,16 @@ public class BugExMock {
 	public static int getRandomNumber(int min, int max) {
 		return min + (int) (Math.random() * ((max - min) + 1));
 	}
+	
+	public static String[] explanations = new String[]{
+		"this is just shitty code...",
+		"better think before coding.",
+		"looks nice, but does not work!",
+		"here even I can not help you anymore.."};
+	
+	public static String getRandomExplanation() {
+		return explanations[getRandomNumber(0, explanations.length-1)];
+	}
 
 	/**
 	 * 1st argument: path of jar archive with failing test case
@@ -193,7 +203,9 @@ public class BugExMock {
 			throw new RuntimeException("Something went wrong analysing the class file: Got no code locations! "
 					+ "Was the code compiled with the -g option?");
 		}
-		return facts.subList(0, getRandomNumber(1, facts.size()));
+		System.out.println("Found "+facts.size()+" facts..");
+		//return facts.subList(0, getRandomNumber(1, facts.size()));
+		return facts.subList(0, getRandomNumber(facts.size() > 2 ? 2 : 1, facts.size()));
 	}
 
 	private void runTest() {
