@@ -34,11 +34,10 @@
                             {% for fact_type in fact_type_list %}
                                 <div class="tab-pane fade{% if forloop.first %} in active{% endif %}" id="cat{{ forloop.counter }}">
                                     <div id="accordion2" class="accordion">
+                                    <table><tr><th class="small">ID</th><th class="big">Class_Name#Method_Name</th><th class="small">Fact Type</th></tr></table>
                                     {% if forloop.last %}
                                          {% for fact in fact_list %}
-                                            <div class="accordion-group">
-                                            <table><tr><th class="small">ID</th><th class="big">Class_Name#Method_Name</th><th class="small">Fact Type</th></tr></table>
-
+                                            <div class="accordion-group">                                           
                                                 <div class="accordion-heading">
                                                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ fact.counter }}">
                                                     <table><tr><th class="small">{{ fact.id }}</th><th class="big">{{ fact.class_name }}#{{ fact.method_name }}</th><th class="small">TYPE_{{ fact.fact_type }}</th></tr></table>
@@ -49,16 +48,14 @@
                                                         {{ fact.explanation }}<a class="seeCode" href="#" onClick="$('pre').html('loading...').load('{% url source-page token fact.class_name %}')">See the class</a>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            {% endfor %}
-                                            {% else %}
-                                            {% for fact in fact_list %}
+                                            </div> 
+                                            {% endfor %} 
+                                    {% else %}     
+                                            {% for fact in fact_list %}                                  	
                                          	{% if fact.fact_type == fact_type %}
 
                                             <div class="accordion-group">
-                                            <table><tr><th class="small">ID</th><th class="big">Class_Name#Method_Name</th><th class="small">Fact Type</th></tr></table>
-
-                                                <div class="accordion-heading">
+                                            	<div class="accordion-heading">
                                                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ fact.counter }}">
                                                     <table><tr><th class="small">{{ fact.id }}</th><th class="big">{{ fact.class_name }}#{{ fact.method_name }}</th><th class="small">TYPE_{{ fact.fact_type }}</th></tr></table>
                                                    	</a>
@@ -73,12 +70,11 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            {% else %}
-                                                <span class="noErrors"><p>BugEx did not output any facts of this type.</p></span>
-                                            {% endif %}
+                                      		{% else %}
+                                                <span class="noErrors"><p>You had no errors for this fact type!</p></span>
+                                      		{% endif %}                                            
                                             {% endfor %}
-                                            {% endif %}
-
+                                     {% endif %}   
                                     </div>
                                 </div>
                             {% endfor %}
