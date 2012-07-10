@@ -39,11 +39,11 @@
                                          {% for fact in fact_list %}
                                             <div class="accordion-group">                                           
                                                 <div class="accordion-heading">
-                                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ fact.counter }}">
+                                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ forloop.counter }}all">
                                                     <table><tr><th class="small">{{ fact.id }}</th><th class="big">{{ fact.class_name }}#{{ fact.method_name }}</th><th class="small">TYPE_{{ fact.fact_type }}</th></tr></table>
                                                    	</a>
                                                 </div>
-                                                <div id="collapse{{ fact.counter }}" class="accordion-body collapse">
+                                                <div id="collapse{{ forloop.counter }}all" class="accordion-body collapse">
                                                     <div class="accordion-inner">
                                                         {{ fact.explanation }}<a class="seeCode" href="#" onClick="$('pre').html('loading...').load('{% url source-page token fact.class_name %}')">See the class</a>
                                                     </div>
@@ -56,7 +56,7 @@
 
                                             <div class="accordion-group">
                                             	<div class="accordion-heading">
-                                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ fact.counter }}">
+                                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse{{ forloop.counter }}">
                                                     <table><tr><th class="small">{{ fact.id }}</th><th class="big">{{ fact.class_name }}#{{ fact.method_name }}</th><th class="small">TYPE_{{ fact.fact_type }}</th></tr></table>
                                                    	</a>
                                                         	<!-- <ul class="factBasic"> -->
@@ -64,14 +64,14 @@
 
                                                         	<!--</ul>-->
                                                 </div>
-                                                <div id="collapse{{ fact.counter }}" class="accordion-body collapse {% if forloop.first %}in{% endif %}">
+                                                <div id="collapse{{ forloop.counter }}" class="accordion-body collapse {% if forloop.last %}in{% endif %}">
                                                     <div class="accordion-inner">
                                                         {{ fact.explanation }}<a class="seeCode" href="#" onClick="$('pre').html('loading...').load('{% url source-page token fact.class_name %}')">See the class</a>
                                                     </div>
                                                 </div>
                                             </div>
                                       		{% else %}
-                                                <span class="noErrors"><p>You had no errors for this fact type!</p></span>
+<!--                                                 <span class="noErrors"><p>You had no errors for this fact type!</p></span> -->
                                       		{% endif %}                                            
                                             {% endfor %}
                                      {% endif %}   

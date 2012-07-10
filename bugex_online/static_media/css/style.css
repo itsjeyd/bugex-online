@@ -54,12 +54,12 @@ div.fullHeight { height: 100%; }
 /*********Testing*********/
 
 /*********Facts*********/
-#facts { background: #fff; border: 1px solid #75BCEF; margin: 0 0 1em 0; overflow-y: scrollbar; height: 90%; min-height: 15em; }
+#facts { background: #fff; border: 1px solid #75BCEF; margin: 0 0 1em 0; overflow-y: scrollbar; height: 90%; min-height: 14em; }
 div.scrollable-facts { height: 25em;  }
 /*********Facts*********/
 
 /*********Code*********/
-#code { background: #F5F5F5; font-family: DroidSansMono; height: 33.5em; border: 1px solid #75BCEF; }
+#code { background: #F5F5F5; font-family: DroidSansMono; height: 33em; border: 1px solid #75BCEF; max-height: 33.5em; overflow-y: scroll; }
 /*********Code*********/
 
 /*********Informing Text After Submitting something*********/
