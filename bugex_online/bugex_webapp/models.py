@@ -418,7 +418,6 @@ class Fact(models.Model):
     FACT_TYPES = [
         ('A', 'TYPE_A'),
         ('B', 'TYPE_B'),
-        ('C', 'TYPE_C'),
         ('ALL', 'ALL FACT TYPES')
         # ...
     ]
