@@ -77,15 +77,43 @@ def process_main_page_forms(request):
 
                 if not User.objects.filter(username=email_address).count():
                     password = User.objects.make_random_password(length=8)
-                    print password
                     User.objects.create_user(
                         username=email_address,
                         email=email_address,
                         password=password
                     )
 
+                    send_mail(
+                        subject=Notifications.CONTENT['USER_REGISTERED']['subject'],
+                        message=Notifications.HEADER_FOOTER.format(
+                            Notifications.CONTENT['USER_REGISTERED']['content'].format(email_address, password)
+                        ),
+                        from_email=settings.EMAIL_HOST_USER,
+                        recipient_list=[email_address],
+                    )
+
                     # messages.success(request, 'User has been created successfully.')
                     message = 'User "{0}" has been created successfully.'.format(email_address)
+
+                else:
+
+                    user = User.objects.get(username=email_address)
+                    new_password = User.objects.make_random_password(length=8)
+                    user.set_password(new_password)
+                    user.save()
+
+                    send_mail(
+                        subject=Notifications.CONTENT['RECOVERED_PASSWORD']['subject'],
+                        message=Notifications.HEADER_FOOTER.format(
+                            Notifications.CONTENT['RECOVERED_PASSWORD']['content'].format(new_password)
+                        ),
+                        from_email=settings.EMAIL_HOST_USER,
+                        recipient_list=[email_address],
+                    )
+
+                    message = 'This email address is already registered in the database. An email containing the password has been sent to this address.'
+
+
             else:
                 # messages.error(request, 'User could not be created.')
                 message = 'User could not be created. Please try again.'
@@ -253,7 +281,6 @@ def _change_email_address(request):
 def _log_user_in(request):
     """Log a user in."""
     error_message = ''
-    print request.POST
     auth_form = AuthenticationForm(request.POST)
     username = request.POST['username']
     password = request.POST['password']
