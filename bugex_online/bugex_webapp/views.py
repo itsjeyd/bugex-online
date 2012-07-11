@@ -424,6 +424,7 @@ def delete_bugex_result(request, delete_token):
             user_request.result.delete()
             user_request.result = None # manually set relation to null
             user_request.save()
+            user_request.codearchive.delete()
             # Delete the entire directory where the archive file was stored
             shutil.rmtree(user_request.folder)
             # Set user request status to DELETED
