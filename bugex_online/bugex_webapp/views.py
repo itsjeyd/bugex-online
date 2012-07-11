@@ -355,19 +355,22 @@ def submit_contact_form(request):
 
 def show_bugex_result(request, token):
     """Prepare the results data to be shown for a single user request."""
-    user_request = UserRequest.objects.get(token=token)
-    fact_type_list = [fact_type[0] for fact_type in Fact.FACT_TYPES]
-    fact_list = user_request.result.fact_set.all()
-    if fact_list:
-        template_context = {
-            'fact_type_list': fact_type_list,
-            'fact_list': fact_list,
-            'token': token
-        }
-        return render(request, 'bugex_webapp/results.html', template_context)
 
-    message = 'This BugEx result has already been deleted.'
-    return render(request, 'bugex_webapp/delete.html', {'message': message})
+    try:
+        user_request = UserRequest.objects.get(token=token)
+        fact_type_list = [fact_type[0] for fact_type in Fact.FACT_TYPES]
+        fact_list = user_request.result.fact_set.all()
+        if fact_list:
+            template_context = {
+                'fact_type_list': fact_type_list,
+                'fact_list': fact_list,
+                'token': token
+            }
+            return render(request, 'bugex_webapp/results.html', template_context)
+
+    except ObjectDoesNotExist:
+        message = 'This BugEx result has already been deleted.'
+        return render(request, 'bugex_webapp/delete.html', {'message': message})
 
 
 def delete_bugex_result(request, delete_token):
