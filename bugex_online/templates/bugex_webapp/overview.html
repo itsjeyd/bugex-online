@@ -16,9 +16,15 @@
 	    <ul class="resultsList">
 	        {% for request in requests_by_user %}
 		    {% if not request.status == 8 %}
-		        <li>{{ request.codearchive.name }} {{ request.test_case.name}} <a href="/result/{{ request.token }}">Results</a> <a href="/delete/{{ request.delete_token }}">Delete</a></li>
+		        <li>Request {{ forloop.counter }}, created on {{ request.date }}
+			    <ul class="resultItem">
+			        <li>Code archive: {{ request.codearchive.name }}</li>
+				<li>Test case: {{ request.test_case.name }}</li>
+				<li><a class="btn" href="/result/{{ request.token }}">Results</a> <a class="btn" href="/delete/{{ request.delete_token }}">Delete</a></li>
+	                    </ul>
+                        </li>
 		    {% else %}
-		        <li>(Deleted)</li>
+		        <li>Request {{ forloop.counter }}, created on {{ request.date }} (DELETED)</li>
 		    {% endif %}
 		{% endfor %}
 	    </ul>
