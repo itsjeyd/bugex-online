@@ -19,6 +19,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import mail_admins, send_mail
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -406,11 +407,24 @@ def delete_bugex_result(request, delete_token):
 
 
 def get_source_file_content(request, token, class_name):
-    ur = UserRequest.objects.get(token=token)
+    """
+    Returns the content of a java source code file, identified by the unique
+    Token if the UserRequest and the fully qualified class name.
 
-    package_name = '.'.join(class_name.split('.')[:-1])
-    class_name = class_name.split('.')[-1] + '.java'
+    Returns the content as plain text or 404, if the user request and/or source
+    file does not exist.
 
-    source_file = ur.codearchive.sourcefile_set.get(package=package_name, name=class_name)
+    Arguments:
+    token -- see UserRequest token
+    class_name -- e.g. 'my.package.MyClass'
+    """
+    try:
+        package_name = '.'.join(class_name.split('.')[:-1])
+        class_name = class_name.split('.')[-1] + '.java'
 
-    return HttpResponse(source_file.content, content_type="text/plain")
+        ur = UserRequest.objects.get(token=token)
+        source_file = ur.codearchive.sourcefile_set.get(package=package_name, name=class_name)
+    except ObjectDoesNotExist:
+        raise Http404
+    else:
+        return HttpResponse(source_file.content, content_type="text/plain")
