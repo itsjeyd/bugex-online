@@ -388,7 +388,7 @@ def delete_bugex_result(request, delete_token):
         # Delete the entire directory where the archive file was stored
         shutil.rmtree(user_request.folder)
         # Set user request status to DELETED
-        user_request.status = UserRequestStatus.DELETED
+        user_request.update_status(UserRequestStatus.DELETED)
         user_request.save()
 
         message = 'Your BugEx result has been deleted successfully.'
