@@ -22,6 +22,52 @@ from bugex_webapp.models import CodeArchive
 from bugex_webapp.models import UserRequest
 
 
+class UserRequestTest(TestCase):
+    """
+    Tests for (public) methods + properties of the UserRequest model
+    """
+    fixtures = ['test_data.json']
+
+    def setUp(self):
+        self.user_request = UserRequest.objects.get(
+            token='f99db44e-c841-444b-977b-ccc9baa11027')
+
+    def test_result_url(self):
+        """ Test the 'result_url' property of UserRequest """
+        self.assertEqual(
+            self.user_request.result_url,
+            settings.APPLICATION_BASE_URL+
+            '/result/f99db44e-c841-444b-977b-ccc9baa11027')
+
+    def test_delete_url(self):
+        """ Test the 'delete_url' property of UserRequest """
+        self.assertEqual(
+            self.user_request.delete_url,
+            settings.APPLICATION_BASE_URL+
+            '/delete/de608d71-2ab6-4776-957d-9d6c5ca11d03')
+
+    def test_folder(self):
+        """ Test the 'folder' property of UserRequest """
+        self.assertEqual(
+            self.user_request.folder,
+            os.path.join(
+                settings.MEDIA_ROOT,
+                'user_2', 'f99db44e-c841-444b-977b-ccc9baa11027'))
+
+    def test_relative_folder(self):
+        """ Test the 'relative_folder' property of UserRequest """
+        self.assertEqual(
+            self.user_request.relative_folder,
+            os.path.join('user_2', 'f99db44e-c841-444b-977b-ccc9baa11027'))
+
+    def test_update_status(self):
+        """ Tests the 'update_status method of User Request """
+        old_status = self.user_request.status
+        self.user_request.update_status(UserRequestStatus.PENDING)
+        self.assertNotEqual(self.user_request.status, old_status)
+        self.assertEqual(self.user_request.status, UserRequestStatus.PENDING)
+
+
 class CodeArchiveTest(TestCase):
     """
     Tests for methods + properties of the CodeArchive model
