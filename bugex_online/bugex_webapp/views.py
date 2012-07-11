@@ -374,7 +374,7 @@ def show_bugex_result(request, token):
         #                     }
         fact_dict = {}
         for fact_type in Fact.FACT_TYPES:
-            fact_dict[fact_type] = []
+            fact_dict[fact_type[0]] = []
             for fact in user_request.result.fact_set.all():
                 fact_dict[fact.fact_type].append(fact)
 
