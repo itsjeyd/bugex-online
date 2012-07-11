@@ -13,7 +13,6 @@ Authors: Amir Baradaran
 
 import shutil
 import logging
-from collections import defaultdict
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -373,9 +372,11 @@ def show_bugex_result(request, token):
         #                      'Type_B': [fact1, fact2, ...],
         #                      ...
         #                     }
-        fact_dict = defaultdict(list)
-        for fact in user_request.result.fact_set.all():
-            fact_dict[fact.fact_type].append(fact)
+        fact_dict = {}
+        for fact_type in Fact.FACT_TYPES:
+            fact_dict[fact_type] = []
+            for fact in user_request.result.fact_set.all():
+                fact_dict[fact.fact_type].append(fact)
 
         dict(fact_dict)
         #context['fact_dict'] = dict(fact_dict)
@@ -428,6 +429,7 @@ def delete_bugex_result(request, delete_token):
             user_request.result.delete()
             user_request.result = None # manually set relation to null
             user_request.save()
+            user_request.codearchive.delete()
             # Delete the entire directory where the archive file was stored
             shutil.rmtree(user_request.folder)
             # Set user request status to DELETED
