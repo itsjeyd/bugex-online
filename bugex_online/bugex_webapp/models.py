@@ -44,7 +44,11 @@ class UserRequest(models.Model):
     token = models.CharField(max_length=36)
     delete_token = models.CharField(max_length=36)
     status = models.PositiveIntegerField()
-    result = models.OneToOneField('BugExResult', blank=True, null=True)
+    result = models.OneToOneField(
+            'BugExResult',
+            blank=True,
+            null=True,
+            on_delete=models.SET_NULL)
 
     def __unicode__(self):
         """Return a unicode representation for a UserRequest model object."""
