@@ -28,9 +28,9 @@ div.container-fluid #howTo img { margin: 1em 0; }
 div.container-fluid #howTo p { text-align: left; }
 div.container-fluid #howTo h3 { text-align: left; }
 div.container-fluid #howTo p.indent {text-indent: 4em; }
-div.container-fluid #howTo pre.prettyprint { width: 40%; padding: 0; margin: 0 auto; }
+div.container-fluid #howTo pre.prettyprint { width: 45%; padding: 0 3px; margin: 0 auto; }
 div.container-fluid #leftColumnMain { width: 90%; margin: 5em auto 0 auto; }
-div.container-fluid #leftColumnMain pre.prettyprint { width: 85%; padding: 0; margin: 0; }
+div.container-fluid #leftColumnMain pre.prettyprint { width: 90%; padding: 0 0 0 10px; margin: 0; }
 div.container-fluid #mainPageForm { width: 90%; margin: 5em auto 0 auto; overflow: hidden; }
 div.row-fluid h1 {}
 div.row-fluid p {}
@@ -54,13 +54,12 @@ div.fullHeight { height: 100%; }
 /*********Testing*********/
 
 /*********Facts*********/
-#facts { background: #fff; border: 1px solid #75BCEF; margin: 0 0 1em 0; overflow-y: scrollbar; height: 90%; min-height: 15em; }
-#facts h2 { color: #555555; margin: 0 0 1em 0; }
+#facts { background: #fff; border: 1px solid #75BCEF; margin: 0 0 1em 0; overflow-y: scrollbar; height: 90%; min-height: 14em; }
 div.scrollable-facts { height: 25em;  }
 /*********Facts*********/
 
 /*********Code*********/
-#code { background: #F5F5F5; font-family: DroidSansMono; height: 33.5em; border: 1px solid #75BCEF; }
+#code { background: #F5F5F5; font-family: DroidSansMono; height: 33em; border: 1px solid #75BCEF; max-height: 33.5em; overflow-y: scroll; }
 /*********Code*********/
 
 /*********Informing Text After Submitting something*********/
@@ -89,14 +88,15 @@ form.contact div.form-actions button { float: left; margin: 0 1em 0 0; }
 /*********Forms*********/
 
 /*********Accordion*********/
-div.accordion-group { width: 95%; margin: 0 auto; }
+div.accordion-group { width: 98%; margin: 0 auto; }
+div.accordion-group { width: 98%; margin: 0 auto; }
 div.accordion-heading { background: #DDEAF6; width: 100%; border: 1px solid #75BCEF; }
-div.accordion-heading table, div.accordion-group table { width: 100%; }
-div.accordion-heading table tr, div.accordion-group table tr { width: 100%; }
-div.accordion-heading table tr th.small, div.accordion-group table tr th.small { width: 20%; }
-div.accordion-heading table tr th.big, div.accordion-group table tr th.big { width: 50%; }
+div.accordion-heading table, div.accordion table { width: 100%; }
+div.accordion-heading table tr, div.accordion table tr { width: 100%; }
+div.accordion-heading table tr th.small, div.accordion table tr th.small { width: 20%; }
+div.accordion-heading table tr th.big, div.accordion table tr th.big { width: 50%; }
 #collapse { background: #F5F5F5; width: 100%; border: 1px solid #75BCEF; }
-span.noErrors p { color: #347C17; margin: 0 0 0 2em; font-weight: 900; }
+span.noErrors p { color: #347C17; margin: 2em 0 0 2em; font-weight: 900; }
 div.accordion-heading .accordion-toggle { padding: 8px 0 ; }
 a.seeCode { float: right; font-weight: 900; color: #FF0000; clear: both; text-decoration: underline; }
 a.seeCode:hover { color: #FF0000; }
