@@ -12,6 +12,7 @@ Authors: Amir Baradaran
 """
 
 import shutil
+from collections import defaultdict
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -358,15 +359,21 @@ def show_bugex_result(request, token):
 
     try:
         user_request = UserRequest.objects.get(token=token)
-        fact_type_list = [fact_type[0] for fact_type in Fact.FACT_TYPES]
-        fact_list = user_request.result.fact_set.all()
-        if fact_list:
-            template_context = {
-                'fact_type_list': fact_type_list,
-                'fact_list': fact_list,
-                'token': token
-            }
-            return render(request, 'bugex_webapp/results.html', template_context)
+
+        # Dictionary of facts
+        # Format: fact_dict = {'Type_A': [fact1, fact2, ...],
+        #                      'Type_B': [fact1, fact2, ...],
+        #                      ...
+        #                     }
+        fact_dict = defaultdict(list)
+        for fact in user_request.result.fact_set.all():
+            fact_dict[fact.fact_type].append(fact)
+
+        template_context = {
+            'fact_dict': fact_dict,
+            'token': token
+        }
+        return render(request, 'bugex_webapp/results.html', template_context)
 
     except ObjectDoesNotExist:
         message = 'This BugEx result has already been deleted.'
