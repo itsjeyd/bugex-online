@@ -46,6 +46,12 @@ class UserRequest(models.Model):
     status = models.PositiveIntegerField()
     result = models.OneToOneField('BugExResult', blank=True, null=True)
 
+    date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='date of creation',
+        help_text='The date when this UserRequest was created.'
+    )
+
     def __unicode__(self):
         """Return a unicode representation for a UserRequest model object."""
         return u'{0}: {1}'.format(self.token, self.test_case)
