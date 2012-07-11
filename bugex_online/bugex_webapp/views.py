@@ -311,12 +311,12 @@ def submit_contact_form(request):
         form = ContactForm(request.POST)
 
         if form.is_valid():
-            
+
             content = 'Name:\n' + request.POST['name'] + \
                       '\n\nEmail:\n' + request.POST['email_address'] + \
                       '\n\nMessage:\n'+ request.POST['message']
-            send_mail('[Contact Form] from ' + request.POST['name'], content, 
-                      request.POST['email_address'], ['bugexonline@gmail.com'], 
+            send_mail('[Contact Form] from ' + request.POST['name'], content,
+                      request.POST['email_address'], ['bugexonline@gmail.com'],
                       fail_silently=True)
 
             messages.success(request, 'We received your email!')
