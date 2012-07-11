@@ -75,7 +75,7 @@ class CodeArchiveTest(TestCase):
     fixtures = ['test_data.json']
 
     def setUp(self):
-        self.code_archive = CodeArchive.objecs.get(archive_format='JAR')
+        self.code_archive = CodeArchive.objects.get(archive_format='JAR')
 
     def test_name(self):
         """ Test the 'name' property of CodeArchive """
