@@ -296,6 +296,10 @@ class CodeArchive(models.Model):
         return u'{0}'.format(self.archive_file.name)
 
     @property
+    def name(self):
+        return self.archive_file.name.split('/')[-1]
+
+    @property
     def path(self):
         return os.path.join(settings.MEDIA_ROOT, self.archive_file.name)
 
