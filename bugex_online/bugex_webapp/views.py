@@ -158,7 +158,7 @@ def _register_user(request):
                 message=Notifications.HEADER_FOOTER.format(
                     Notifications.CONTENT['USER_REGISTERED']['content']
                     .format(
-                        email_address, password
+                        email_address, new_password
                     )
                 ),
                 from_email=settings.EMAIL_HOST_USER,
@@ -385,11 +385,14 @@ def delete_bugex_result(request, delete_token):
         # Deleting BugExResult, CodeArchive, all Facts, all SourceFiles,
         # all ClassFiles, all Folders, all Lines
         user_request.result.delete()
+        
+        print 'alright: '+str(user_request.result)
+        user_request.result = None
+        user_request.save()
         # Delete the entire directory where the archive file was stored
         shutil.rmtree(user_request.folder)
         # Set user request status to DELETED
         user_request.update_status(UserRequestStatus.DELETED)
-        user_request.save()
 
         message = 'Your BugEx result has been deleted successfully.'
 
