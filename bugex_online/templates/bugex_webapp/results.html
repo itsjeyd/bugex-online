@@ -108,6 +108,14 @@
             </div>
             <div class="span8 fullHeight">
                 <div id="code">
+                
+                {% for key, value in fact_dict.iteritems %}
+               {{ value }}
+                {% for fact in value %}
+                {{ fact }}
+ {% endfor %}              
+{% endfor %}
+                
 <pre class="prettyprint">
 
 </pre>
