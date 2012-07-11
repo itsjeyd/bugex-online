@@ -2,6 +2,8 @@
 
 {% block title %}BugEx Main Page{% endblock title %}
 
+{% block home %}<li class="active"><a href="#">{% endblock home %}
+
 {% block content %}
 
 <div class="container-fluid">
@@ -15,6 +17,22 @@
                 <h3>Detailed information on how to use BugEx Online can be found on our <a href="{% url howto-page %}">HowTo</a> page.</h3>
             </div>
 
+            {% if message %}
+
+                {% if "successful" in message %}
+                    <div class="alert alert-success fade in">
+                        <a class="close" data-dismiss="alert" href="#">&times;</a>
+                        {{ message }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-error fade in">
+                        <a class="close" data-dismiss="alert" href="#">&times;</a>
+                        {{ message }}
+                    </div>
+                {% endif %}
+
+            {% endif %}
+
             <div class="row-fluid">
                 <div class="span6">
                     <div id="leftColumnMain">
@@ -24,41 +42,6 @@
                             <h3>Test case</h3>
                             <p>The failing test case you want BugEx to analyze needs to be a JUnit test method and must be specified as a string of the following form: <pre class="prettyprint">package.containing.test.case.Class#failingTest</pre></p>
                         {% else %}
-
-                            {% if message %}
-
-                                {% if "successfully" in message %}
-                                    <div class="alert alert-success fade in">
-                                        <a class="close" data-dismiss="alert" href="#">&times;</a>
-                                        {{ message }}
-                                    </div>
-                                {% comment %}{% elif message == "User could not be created. Please try again." %}{% endcomment %}
-                                {% else %}
-                                    <div class="alert alert-error fade in">
-                                        <a class="close" data-dismiss="alert" href="#">&times;</a>
-                                        {{ message }}
-                                    </div>
-                                {% endif %}
-
-                            {% endif %}
-
-
-                            {% if error %}
-
-                                {% if error == "not_active" %}
-                                    <div class="alert alert-error fade in">
-                                        <a class="close" data-dismiss="alert" href="#">&times;</a>
-                                        Your account has been disabled. Please contact the administrator.
-                                    </div>
-
-                                {% elif error == "not_authenticated" %}
-                                    <div class="alert alert-error fade in">
-                                        <a class="close" data-dismiss="alert" href="#">&times;</a>
-                                        Your username and password didn't match. Please try again.
-                                </div>
-                                {% endif %}
-
-                            {% endif %}
 
 
                             <h3>Sign In</h3>
@@ -183,18 +166,6 @@
                             <h3>Submit your code</h3>
                             <form class="form-horizontal" enctype="multipart/form-data" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
 
-                                {% if messages %}
-
-                                    {% for message in messages %}
-                                        {% if message.tags == 'success' %}
-                                            <div class="alert alert-success fade in">
-                                                <a class="close" data-dismiss="alert" href="#">&times;</a>
-                                                {{ message }}
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endif %}
-
                                 <fieldset>
 
                                     {% for field in user_req_form %}
@@ -227,7 +198,7 @@
 			                                $('#informingText').delay(2000).fadeIn(200);
 			                            });			                        	
 			                        });
-									</script>									
+									</script>
                                     <div class="form-actions">
                                         <input type="hidden" name="form-type" value="user-request-form" />
                                         <button id="submit" type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
