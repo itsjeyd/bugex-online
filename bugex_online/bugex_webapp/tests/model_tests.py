@@ -74,11 +74,13 @@ class CodeArchiveTest(TestCase):
     """
     fixtures = ['test_data.json']
 
+    def setUp(self):
+        self.code_archive = CodeArchive.objecs.get(archive_format='JAR')
+
     def test_name(self):
         """ Test the 'name' property of CodeArchive """
-        code_archive = CodeArchive.objects.get(archive_format='JAR')
         self.assertEqual(
-            code_archive.name,
+            self.code_archive.name,
             'failing-program-0.0.2-SNAPSHOT-jar-with-dependencies.jar')
 
     def test_path(self):
@@ -86,8 +88,7 @@ class CodeArchiveTest(TestCase):
         Test the 'path' property of CodeArchive, which should return
         the absolute path of the physical archive file
         """
-        code_archive = CodeArchive.objects.get(archive_format='JAR')
-        self.assertTrue(code_archive.path.endswith(
+        self.assertTrue(self.code_archive.path.endswith(
             'uploads/user_2/f99db44e-c841-444b-977b-ccc9baa11027/' \
             'failing-program-0.0.2-SNAPSHOT-jar-with-dependencies.jar'))
 
@@ -98,8 +99,7 @@ class CodeArchiveTest(TestCase):
         the archive contents. We are calling this folder
         'tmp_extracted'.
         """
-        code_archive = CodeArchive.objects.get(archive_format='JAR')
-        self.assertTrue(code_archive.absolute_extracted_path.endswith(
+        self.assertTrue(self.code_archive.absolute_extracted_path.endswith(
             'uploads/user_2/f99db44e-c841-444b-977b-ccc9baa11027/' \
             'tmp_extracted'))
 
