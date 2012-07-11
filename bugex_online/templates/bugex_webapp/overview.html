@@ -1,0 +1,25 @@
+{% extends "bugex_webapp/base.html" %}
+
+{% block title %}Results Overview{% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span1"></div>
+        <div class="span1"></div>
+        <div class="span8">
+
+            <div id="welcomeText">
+                <h3>{{ message }}</h3>
+            </div>
+	    <ul class="resultsList">
+	        {% for request in requests_by_user %}
+		    <li><a href="/result/{{ request.token }}">{{ request.token }}</a> <a href="/delete/{{ request.delete_token }}">Delete</a></li>
+		{% endfor %}
+	    </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -369,6 +369,14 @@ def delete_bugex_result(request, delete_token):
     return render(request, 'bugex_webapp/delete.html', {'message': message})
 
 
+def results_overview(request, user_id):
+    requests_by_user = UserRequest.objects.filter(user_id=user_id)
+    message = 'Requests you have submitted since you joined BugEx Online'
+    template_context = {
+        'message': message, 'requests_by_user': requests_by_user}
+    return render(request, 'bugex_webapp/overview.html', template_context)
+
+
 def get_source_file_content(request, token, class_name):
     ur = UserRequest.objects.get(token=token)
 
