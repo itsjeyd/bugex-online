@@ -88,9 +88,13 @@ class CodeArchiveTest(TestCase):
         Test the 'path' property of CodeArchive, which should return
         the absolute path of the physical archive file
         """
-        self.assertTrue(self.code_archive.path.endswith(
-            'uploads/user_2/f99db44e-c841-444b-977b-ccc9baa11027/' \
-            'failing-program-0.0.2-SNAPSHOT-jar-with-dependencies.jar'))
+        self.assertEqual(
+            self.code_archive.path,
+            os.path.join(
+                settings.MEDIA_ROOT,
+                'user_2',
+                'f99db44e-c841-444b-977b-ccc9baa11027',
+                'failing-program-0.0.2-SNAPSHOT-jar-with-dependencies.jar'))
 
     def test_absolute_extracted_path(self):
         """
@@ -99,7 +103,11 @@ class CodeArchiveTest(TestCase):
         the archive contents. We are calling this folder
         'tmp_extracted'.
         """
-        self.assertTrue(self.code_archive.absolute_extracted_path.endswith(
-            'uploads/user_2/f99db44e-c841-444b-977b-ccc9baa11027/' \
-            'tmp_extracted'))
+        self.assertEqual(
+            self.code_archive.absolute_extracted_path,
+            os.path.join(
+                settings.MEDIA_ROOT,
+                'user_2',
+                'f99db44e-c841-444b-977b-ccc9baa11027/',
+                'tmp_extracted'))
 
