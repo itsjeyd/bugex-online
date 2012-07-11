@@ -15,7 +15,11 @@
             </div>
 	    <ul class="resultsList">
 	        {% for request in requests_by_user %}
-		    <li><a href="/result/{{ request.token }}">{{ request.token }}</a> <a href="/delete/{{ request.delete_token }}">Delete</a></li>
+		    {% if not request.status == 8 %}
+		        <li>{{ request.codearchive.name }} {{ request.test_case.name}} <a href="/result/{{ request.token }}">Results</a> <a href="/delete/{{ request.delete_token }}">Delete</a></li>
+		    {% else %}
+		        <li>(Deleted)</li>
+		    {% endif %}
 		{% endfor %}
 	    </ul>
         </div>
