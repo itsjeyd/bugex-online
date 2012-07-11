@@ -50,6 +50,12 @@ class UserRequest(models.Model):
             null=True,
             on_delete=models.SET_NULL)
 
+    date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='date of creation',
+        help_text='The date when this UserRequest was created.'
+    )
+
     def __unicode__(self):
         """Return a unicode representation for a UserRequest model object."""
         return u'{0}: {1}'.format(self.token, self.test_case)
@@ -298,6 +304,10 @@ class CodeArchive(models.Model):
     def __unicode__(self):
         """Return a unicode representation for a CodeArchive model object."""
         return u'{0}'.format(self.archive_file.name)
+
+    @property
+    def name(self):
+        return self.archive_file.name.split('/')[-1]
 
     @property
     def path(self):

@@ -335,12 +335,12 @@ def submit_contact_form(request):
         form = ContactForm(request.POST)
 
         if form.is_valid():
-            
+
             content = 'Name:\n' + request.POST['name'] + \
                       '\n\nEmail:\n' + request.POST['email_address'] + \
                       '\n\nMessage:\n'+ request.POST['message']
-            send_mail('[Contact Form] from ' + request.POST['name'], content, 
-                      request.POST['email_address'], ['bugexonline@gmail.com'], 
+            send_mail('[Contact Form] from ' + request.POST['name'], content,
+                      request.POST['email_address'], ['bugexonline@gmail.com'],
                       fail_silently=True)
 
             messages.success(request, 'We received your email!')
@@ -405,6 +405,14 @@ def delete_bugex_result(request, delete_token):
         message = 'This BugEx result has already been deleted.'
 
     return render(request, 'bugex_webapp/delete.html', {'message': message})
+
+
+def results_overview(request, user_id):
+    requests_by_user = UserRequest.objects.filter(user_id=user_id)
+    message = 'Requests you have submitted since you joined BugEx Online'
+    template_context = {
+        'message': message, 'requests_by_user': requests_by_user}
+    return render(request, 'bugex_webapp/overview.html', template_context)
 
 
 def get_source_file_content(request, token, class_name):
