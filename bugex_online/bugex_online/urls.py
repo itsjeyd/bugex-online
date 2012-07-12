@@ -30,7 +30,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     # This is for the captcha in the registration form
-    #url(r'^captcha/', include('captcha.urls')),
+    url(r'^captcha/', include('captcha.urls')),
 
     # This is for letting Django serve static files when debug mode is on.
     # IMPORTANT: This is for development purposes only!

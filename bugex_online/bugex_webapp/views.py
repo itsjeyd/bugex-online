@@ -379,10 +379,6 @@ def show_bugex_result(request, token):
         for fact in user_request.result.fact_set.all():
             fact_dict[fact.fact_type].append(fact)
 
-        dict(fact_dict)
-        #context['fact_dict'] = dict(fact_dict)
-
-
         template_context = {
             'fact_dict': fact_dict,
             'token': token
