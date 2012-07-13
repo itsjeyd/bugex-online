@@ -126,7 +126,7 @@ def _register_user(request):
 
     if registration_form.is_valid():
         email_address = registration_form.cleaned_data['email_address']
-        new_password = get_pronounceable_pass(3,2) 
+        new_password = get_pronounceable_pass(3,2)
 
         try:
             user = User.objects.get(username=email_address)
@@ -367,7 +367,7 @@ def show_bugex_result(request, token):
 
     if ur_status == UserRequestStatus.FINISHED:
         # prepare context and render response
-        
+
         # Dictionary of facts
         # Format: fact_dict = {'Type_A': [fact1, fact2, ...],
         #                      'Type_B': [fact1, fact2, ...],
@@ -392,7 +392,7 @@ def show_bugex_result(request, token):
         message = "BugEx failed to process your input data.\
         Please try again or contact an administrator."
     elif ur_status == UserRequestStatus.DELETED:
-        # already deleted, sorry. 
+        # already deleted, sorry.
         message = "This BugEx result has already been deleted."
     elif ur_status == UserRequestStatus.INVALID:
         # not our fault - the user messed it up!
@@ -468,7 +468,7 @@ def get_source_file_content(request, token, class_name):
     """
     package_name = '.'.join(class_name.split('.')[:-1])
     class_name = class_name.split('.')[-1] + '.java'
-    
+
     ur = get_object_or_404(UserRequest, token=token)
 
     try:
