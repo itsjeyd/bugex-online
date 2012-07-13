@@ -17,79 +17,88 @@
 
                 <div class="row-fluid">
 
-                    {% if message %}
+                    <div class="span6">
+                        <div id="mainPageForm">
 
-                        {% if "successful" in message %}
-                        <div class="alert alert-success fade in">
-                            <a class="close" data-dismiss="alert" href="#">&times;</a>
-                            {{ message }}
                         </div>
-                        {% else %}
-                        <div class="alert alert-error fade in">
-                            <a class="close" data-dismiss="alert" href="#">&times;</a>
-                            {{ message }}
-                        </div>
-                        {% endif %}
+                    </div>
 
-                    {% endif %}
+                    <div class="span6">
+                        <div id="leftColumnMain">
+                            {% if message %}
 
-                	<h3>Change email address</h3>
-                    <p>If you wish to change your email address please fill the following fields out</p>
-
-            		<form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
-
-
-        			
-        			<fieldset>
-
-                        {% for field in change_email_form %}
-
-                            {% if field.errors %}
-                    			<div class="control-group error">
-                			{% else %}
-                    			<div class="control-group">
-                			{% endif %}
-
-                                    <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
-
-                                    <div class="controls">
-                                        {% if field.html_name == "password" %}
-                                            <input id="id_password" type="password" name="password" maxlength="8" />
-                                        {% else %}
-                    				        {{ field }}
-                                        {% endif %}
-
-                                        {% for error in field.errors %}
-                        				    <span class="label label-important">{{ error }}</span>
-                    					{% endfor %}
-                					</div> 
-
+                                {% if "successful" in message %}
+                                <div class="alert alert-success fade in">
+                                    <a class="close" data-dismiss="alert" href="#">&times;</a>
+                                    {{ message }}
                                 </div>
-            			{% endfor %}
+                                {% else %}
+                                <div class="alert alert-error fade in">
+                                    <a class="close" data-dismiss="alert" href="#">&times;</a>
+                                    {{ message }}
+                                </div>
+                                {% endif %}
 
-	            		<div class="form-actions">
-                            <input type="hidden" name="form-type" value="change-email-form" />
-	                		<button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
-	            		</div>
-        			</fieldset>
-        			</form>
+                            {% endif %}
 
-                    <br>
-                    <h3>Change password</h3>
-                    <p>If you wish to change your password please click on the following button.</p>
-                    <p>The new password will be sent to your email address.</p>
-            		<form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
+                            <h3>Change email address</h3>
+                            <p>If you wish to change your email address please fill the following fields out</p>
 
-        			<fieldset>
+                            <form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
 
-						<div class="form-actions">
-                            <input type="hidden" name="form-type" value="change-password-form" />
-	                		<button type="submit" class="btn btn-primary">Change Password!</button>
-	            		</div>
 
-                    </fieldset>
-        			</form>
 
+                            <fieldset>
+
+                                {% for field in change_email_form %}
+
+                                    {% if field.errors %}
+                                        <div class="control-group error">
+                                    {% else %}
+                                        <div class="control-group">
+                                    {% endif %}
+
+                                            <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+
+                                            <div class="controls">
+                                                {% if field.html_name == "password" %}
+                                                    <input id="id_password" type="password" name="password" maxlength="8" />
+                                                {% else %}
+                                                    {{ field }}
+                                                {% endif %}
+
+                                                {% for error in field.errors %}
+                                                    <span class="label label-important">{{ error }}</span>
+                                                {% endfor %}
+                                            </div>
+
+                                        </div>
+                                {% endfor %}
+
+                                <div class="form-actions">
+                                    <input type="hidden" name="form-type" value="change-email-form" />
+                                    <button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
+                                </div>
+                            </fieldset>
+                            </form>
+
+                            <br>
+                            <h3>Change password</h3>
+                            <p>If you wish to change your password please click on the following button.</p>
+                            <p>The new password will be sent to your email address.</p>
+                            <form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
+
+                            <fieldset>
+
+                                <div class="form-actions">
+                                    <input type="hidden" name="form-type" value="change-password-form" />
+                                    <button type="submit" class="btn btn-primary">Change Password!</button>
+                                </div>
+
+                            </fieldset>
+                            </form>
+                        </div>
+                    </div>
             	</div>
             </div>                          
 		</div>
