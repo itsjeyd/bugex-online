@@ -6,21 +6,26 @@
 
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-2.0.4-modified.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css">
- 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/prettify-bootstrap.css">
+ 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/shCoreDefault.css">
  	
  	<link rel="icon" href="{{ STATIC_URL }}img/favicon.ico" type="image/x-icon">
  	
  	<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script> 	
-	<script type="text/javascript" src="{{ STATIC_URL }}js/prettify.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script> 
+   	<script type="text/javascript" src="{{ STATIC_URL }}js/shCore.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}js/shBrushJava.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>  	
+	
+
     <script type="text/javascript">
         $(document).ready(function() {
             $('.dropdown-toggle').dropdown();
             $('.alert').alert();
         });
     </script>
+  
 </head>
-<body onload="prettyPrint()">
+<body>
     {% block header %}	
     <div class="navbar">
 		<div class="navbar-inner">
