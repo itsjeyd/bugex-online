@@ -465,13 +465,16 @@ def get_source_file_content(request, token, class_name):
     token -- see UserRequest token
     class_name -- e.g. 'my.package.MyClass'
     """
-    try:
-        package_name = '.'.join(class_name.split('.')[:-1])
-        class_name = class_name.split('.')[-1] + '.java'
+    package_name = '.'.join(class_name.split('.')[:-1])
+    class_name = class_name.split('.')[-1] + '.java'
+    
+    ur = get_object_or_404(UserRequest, token=token)
 
-        ur = UserRequest.objects.get(token=token)
+    try:
         source_file = ur.codearchive.sourcefile_set.get(package=package_name, name=class_name)
     except ObjectDoesNotExist:
-        raise Http404
+        #raise Http404
+        # no source available
+        return HttpResponse("Source code not available.", content_type="text/plain")
     else:
         return HttpResponse(source_file.content, content_type="text/plain")

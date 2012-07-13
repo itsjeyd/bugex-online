@@ -4,7 +4,7 @@
 }
 
 /*********General*********/
-body { padding: 7em 0 2em 0; }
+body { padding: 7em 0 6em 0; }
 html, body { height: 87% }
 /*********General*********/
 
@@ -30,15 +30,16 @@ div.container-fluid #howTo p { text-align: left; }
 div.container-fluid #howTo h3 { text-align: left; }
 div.container-fluid #howTo p.indent {text-indent: 4em; }
 div.container-fluid #howTo pre.prettyprint { width: 45%; padding: 0 3px; margin: 0 auto; }
-div.container-fluid #leftColumnMain { width: 90%; margin: 5em auto 0 auto; }
+div.container-fluid #leftColumnMain { width: 90%; margin: 3em auto 0 auto; }
 div.container-fluid #leftColumnMain pre.prettyprint { width: 90%; padding: 0 0 0 10px; margin: 0; }
-div.container-fluid #mainPageForm { width: 90%; margin: 5em auto 0 auto; overflow: visible; }
+div.container-fluid #mainPageForm { width: 90%; margin: 3em auto 5em auto; overflow: visible; }
+
 div.row-fluid h1 {}
 div.row-fluid p {}
 /*********Main Content*********/
 
 /*********Footer*********/
-div#footerContainer { position:absolute; bottom:0; left:0; width:100%; background: #75BCEF; height: 2em; margin: 2em 0 0 0; padding: 0.4em 0; }
+div#footerContainer { position:absolute; bottom:0; left:0; width:100%; background: #75BCEF; height: 2em; margin: 6em 0 0 0; padding: 0.4em 0; }
 div.container-fluid #footer { width: 100%; margin: 0 auto; background: #75BCEF;  padding: 0; }
 div.container-fluid #footer p { text-align: center; line-height: 1.5em; }
 /*********Footer*********/
