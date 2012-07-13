@@ -4,7 +4,7 @@
 }
 
 /*********General*********/
-body { padding: 7em 0 2em 0; }
+body { padding: 7em 0 6em 0; }
 html, body { height: 87% }
 /*********General*********/
 
@@ -38,7 +38,7 @@ div.row-fluid p {}
 /*********Main Content*********/
 
 /*********Footer*********/
-div#footerContainer { position:absolute; bottom:0; left:0; width:100%; background: #75BCEF; height: 2em; margin: 2em 0 0 0; padding: 0.4em 0; }
+div#footerContainer { position:absolute; bottom:0; left:0; width:100%; background: #75BCEF; height: 2em; margin: 6em 0 0 0; padding: 0.4em 0; }
 div.container-fluid #footer { width: 100%; margin: 0 auto; background: #75BCEF;  padding: 0; }
 div.container-fluid #footer p { text-align: center; line-height: 1.5em; }
 /*********Footer*********/
