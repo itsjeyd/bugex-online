@@ -30,9 +30,10 @@ div.container-fluid #howTo p { text-align: left; }
 div.container-fluid #howTo h3 { text-align: left; }
 div.container-fluid #howTo p.indent {text-indent: 4em; }
 div.container-fluid #howTo pre.prettyprint { width: 45%; padding: 0 3px; margin: 0 auto; }
-div.container-fluid #leftColumnMain { width: 90%; margin: 5em auto 0 auto; }
+div.container-fluid #leftColumnMain { width: 90%; margin: 3em auto 0 auto; }
 div.container-fluid #leftColumnMain pre.prettyprint { width: 90%; padding: 0 0 0 10px; margin: 0; }
-div.container-fluid #mainPageForm { width: 90%; margin: 5em auto 0 auto; overflow: visible; }
+div.container-fluid #mainPageForm { width: 90%; margin: 3em auto 5em auto; overflow: visible; }
+
 div.row-fluid h1 {}
 div.row-fluid p {}
 /*********Main Content*********/
