@@ -12,7 +12,7 @@ html, body { height: 87% }
 @media screen {
   body>div.navbar { position:fixed; }
   body>div#footerContainer { position:fixed; }
- * html body { overflow:hidden; } 
+ * html body { overflow:hidden; }
  * html div.container-fluid { height:90%; overflow:auto; }
 /*********Fixed Header-Footer*********/
 
