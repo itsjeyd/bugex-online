@@ -207,18 +207,23 @@ def _submit_user_request(request):
 
 
 @login_required(login_url='/')
-def change_user_credentials(request):
+def provide_user_content(request):
     """Change a user's credentials, i.e. email address and password."""
+    requests_by_user = UserRequest.objects.filter(user=request.user)
+
     if request.method == 'POST':
 
         if request.POST['form-type'] == u'change-email-form':
             template_context = _change_email_address(request)
+            template_context['requests_by_user'] = requests_by_user
 
         elif request.POST['form-type'] == u'change-password-form':
             template_context = _change_password(request)
+            template_context['requests_by_user'] = requests_by_user
 
     else:
-        template_context = {'change_email_form': ChangeEmailForm()}
+        template_context = {'change_email_form': ChangeEmailForm(),
+                            'requests_by_user': requests_by_user}
 
     return render(request, 'bugex_webapp/user.html', template_context)
 
@@ -444,14 +449,6 @@ def delete_bugex_result(request, delete_token):
     return render(request, 'bugex_webapp/status.html',
             {'message': message,
             'pagetitle': 'Delete result'})
-
-
-def results_overview(request, user_id):
-    requests_by_user = UserRequest.objects.filter(user_id=user_id)
-    message = 'Requests you have submitted since you joined BugEx Online'
-    template_context = {
-        'message': message, 'requests_by_user': requests_by_user}
-    return render(request, 'bugex_webapp/overview.html', template_context)
 
 
 def get_source_file_content(request, token, class_name):
