@@ -41,11 +41,12 @@
                                                 <dt><a class="btn btn-info" href="/result/{{ request.token }}">Results</a> <a class="btn btn-danger" href="/delete/{{ request.delete_token }}">Delete</a></dt>
                                             </dl>
                                         </li>
-                                    </div>
 
-                                    {% else %}
-                                        <li>Request {{ forloop.counter }}, created on {{ request.date }}<br><span class="label label-inverse"> DELETED</span></li>
-                                    {% endif %}
+
+                                        {% else %}
+                                            <li><h4>Request {{ forloop.counter }}, created on {{ request.date }}<br><span class="label label-inverse"> DELETED</span></h4></li>
+                                        {% endif %}
+                                    </div>
                                 {% endfor %}
                             </ul>
                         </div>
