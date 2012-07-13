@@ -30,6 +30,7 @@ from bugex_webapp import UserRequestStatus, Notifications
 from bugex_webapp.models import UserRequest, Fact
 from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm
 from bugex_webapp.forms import RegistrationForm, EmailBaseForm
+from bugex_webapp.core_modules.password_generator import get_pronounceable_pass
 
 def get_or_create_user(email_address):
     """Create and return a new user.
@@ -38,7 +39,7 @@ def get_or_create_user(email_address):
 
     """
     if not User.objects.filter(username=email_address).count():
-        password = User.objects.make_random_password(length=8)
+        password = get_pronounceable_pass(3,2)
         user = User.objects.create_user(
             username=email_address,
             email=email_address,
@@ -84,7 +85,7 @@ def _recover_password(request):
 
         try:
             user = User.objects.get(username=email_address)
-            new_password = User.objects.make_random_password(length=8)
+            new_password = get_pronounceable_pass(3,2)
             user.set_password(new_password)
             user.save()
 
@@ -125,7 +126,7 @@ def _register_user(request):
 
     if registration_form.is_valid():
         email_address = registration_form.cleaned_data['email_address']
-        new_password = User.objects.make_random_password(length=8)
+        new_password = get_pronounceable_pass(3,2) 
 
         try:
             user = User.objects.get(username=email_address)
@@ -225,7 +226,7 @@ def change_user_credentials(request):
 def _change_password(request):
     """Change a user's password."""
     try:
-        new_password = User.objects.make_random_password(length=8)
+        new_password = get_pronounceable_pass(3,2)
         request.user.set_password(new_password)
         request.user.save()
 
