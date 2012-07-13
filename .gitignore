@@ -14,6 +14,8 @@ nbproject
 *.esproj
 .cache
 uploads
+static
+build
 
 # Data files to ignore
 *.pyc
