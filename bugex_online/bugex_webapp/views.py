@@ -12,13 +12,15 @@ Authors: Amir Baradaran
 """
 
 import shutil
+import logging
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import mail_admins, send_mail
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.http import Http404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -157,7 +159,7 @@ def _register_user(request):
                 message=Notifications.HEADER_FOOTER.format(
                     Notifications.CONTENT['USER_REGISTERED']['content']
                     .format(
-                        email_address, password
+                        email_address, new_password
                     )
                 ),
                 from_email=settings.EMAIL_HOST_USER,
@@ -356,46 +358,91 @@ def submit_contact_form(request):
 def show_bugex_result(request, token):
     """Prepare the results data to be shown for a single user request."""
 
-    try:
-        user_request = UserRequest.objects.get(token=token)
-        fact_type_list = [fact_type[0] for fact_type in Fact.FACT_TYPES]
-        fact_list = user_request.result.fact_set.all()
-        if fact_list:
-            template_context = {
-                'fact_type_list': fact_type_list,
-                'fact_list': fact_list,
-                'token': token
-            }
-            return render(request, 'bugex_webapp/results.html', template_context)
+    # first of all, we check if a user request is associated with the token
+    user_request = get_object_or_404(UserRequest, token=token)
 
-    except ObjectDoesNotExist:
-        message = 'This BugEx result has already been deleted.'
-        return render(request, 'bugex_webapp/delete.html', {'message': message})
+    # now we have to check the current status to properly inform the user
+    ur_status = user_request.status
+
+    if ur_status == UserRequestStatus.FINISHED:
+        # prepare context and render response
+        
+        # Dictionary of facts
+        # Format: fact_dict = {'Type_A': [fact1, fact2, ...],
+        #                      'Type_B': [fact1, fact2, ...],
+        #                      ...
+        #                     }
+        fact_dict = {}
+        for fact_type in Fact.FACT_TYPES:
+            fact_dict[fact_type[0]] = []
+
+        for fact in user_request.result.fact_set.all():
+            fact_dict[fact.fact_type].append(fact)
+
+        template_context = {
+            'fact_dict': fact_dict,
+            'token': token
+        }
+        return render(request, 'bugex_webapp/results.html', template_context)
+
+    # TODO put messages in a nice dictionary?
+    elif ur_status == UserRequestStatus.FAILED:
+        # something went wrong
+        message = "BugEx failed to process your input data.\
+        Please try again or contact an administrator."
+    elif ur_status == UserRequestStatus.DELETED:
+        # already deleted, sorry. 
+        message = "This BugEx result has already been deleted."
+    elif ur_status == UserRequestStatus.INVALID:
+        # not our fault - the user messed it up!
+        message = "The archive you provided was invalid.\
+        Please try again."
+    else:
+        # still working..
+        message = "Your results are not ready yet. Please give us some more\
+        time and check again later."
+
+    # .. and render it!
+    return render(request, 'bugex_webapp/status.html',
+            {'message': message,
+            'pagetitle': 'Result status'})
 
 
 def delete_bugex_result(request, delete_token):
     """Delete the results data for a specific user request."""
 
-    # TODO: TestCase cannot be deleted. Make relation optional?
-    try:
-        user_request = UserRequest.objects.get(delete_token=delete_token)
-        # Deleting underlying archive file
-        user_request.codearchive.archive_file.delete()
-        # Deleting BugExResult, CodeArchive, all Facts, all SourceFiles,
-        # all ClassFiles, all Folders, all Lines
-        user_request.result.delete()
-        # Delete the entire directory where the archive file was stored
-        shutil.rmtree(user_request.folder)
-        # Set user request status to DELETED
-        user_request.status = UserRequestStatus.DELETED
-        user_request.save()
+    # get user request
+    user_request = get_object_or_404(UserRequest, delete_token=delete_token)
 
-        message = 'Your BugEx result has been deleted successfully.'
-
-    except ObjectDoesNotExist:
+    # check if this request already has been deleted
+    if user_request.status == UserRequestStatus.DELETED:
         message = 'This BugEx result has already been deleted.'
+    else:
+        try:
+            # Deleting underlying archive file
+            user_request.codearchive.archive_file.delete()
+            # Deleting BugExResult, CodeArchive, all Facts, all SourceFiles,
+            # all ClassFiles, all Folders, all Lines
+            user_request.result.delete()
+            user_request.result = None # manually set relation to null
+            user_request.save()
+            user_request.codearchive.delete()
+            # Delete the entire directory where the archive file was stored
+            shutil.rmtree(user_request.folder)
+            # Set user request status to DELETED
+            user_request.update_status(UserRequestStatus.DELETED)
 
-    return render(request, 'bugex_webapp/delete.html', {'message': message})
+            message = 'Your BugEx result has been deleted successfully.'
+
+        except Exception as e:
+            # something unexpected, we have to log this
+            message = 'Could not delete this result.'
+            logging.error(message+' Exception: '+e.strerror)
+
+    # render status page with appropriate content
+    return render(request, 'bugex_webapp/status.html',
+            {'message': message,
+            'pagetitle': 'Delete result'})
 
 
 def results_overview(request, user_id):
@@ -407,11 +454,24 @@ def results_overview(request, user_id):
 
 
 def get_source_file_content(request, token, class_name):
-    ur = UserRequest.objects.get(token=token)
+    """
+    Returns the content of a java source code file, identified by the unique
+    Token if the UserRequest and the fully qualified class name.
 
-    package_name = '.'.join(class_name.split('.')[:-1])
-    class_name = class_name.split('.')[-1] + '.java'
+    Returns the content as plain text or 404, if the user request and/or source
+    file does not exist.
 
-    source_file = ur.codearchive.sourcefile_set.get(package=package_name, name=class_name)
+    Arguments:
+    token -- see UserRequest token
+    class_name -- e.g. 'my.package.MyClass'
+    """
+    try:
+        package_name = '.'.join(class_name.split('.')[:-1])
+        class_name = class_name.split('.')[-1] + '.java'
 
-    return HttpResponse(source_file.content, content_type="text/plain")
+        ur = UserRequest.objects.get(token=token)
+        source_file = ur.codearchive.sourcefile_set.get(package=package_name, name=class_name)
+    except ObjectDoesNotExist:
+        raise Http404
+    else:
+        return HttpResponse(source_file.content, content_type="text/plain")
