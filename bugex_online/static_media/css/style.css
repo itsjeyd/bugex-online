@@ -76,7 +76,7 @@ div.control-group label.control-label { width: 100%; text-align: left; }
 form.form-horizontal div.controls { margin: 0; width: 70%; margin: 0; padding: 0; }
 form.form-horizontal div.controls input { width: 85%; }
 form.form-horizontal p.help-block { color: #555555; margin: 0; padding: 0; width: 70%; }
-form.form-horizontal div.form-actions { background: transparent; width: 100%; margin: 1em 0 0 0; padding: 0; }
+form.form-horizontal div.form-actions { background: transparent; width: 100%; margin: 1em 0 3em 0; padding: 0; }
 div.form-actions button { float: left; margin: 0 1em 0 0; }
 form.form-horizontal span.label { width: 50%; }
 
