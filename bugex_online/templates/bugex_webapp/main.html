@@ -23,18 +23,6 @@
                 <div class="span6">
                     <div id="leftColumnMain">
 
-                        {% if message %}
-
-
-                        {% if "Your account has been disabled" in message or "Your username and password didn't match" in message %}
-                        <div class="alert alert-error fade in">
-                            <a class="close" data-dismiss="alert" href="#">&times;</a>
-                            {{ message }}
-                        </div>
-                        {% endif %}
-
-                        {% endif %}
-
                         {% if user.is_authenticated %}
                             <h3>Code Archive</h3>
                             <p>The archive you submit needs to include all external dependencies. Accepted formats are .zip and .jar.</p>
@@ -78,6 +66,16 @@
                                             <input type="hidden" name="form-type" value="login-form" />
                                             <button type="submit" class="btn btn-primary"><i class="icon-user icon-white"></i> Login</button>
                                             <input type="hidden" name="next" value="/">
+					    {% if message %}
+
+					      {% if "Your account has been disabled" in message or "Your username and password didn't match" in message %}
+						<div class="alert alert-error fade in">
+						  <a class="close" data-dismiss="alert" href="#">&times;</a>
+						  {{ message }}
+						</div>
+					      {% endif %}
+
+					    {% endif %}
                                         </div>
                                 </fieldset>
                             </form>
