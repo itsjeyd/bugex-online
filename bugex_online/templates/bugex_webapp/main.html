@@ -17,25 +17,24 @@
                 <h3>Detailed information on how to use BugEx Online can be found on our <a href="{% url howto-page %}">HowTo</a> page.</h3>
             </div>
 
-            {% if message %}
 
-                {% if "successful" in message %}
-                    <div class="alert alert-success fade in">
-                        <a class="close" data-dismiss="alert" href="#">&times;</a>
-                        {{ message }}
-                    </div>
-                {% else %}
-                    <div class="alert alert-error fade in">
-                        <a class="close" data-dismiss="alert" href="#">&times;</a>
-                        {{ message }}
-                    </div>
-                {% endif %}
-
-            {% endif %}
 
             <div class="row-fluid">
                 <div class="span6">
                     <div id="leftColumnMain">
+
+                        {% if message %}
+
+
+                        {% if "Your account has been disabled" in message or "Your username and password didn't match" in message %}
+                        <div class="alert alert-error fade in">
+                            <a class="close" data-dismiss="alert" href="#">&times;</a>
+                            {{ message }}
+                        </div>
+                        {% endif %}
+
+                        {% endif %}
+
                         {% if user.is_authenticated %}
                             <h3>Code Archive</h3>
                             <p>The archive you submit needs to include all external dependencies. Accepted formats are .zip and .jar.</p>
@@ -162,6 +161,23 @@
 
                 <div class="span6">
                     <div id="mainPageForm">
+
+                        {% if message %}
+
+                        {% if "Upload successful" in message %}
+                        <div class="alert alert-success fade in">
+                            <a class="close" data-dismiss="alert" href="#">&times;</a>
+                            {{ message }}
+                        </div>
+                        {% elif "request could not be processed" in message %}
+                        <div class="alert alert-error fade in">
+                            <a class="close" data-dismiss="alert" href="#">&times;</a>
+                            {{ message }}
+                        </div>
+                        {% endif %}
+
+                        {% endif %}
+
                         {% if user.is_authenticated %}
                             <h3>Submit your code</h3>
                             <form class="form-horizontal" enctype="multipart/form-data" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
