@@ -5,6 +5,14 @@
 {% block howto %}<li class="active"><a href="#">{% endblock howto %}
 
 {% block content %}
+<script type="text/javascript">
+$(document).ready(function() {
+	$("ul.nav li").click(function(){
+						$("li").removeClass("active");
+						$(this).addClass("active");
+});
+});
+</script>
 	<div class="container-fluid">
 		<div class="row-fluid">
         	<div class="span2">
@@ -12,7 +20,7 @@
 			  <li class="nav-header">
 				Using BugEx Online
 			  </li>
-			  <li class="active">
+			  <li>
 				<a href="#sec1_1"><i class="icon-upload"></i> Submit data</a>
 			  </li>
 			  <li>
