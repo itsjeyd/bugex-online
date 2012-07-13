@@ -26,16 +26,23 @@
                                 <p>You have not submitted any requests yet.</p>
                             {% endif %}
 
-                            <ul class="resultsList">
+                            <ul class="resultsList unstyled">
                                 {% for request in requests_by_user %}
-                                    {% if not request.status == 8 %}
-                                    <li>Request {{ forloop.counter }}, created on {{ request.date }}
-                                        <ul class="resultItem">
-                                            <li>Code archive: {{ request.codearchive.name }}</li>
-                                            <li>Test case: {{ request.test_case.name }}</li>
-                                            <li><a class="btn" href="/result/{{ request.token }}">Results</a> <a class="btn" href="/delete/{{ request.delete_token }}">Delete</a></li>
-                                        </ul>
-                                    </li>
+                                    <div class="well">
+                                        {% if not request.status == 8 %}
+                                        <li><h4>Request {{ forloop.counter }}, created on {{ request.date }}</h4>
+                                            <dl>
+                                                <dt><strong>Code archive:</strong></dt>
+                                                <dd><span class="label label-info">{{ request.codearchive.name }}</span></dd>
+                                                <br>
+                                                <dt><strong>Test case:</strong></dt>
+                                                <dd><span class="label label-info">{{ request.test_case.name }}</span></dd>
+                                                <br>
+                                                <dt><a class="btn btn-info" href="/result/{{ request.token }}">Results</a> <a class="btn btn-danger" href="/delete/{{ request.delete_token }}">Delete</a></dt>
+                                            </dl>
+                                        </li>
+                                    </div>
+
                                     {% else %}
                                         <li>Request {{ forloop.counter }}, created on {{ request.date }} (DELETED)</li>
                                     {% endif %}

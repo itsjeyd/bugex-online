@@ -88,8 +88,6 @@ form.contact div.controls textarea { width: 100%; }
 form.contact p.help-block { color: #555555; margin: 0; padding: 0; width: 70%; }
 form.contact div.form-actions { background: transparent; width: 50%; margin: 1em 0 0 4em; padding: 0; }
 form.contact div.form-actions button { float: left; margin: 0 1em 0 0; }
-
-#id_new_email_address_1, #id_new_email_address_2 { width: 50%; }
 /*********Forms*********/
 
 .navbar .nav > li > a { line-height: 50px; text-shadow:none; font-size: 14px; font-weight: bold; }
@@ -113,4 +111,5 @@ a.seeCode:hover { color: #FF0000; }
 .scrollable-facts { height: 120px; overflow: auto; }
 .scrollable-outline { height: 220px; overflow: auto; }*/
 div.row-fluid:after { clear: both; }
+.well {background-color: #ffffff; border: none;}}
 /*********Other*********/
