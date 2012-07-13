@@ -19,7 +19,7 @@ uploads
 *.pyc
 *.pyo
 *.db
-*.json
+#*.json
 #*.sh
 *.class
 *.log
