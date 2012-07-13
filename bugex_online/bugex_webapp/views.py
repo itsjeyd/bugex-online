@@ -13,7 +13,6 @@ Authors: Amir Baradaran
 
 import shutil
 import logging
-from collections import defaultdict
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -380,7 +379,10 @@ def show_bugex_result(request, token):
         #                      ...
         #                     }
         fact_list = enumerate(user_request.result.fact_set.all())
-        fact_dict = defaultdict(list)
+        fact_dict = {}
+        for fact_type in Fact.FACT_TYPES:
+            fact_dict[fact_type[0]] = []
+
         for number, fact in fact_list:
             fact_dict[fact.fact_type].append((number, fact))
 
@@ -429,9 +431,11 @@ def delete_bugex_result(request, delete_token):
             user_request.codearchive.archive_file.delete()
             # Deleting BugExResult, CodeArchive, all Facts, all SourceFiles,
             # all ClassFiles, all Folders, all Lines
-            user_request.result.delete()
-            user_request.result = None # manually set relation to null
-            user_request.save()
+            if user_request.result:
+                # only try to delete result, if there actually is one
+                user_request.result.delete()
+                user_request.result = None # manually set relation to null
+                user_request.save()
             user_request.codearchive.delete()
             # Delete the entire directory where the archive file was stored
             shutil.rmtree(user_request.folder)
@@ -442,8 +446,8 @@ def delete_bugex_result(request, delete_token):
 
         except Exception as e:
             # something unexpected, we have to log this
-            message = 'Could not delete this result.'
-            logging.error(message+' Exception: '+e.strerror)
+            message = 'Sorry, we could not delete this result.'
+            logging.error(message+' Exception: '+str(e))
 
     # render status page with appropriate content
     return render(request, 'bugex_webapp/status.html',
