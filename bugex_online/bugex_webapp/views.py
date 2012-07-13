@@ -288,10 +288,10 @@ def _change_email_address(request):
             message = 'Your new email address has been successfully set.'
 
         else:
-            message = 'Your entered email addresses are not identical.'
+            message = 'The email addresses you entered are not identical.'
 
     else:
-        message = 'This form is not valid.'
+        message = 'Input not valid.'
 
     template_context = {
         'change_email_form': change_email_form,
