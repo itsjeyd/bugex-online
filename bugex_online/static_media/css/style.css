@@ -74,7 +74,7 @@ div.control-group label.control-label { width: 100%; text-align: left; }
 form.form-horizontal div.controls { margin: 0; width: 70%; margin: 0; padding: 0; }
 form.form-horizontal div.controls input { width: 85%; }
 form.form-horizontal p.help-block { color: #555555; margin: 0; padding: 0; width: 70%; }
-form.form-horizontal div.form-actions { background: transparent; width: 70%; margin: 1em 0 0 0; padding: 0; }
+form.form-horizontal div.form-actions { background: transparent; width: 100%; margin: 1em 0 0 0; padding: 0; }
 div.form-actions button { float: left; margin: 0 1em 0 0; }
 form.form-horizontal span.label { width: 50%; }
 
@@ -88,6 +88,7 @@ form.contact div.controls textarea { width: 100%; }
 form.contact p.help-block { color: #555555; margin: 0; padding: 0; width: 70%; }
 form.contact div.form-actions { background: transparent; width: 50%; margin: 1em 0 0 4em; padding: 0; }
 form.contact div.form-actions button { float: left; margin: 0 1em 0 0; }
+div.form-actions div.alert  { float: left; width: 100%; margin: 1em 0 0 0 }
 
 #id_new_email_address_1, #id_new_email_address_2 { width: 50%; }
 /*********Forms*********/
