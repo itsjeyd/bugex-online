@@ -413,6 +413,7 @@ def show_bugex_result(request, token):
             'pagetitle': 'Result status'})
 
 
+@login_required(login_url='/')
 def delete_bugex_result(request, delete_token):
     """Delete the results data for a specific user request."""
 

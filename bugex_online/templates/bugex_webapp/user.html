@@ -44,7 +44,7 @@
                                     </div>
 
                                     {% else %}
-                                        <li>Request {{ forloop.counter }}, created on {{ request.date }} (DELETED)</li>
+                                        <li>Request {{ forloop.counter }}, created on {{ request.date }}<br><span class="label label-inverse"> DELETED</span></li>
                                     {% endif %}
                                 {% endfor %}
                             </ul>
