@@ -83,9 +83,11 @@ class ChangeEmailForm(forms.Form):
     from the EmailPassWordBaseForm.
     """
     new_email_address_1 = forms.EmailField(
+        label='Enter your new email address',
         help_text='Please enter your new email address.'
     )
     new_email_address_2 = forms.EmailField(
+        label='Re-enter your new email address',
         help_text='Please re-enter your new email address.'
     )
 
