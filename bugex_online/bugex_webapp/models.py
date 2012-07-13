@@ -44,7 +44,17 @@ class UserRequest(models.Model):
     token = models.CharField(max_length=36)
     delete_token = models.CharField(max_length=36)
     status = models.PositiveIntegerField()
-    result = models.OneToOneField('BugExResult', blank=True, null=True)
+    result = models.OneToOneField(
+            'BugExResult',
+            blank=True,
+            null=True,
+            on_delete=models.SET_NULL)
+
+    date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='date of creation',
+        help_text='The date when this UserRequest was created.'
+    )
 
     def __unicode__(self):
         """Return a unicode representation for a UserRequest model object."""
@@ -296,6 +306,10 @@ class CodeArchive(models.Model):
         return u'{0}'.format(self.archive_file.name)
 
     @property
+    def name(self):
+        return self.archive_file.name.split('/')[-1]
+
+    @property
     def path(self):
         return os.path.join(settings.MEDIA_ROOT, self.archive_file.name)
 
@@ -418,7 +432,7 @@ class Fact(models.Model):
     FACT_TYPES = [
         ('A', 'TYPE_A'),
         ('B', 'TYPE_B'),
-        ('ALL', 'ALL FACT TYPES') # TODO (Fix): This is not the right way to handle displaying "All" facts
+        #('C', 'TYPE_C'),
         # ...
     ]
 

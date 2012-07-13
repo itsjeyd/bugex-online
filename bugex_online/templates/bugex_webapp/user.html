@@ -2,6 +2,8 @@
 
 {% block title %}BugEx User Page{% endblock title %}
 
+{% block user %}<li class="active"><a href="#">{% endblock user %}
+
 {% block content %}
 	<div class="container-fluid">
 		<div class="row-fluid">
@@ -15,21 +17,20 @@
 
                 <div class="row-fluid">
 
-                    {% if messages %}
-                    {% for message in messages %}
-                    {% if message.tags == 'success' %}
-                    <div class="alert alert-success fade in">
-                        <a class="close" data-dismiss="alert" href="#">&times;</a>
-                        {{ message }}
-                    </div>
+                    {% if message %}
 
-                    {% elif message.tags == 'error' %}
-                    <div class="alert alert-error fade in">
-                        <a class="close" data-dismiss="alert" href="#">&times;</a>
-                        {{ message }}
-                    </div>
-                    {% endif %}
-                    {% endfor %}
+                        {% if "successful" in message %}
+                        <div class="alert alert-success fade in">
+                            <a class="close" data-dismiss="alert" href="#">&times;</a>
+                            {{ message }}
+                        </div>
+                        {% else %}
+                        <div class="alert alert-error fade in">
+                            <a class="close" data-dismiss="alert" href="#">&times;</a>
+                            {{ message }}
+                        </div>
+                        {% endif %}
+
                     {% endif %}
 
                 	<h3>Change email address</h3>
@@ -41,7 +42,7 @@
         			
         			<fieldset>
 
-                        {% for field in form %}
+                        {% for field in change_email_form %}
 
                             {% if field.errors %}
                     			<div class="control-group error">

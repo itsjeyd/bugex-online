@@ -12,28 +12,24 @@ Authors: Amir Baradaran
 """
 
 import shutil
+import logging
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import mail_admins, send_mail
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
-from django.views.generic import TemplateView
-from django.shortcuts import render, redirect
+from django.http import Http404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import render_to_response
-from django.core.mail import send_mail
 
 from bugex_webapp import UserRequestStatus, Notifications
 from bugex_webapp.models import UserRequest, Fact
-from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm, RegistrationForm, EmailBaseForm
-
-class HowToPageView(TemplateView):
-    template_name = 'bugex_webapp/howto.html'
-
+from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm
+from bugex_webapp.forms import RegistrationForm, EmailBaseForm
 
 def get_or_create_user(email_address):
     """Create and return a new user.
@@ -54,132 +50,141 @@ def get_or_create_user(email_address):
 
 
 def process_main_page_forms(request):
+    """Process the forms on the main page."""
     if request.method == 'POST':
         if request.POST['form-type'] == u'login-form':
-            error_message = _log_user_in(request)
-            template_context = {
-                'auth_form': AuthenticationForm(),
-                'user_req_form': UserRequestForm(),
-                'error': error_message,
-                'registration_form': RegistrationForm(),
-                'password_recovery_form': EmailBaseForm()
-            }
+            template_context = _log_user_in(request)
 
         elif request.POST['form-type'] == u'user-request-form':
             template_context = _submit_user_request(request)
 
         elif request.POST['form-type'] == u'registration-form':
-            registration_form = RegistrationForm(request.POST)
-            message = ''
-
-            if registration_form.is_valid():
-                email_address = registration_form.cleaned_data['email_address']
-
-                if not User.objects.filter(username=email_address).count():
-                    password = User.objects.make_random_password(length=8)
-                    User.objects.create_user(
-                        username=email_address,
-                        email=email_address,
-                        password=password
-                    )
-
-                    send_mail(
-                        subject=Notifications.CONTENT['USER_REGISTERED']['subject'],
-                        message=Notifications.HEADER_FOOTER.format(
-                            Notifications.CONTENT['USER_REGISTERED']['content'].format(email_address, password)
-                        ),
-                        from_email=settings.EMAIL_HOST_USER,
-                        recipient_list=[email_address],
-                    )
-
-                    # messages.success(request, 'User has been created successfully.')
-                    message = 'User "{0}" has been created successfully.'.format(email_address)
-
-                else:
-
-                    user = User.objects.get(username=email_address)
-                    new_password = User.objects.make_random_password(length=8)
-                    user.set_password(new_password)
-                    user.save()
-
-                    send_mail(
-                        subject=Notifications.CONTENT['RECOVERED_PASSWORD']['subject'],
-                        message=Notifications.HEADER_FOOTER.format(
-                            Notifications.CONTENT['RECOVERED_PASSWORD']['content'].format(new_password)
-                        ),
-                        from_email=settings.EMAIL_HOST_USER,
-                        recipient_list=[email_address],
-                    )
-
-                    message = 'This email address is already registered in the database. An email containing the password has been sent to this address.'
-
-
-            else:
-                # messages.error(request, 'User could not be created.')
-                message = 'User could not be created. Please try again.'
-
-            template_context = {
-                'auth_form': AuthenticationForm(),
-                'registration_form': registration_form,
-                'password_recovery_form': EmailBaseForm(),
-                'message': message
-            }
+            template_context = _register_user(request)
 
         elif request.POST['form-type'] == u'password-recovery-form':
-            password_recovery_form = EmailBaseForm(request.POST)
-            message = ''
-
-            if password_recovery_form.is_valid():
-                email_address = password_recovery_form.cleaned_data['email_address']
-
-                try:
-                    user = User.objects.get(username=email_address)
-                    new_password = User.objects.make_random_password(length=8)
-                    user.set_password(new_password)
-                    user.save()
-
-                    send_mail(
-                        subject=Notifications.CONTENT['RECOVERED_PASSWORD']['subject'],
-                        message=Notifications.HEADER_FOOTER.format(
-                            Notifications.CONTENT['RECOVERED_PASSWORD']['content'].format(new_password)
-                        ),
-                        from_email=settings.EMAIL_HOST_USER,
-                        recipient_list=[user.email]
-                    )
-
-                    message = 'The password for user "{0}" has been recovered ' \
-                              'successfully and will be sent to your email address.'.format(email_address)
-
-                except User.DoesNotExist:
-                    message = 'The user "{0}" does not exist in the database.'.format(email_address)
-
-            else:
-                message = 'You have not entered a valid email address.'
-
-            template_context = {
-                'auth_form': AuthenticationForm(),
-                'registration_form': RegistrationForm(),
-                'password_recovery_form': password_recovery_form,
-                'message': message
-            }
-
-
+            template_context = _recover_password(request)
 
     else:
         template_context = {
             'auth_form': AuthenticationForm(),
-            'user_req_form': UserRequestForm(),
             'registration_form': RegistrationForm(),
+            'user_req_form': UserRequestForm(),
             'password_recovery_form': EmailBaseForm()
         }
-
 
     return render(request, 'bugex_webapp/main.html', template_context)
 
 
+def _recover_password(request):
+    """Recover the password for a particular user."""
+    password_recovery_form = EmailBaseForm(request.POST)
+
+    if password_recovery_form.is_valid():
+        email_address = password_recovery_form.cleaned_data['email_address']
+
+        try:
+            user = User.objects.get(username=email_address)
+            new_password = User.objects.make_random_password(length=8)
+            user.set_password(new_password)
+            user.save()
+
+            send_mail(
+                subject=Notifications.CONTENT['RECOVERED_PASSWORD']['subject'],
+                message=Notifications.HEADER_FOOTER.format(
+                    Notifications.CONTENT['RECOVERED_PASSWORD']['content']
+                    .format(new_password)
+                ),
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[user.email]
+            )
+
+            message = 'The password for user "{0}" has been recovered '\
+                      'successfully and will be sent to your ' \
+                      'email address.'.format(email_address)
+
+        except User.DoesNotExist:
+            message = 'The user "{0}" does not exist in the ' \
+                      'database.'.format(email_address)
+
+    else:
+        message = 'You have not entered a valid email address.'
+
+    template_context = {
+        'auth_form': AuthenticationForm(),
+        'registration_form': RegistrationForm(),
+        'password_recovery_form': password_recovery_form,
+        'message': message
+    }
+
+    return template_context
+
+
+def _register_user(request):
+    """Register a new user in the database."""
+    registration_form = RegistrationForm(request.POST)
+
+    if registration_form.is_valid():
+        email_address = registration_form.cleaned_data['email_address']
+        new_password = User.objects.make_random_password(length=8)
+
+        try:
+            user = User.objects.get(username=email_address)
+            user.set_password(new_password)
+            user.save()
+
+            send_mail(
+                subject=Notifications.CONTENT['RECOVERED_PASSWORD']['subject'],
+                message=Notifications.HEADER_FOOTER.format(
+                    Notifications.CONTENT['RECOVERED_PASSWORD']['content']
+                    .format(new_password)
+                ),
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[email_address],
+            )
+
+            message = 'This email address is already registered in the '\
+                      'database. An email containing the password has been '\
+                      'sent to this address.'
+
+        except User.DoesNotExist:
+
+            User.objects.create_user(
+                username=email_address,
+                email=email_address,
+                password=new_password
+            )
+
+            send_mail(
+                subject=Notifications.CONTENT['USER_REGISTERED']['subject'],
+                message=Notifications.HEADER_FOOTER.format(
+                    Notifications.CONTENT['USER_REGISTERED']['content']
+                    .format(
+                        email_address, new_password
+                    )
+                ),
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[email_address],
+            )
+
+            message = 'User "{0}" has been created successfully.'.format(
+                email_address
+            )
+
+    else:
+        message = 'User could not be created. Please try again.'
+
+    template_context = {
+        'auth_form': AuthenticationForm(),
+        'registration_form': registration_form,
+        'password_recovery_form': EmailBaseForm(),
+        'message': message
+    }
+
+    return template_context
+
+
 def _submit_user_request(request):
     """Submit a user request."""
-
     user_req_form = UserRequestForm(request.POST, request.FILES)
 
     if user_req_form.is_valid():
@@ -190,14 +195,12 @@ def _submit_user_request(request):
             archive_file=request.FILES['code_archive']
         )
 
-        messages.success(
-            request, 'Upload successful! We have received your code.')
+        message= 'Upload successful! We have received your code.'
 
     else:
-        messages.error(
-            request, 'Unfortunately, your request could not be processed.')
+        message = 'Unfortunately, your request could not be processed.'
 
-    template_context = {'user_req_form': user_req_form}
+    template_context = {'user_req_form': user_req_form, 'message': message}
 
     return template_context
 
@@ -206,43 +209,53 @@ def _submit_user_request(request):
 def change_user_credentials(request):
     """Change a user's credentials, i.e. email address and password."""
     if request.method == 'POST':
+
         if request.POST['form-type'] == u'change-email-form':
-            change_email_form = _change_email_address(request)
+            template_context = _change_email_address(request)
+
         elif request.POST['form-type'] == u'change-password-form':
-            _change_password(request)
-            change_email_form = ChangeEmailForm()
+            template_context = _change_password(request)
 
     else:
-        change_email_form = ChangeEmailForm()
+        template_context = {'change_email_form': ChangeEmailForm()}
 
-    return render(request,
-        'bugex_webapp/user.html',
-        {'form': change_email_form}
-    )
+    return render(request, 'bugex_webapp/user.html', template_context)
 
 
 def _change_password(request):
     """Change a user's password."""
-    new_password = User.objects.make_random_password(length=8)
-    request.user.set_password(new_password)
-    request.user.save()
+    try:
+        new_password = User.objects.make_random_password(length=8)
+        request.user.set_password(new_password)
+        request.user.save()
 
-    send_mail(
-        subject=Notifications.CONTENT['CHANGED_PASSWORD']['subject'],
-        message=Notifications.HEADER_FOOTER.format(
-            Notifications.CONTENT['CHANGED_PASSWORD']['content'].format(new_password)
-        ),
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[request.user.email],
-    )
+        send_mail(
+            subject=Notifications.CONTENT['CHANGED_PASSWORD']['subject'],
+            message=Notifications.HEADER_FOOTER.format(
+                Notifications.CONTENT['CHANGED_PASSWORD']['content']
+                .format(new_password)
+            ),
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[request.user.email],
+        )
 
-    messages.success(request, 'Your new password has been set.')
+        message = 'Your new password has been successfully set.'
+
+    except:
+        message = 'Failure: Your new password could not be created.'
+
+    template_context = {
+        'change_email_form': ChangeEmailForm(),
+        'message': message
+    }
+
+    return template_context
 
 
 def _change_email_address(request):
     """Change a user's current email address."""
-
     change_email_form = ChangeEmailForm(request.POST)
+    message = ''
 
     if change_email_form.is_valid():
 
@@ -259,29 +272,32 @@ def _change_email_address(request):
             send_mail(
                 subject=Notifications.CONTENT['CHANGED_EMAIL_ADDRESS']['subject'],
                 message=Notifications.HEADER_FOOTER.format(
-                    Notifications.CONTENT['CHANGED_EMAIL_ADDRESS']['content'].format(new_email_address_2)
+                    Notifications.CONTENT['CHANGED_EMAIL_ADDRESS']['content']
+                    .format(new_email_address_2)
                 ),
                 from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[old_email_address],
             )
 
-            messages.success(request,
-                'Your new email address has been set.'
-            )
+            message = 'Your new email address has been successfully set.'
 
         else:
-            messages.error(request, 'Your entered email addresses are not identical.')
+            message = 'Your entered email addresses are not identical.'
 
     else:
-        messages.error(request, 'This form is not valid.')
+        message = 'This form is not valid.'
 
-    return change_email_form
+    template_context = {
+        'change_email_form': change_email_form,
+        'message': message
+    }
+
+    return template_context
 
 
 def _log_user_in(request):
     """Log a user in."""
-    error_message = ''
-    auth_form = AuthenticationForm(request.POST)
+    message = ''
     username = request.POST['username']
     password = request.POST['password']
     user = authenticate(username=username, password=password)
@@ -289,13 +305,21 @@ def _log_user_in(request):
     if user is not None:
         if user.is_active:
             login(request, user)
-            return redirect('/')
         else:
-            error_message = 'not_active'
+            message = 'Your account has been disabled. ' \
+                      'Please contact the administrator.'
     else:
-        error_message = 'not_authenticated'
+        message = 'Your username and password didn\'t match. Please try again.'
 
-    return error_message
+    template_context = {
+        'user_req_form': UserRequestForm(),
+        'auth_form': AuthenticationForm(),
+        'registration_form': RegistrationForm(),
+        'password_recovery_form': EmailBaseForm(),
+        'message': message,
+    }
+
+    return template_context
 
 
 def log_user_out(request):
@@ -311,12 +335,12 @@ def submit_contact_form(request):
         form = ContactForm(request.POST)
 
         if form.is_valid():
-            
+
             content = 'Name:\n' + request.POST['name'] + \
                       '\n\nEmail:\n' + request.POST['email_address'] + \
                       '\n\nMessage:\n'+ request.POST['message']
-            send_mail('[Contact Form] from ' + request.POST['name'], content, 
-                      request.POST['email_address'], ['bugexonline@gmail.com'], 
+            send_mail('[Contact Form] from ' + request.POST['name'], content,
+                      request.POST['email_address'], ['bugexonline@gmail.com'],
                       fail_silently=True)
 
             messages.success(request, 'We received your email!')
@@ -333,48 +357,121 @@ def submit_contact_form(request):
 
 def show_bugex_result(request, token):
     """Prepare the results data to be shown for a single user request."""
-    user_request = UserRequest.objects.get(token=token)
-    fact_type_list = [fact_type[0] for fact_type in Fact.FACT_TYPES]
-    fact_list = user_request.result.fact_set.all()
-    if fact_list:
-        template_context = {'fact_type_list': fact_type_list, 'fact_list': fact_list, 'token': token}
+
+    # first of all, we check if a user request is associated with the token
+    user_request = get_object_or_404(UserRequest, token=token)
+
+    # now we have to check the current status to properly inform the user
+    ur_status = user_request.status
+
+    if ur_status == UserRequestStatus.FINISHED:
+        # prepare context and render response
+        
+        # Dictionary of facts
+        # Format: fact_dict = {'Type_A': [fact1, fact2, ...],
+        #                      'Type_B': [fact1, fact2, ...],
+        #                      ...
+        #                     }
+        fact_dict = {}
+        for fact_type in Fact.FACT_TYPES:
+            fact_dict[fact_type[0]] = []
+
+        for fact in user_request.result.fact_set.all():
+            fact_dict[fact.fact_type].append(fact)
+
+        template_context = {
+            'fact_dict': fact_dict,
+            'token': token
+        }
         return render(request, 'bugex_webapp/results.html', template_context)
 
-    message = 'This BugEx result has already been deleted.'
-    return render(request, 'bugex_webapp/delete.html', {'message': message})
+    # TODO put messages in a nice dictionary?
+    elif ur_status == UserRequestStatus.FAILED:
+        # something went wrong
+        message = "BugEx failed to process your input data.\
+        Please try again or contact an administrator."
+    elif ur_status == UserRequestStatus.DELETED:
+        # already deleted, sorry. 
+        message = "This BugEx result has already been deleted."
+    elif ur_status == UserRequestStatus.INVALID:
+        # not our fault - the user messed it up!
+        message = "The archive you provided was invalid.\
+        Please try again."
+    else:
+        # still working..
+        message = "Your results are not ready yet. Please give us some more\
+        time and check again later."
+
+    # .. and render it!
+    return render(request, 'bugex_webapp/status.html',
+            {'message': message,
+            'pagetitle': 'Result status'})
 
 
 def delete_bugex_result(request, delete_token):
     """Delete the results data for a specific user request."""
 
-    # TODO: TestCase cannot be deleted. Make relation optional?
-    try:
-        user_request = UserRequest.objects.get(delete_token=delete_token)
-        # Deleting underlying archive file
-        user_request.codearchive.archive_file.delete()
-        # Deleting BugExResult, CodeArchive, all Facts, all SourceFiles,
-        # all ClassFiles, all Folders, all Lines
-        user_request.result.delete()
-        # Delete the entire directory where the archive file was stored
-        shutil.rmtree(user_request.folder)
-        # Set user request status to DELETED
-        user_request.status = UserRequestStatus.DELETED
-        user_request.save()
+    # get user request
+    user_request = get_object_or_404(UserRequest, delete_token=delete_token)
 
-        message = 'Your BugEx result has been deleted successfully.'
-
-    except ObjectDoesNotExist:
+    # check if this request already has been deleted
+    if user_request.status == UserRequestStatus.DELETED:
         message = 'This BugEx result has already been deleted.'
+    else:
+        try:
+            # Deleting underlying archive file
+            user_request.codearchive.archive_file.delete()
+            # Deleting BugExResult, CodeArchive, all Facts, all SourceFiles,
+            # all ClassFiles, all Folders, all Lines
+            user_request.result.delete()
+            user_request.result = None # manually set relation to null
+            user_request.save()
+            user_request.codearchive.delete()
+            # Delete the entire directory where the archive file was stored
+            shutil.rmtree(user_request.folder)
+            # Set user request status to DELETED
+            user_request.update_status(UserRequestStatus.DELETED)
 
-    return render(request, 'bugex_webapp/delete.html', {'message': message})
+            message = 'Your BugEx result has been deleted successfully.'
+
+        except Exception as e:
+            # something unexpected, we have to log this
+            message = 'Could not delete this result.'
+            logging.error(message+' Exception: '+e.strerror)
+
+    # render status page with appropriate content
+    return render(request, 'bugex_webapp/status.html',
+            {'message': message,
+            'pagetitle': 'Delete result'})
+
+
+def results_overview(request, user_id):
+    requests_by_user = UserRequest.objects.filter(user_id=user_id)
+    message = 'Requests you have submitted since you joined BugEx Online'
+    template_context = {
+        'message': message, 'requests_by_user': requests_by_user}
+    return render(request, 'bugex_webapp/overview.html', template_context)
 
 
 def get_source_file_content(request, token, class_name):
-    ur = UserRequest.objects.get(token=token)
+    """
+    Returns the content of a java source code file, identified by the unique
+    Token if the UserRequest and the fully qualified class name.
 
-    package_name = '.'.join(class_name.split('.')[:-1])
-    class_name = class_name.split('.')[-1] + '.java'
+    Returns the content as plain text or 404, if the user request and/or source
+    file does not exist.
 
-    source_file = ur.codearchive.sourcefile_set.get(package=package_name, name=class_name)
+    Arguments:
+    token -- see UserRequest token
+    class_name -- e.g. 'my.package.MyClass'
+    """
+    try:
+        package_name = '.'.join(class_name.split('.')[:-1])
+        class_name = class_name.split('.')[-1] + '.java'
 
-    return HttpResponse(source_file.content, content_type="text/plain")
+        ur = UserRequest.objects.get(token=token)
+        source_file = ur.codearchive.sourcefile_set.get(package=package_name, name=class_name)
+    except ObjectDoesNotExist:
+        raise Http404
+    else:
+        return HttpResponse(source_file.content, content_type="text/plain")

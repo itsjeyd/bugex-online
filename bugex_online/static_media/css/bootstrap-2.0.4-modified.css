@@ -3190,12 +3190,12 @@ input[type="submit"].btn.btn-mini {
   background-color: #75bcef;
 }
 .navbar .divider-vertical {
-  height: 50px;
+  height: 79px;
   width: 1px;
   margin: 0 9px;
   overflow: hidden;
-  background-color: #75bcef;
-  border-right: 1px solid #75bcef;
+  background-color: #6bafdf;
+  border-right: 1px solid #6bafdf;
 }
 .navbar .nav.pull-right {
   margin-left: 10px;
