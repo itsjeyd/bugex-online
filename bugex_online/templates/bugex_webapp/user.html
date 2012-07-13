@@ -54,21 +54,6 @@
 
                     <div class="span6">
                         <div id="leftColumnMain">
-                            {% if message %}
-
-                                {% if "successful" in message %}
-                                <div class="alert alert-success fade in">
-                                    <a class="close" data-dismiss="alert" href="#">&times;</a>
-                                    {{ message }}
-                                </div>
-                                {% else %}
-                                <div class="alert alert-error fade in">
-                                    <a class="close" data-dismiss="alert" href="#">&times;</a>
-                                    {{ message }}
-                                </div>
-                                {% endif %}
-
-                            {% endif %}
 
                             <h3>Change email address</h3>
                             <p>If you want to change your email address please fill out the following fields:</p>
@@ -107,6 +92,21 @@
                                 <div class="form-actions">
                                     <input type="hidden" name="form-type" value="change-email-form" />
                                     <button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
+				    {% if message %}
+
+                                      {% if "Your new email address has been successfully set." == message %}
+					<div class="alert alert-success fade in">
+					  <a class="close" data-dismiss="alert" href="#">&times;</a>
+					  {{ message }}
+					</div>
+                                      {% elif "The email addresses you entered are not identical." == message or "Input not valid." == message %}
+					<div class="alert alert-error fade in">
+					  <a class="close" data-dismiss="alert" href="#">&times;</a>
+					  {{ message }}
+					</div>
+                                      {% endif %}
+				    {% endif %}
+
                                 </div>
                             </fieldset>
                             </form>
@@ -122,6 +122,21 @@
                                 <div class="form-actions">
                                     <input type="hidden" name="form-type" value="change-password-form" />
                                     <button type="submit" class="btn btn-primary">Change Password!</button>
+
+				    {% if message %}
+
+                                      {% if "Your new password has been successfully set." == message %}
+					<div class="alert alert-success fade in">
+					  <a class="close" data-dismiss="alert" href="#">&times;</a>
+					  {{ message }}
+					</div>
+                                      {% elif "Failure: Your new password could not be created." == message %}
+					<div class="alert alert-error fade in">
+					  <a class="close" data-dismiss="alert" href="#">&times;</a>
+					  {{ message }}
+					</div>
+                                      {% endif %}
+				    {% endif %}
                                 </div>
 
                             </fieldset>
