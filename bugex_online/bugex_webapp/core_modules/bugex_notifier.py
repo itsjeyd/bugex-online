@@ -3,10 +3,12 @@ Created on Jun 29, 2012
 
 @author: Iliana Simova
 '''
-
-from django.core.mail import send_mail
-from bugex_webapp import Notifications, UserRequestStatus
 import logging
+
+from django.conf import settings
+from django.core.mail import send_mail
+
+from bugex_webapp import Notifications, UserRequestStatus
 
 class Notifier(object):
     
@@ -50,23 +52,22 @@ class EmailNotifier(Notifier):
         if status not in ('VALID', 'PROCESSING', 'VALIDATING'):
             subject, content = self._get_content(user_request, status)
             try:
-                send_mail(subject, content, 'bugexonline@gmail.com', 
+                send_mail(subject, content, settings.EMAIL_HOST_USER, 
                           [user_request.user.email], fail_silently=False)
             except Exception as e:
                 self.__log.info("Email notification failed: %s", e)
                 
     def _get_content(self, user_request, status):
+        '''Retrieve the email subject and content defined in Notifications
+        '''
         subject = Notifications.CONTENT[status]['subject']
         content = Notifications.HEADER_FOOTER.format(
-            Notifications.CONTENT[status]['content']
-        )
+               Notifications.CONTENT[status]['content'])
             
         if status == 'FINISHED':
             #include corresponding urls in the email content
-            content = content.format(
-                user_request.result_url,
-                user_request.delete_url
-            )
+            content = content.format(user_request.result_url, 
+                                     user_request.delete_url)
         
         return subject, content  
 

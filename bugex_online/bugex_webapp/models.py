@@ -319,13 +319,16 @@ class CodeArchive(models.Model):
         Returns the absolute path to the extracted archive.
 
         """
-        return self.user_request._build_path('tmp_extracted')
+        return self.user_request._build_path(self.get_archive_basename())
+
+    def get_archive_basename(self):
+        return os.path.splitext(os.path.basename(self.archive_file.name))[0]
 
     def traverse(self):
         # ok, lets create the root folder
         root_folder = Folder.objects.create(
                 # the name of the root folder does not really matter..
-                name = 'tmp_extracted',
+                name = self.get_archive_basename(),
                 parent_folder = None,
                 code_archive = self)
 
