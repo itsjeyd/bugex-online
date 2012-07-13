@@ -13,6 +13,7 @@ Authors: Amir Baradaran
 
 import shutil
 import logging
+from collections import defaultdict
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -126,7 +127,7 @@ def _register_user(request):
 
     if registration_form.is_valid():
         email_address = registration_form.cleaned_data['email_address']
-        new_password = get_pronounceable_pass(3,2) 
+        new_password = get_pronounceable_pass(3,2)
 
         try:
             user = User.objects.get(username=email_address)
@@ -372,18 +373,16 @@ def show_bugex_result(request, token):
 
     if ur_status == UserRequestStatus.FINISHED:
         # prepare context and render response
-        
+
         # Dictionary of facts
-        # Format: fact_dict = {'Type_A': [fact1, fact2, ...],
-        #                      'Type_B': [fact1, fact2, ...],
+        # Format: fact_dict = {'Type_A': [(0, fact0), (1, fact1), ...],
+        #                      'Type_B': [(2, fact2), (3, fact3), ...],
         #                      ...
         #                     }
-        fact_dict = {}
-        for fact_type in Fact.FACT_TYPES:
-            fact_dict[fact_type[0]] = []
-
-        for fact in user_request.result.fact_set.all():
-            fact_dict[fact.fact_type].append(fact)
+        fact_list = enumerate(user_request.result.fact_set.all())
+        fact_dict = defaultdict(list)
+        for number, fact in fact_list:
+            fact_dict[fact.fact_type].append((number, fact))
 
         template_context = {
             'fact_dict': fact_dict,
@@ -397,7 +396,7 @@ def show_bugex_result(request, token):
         message = "BugEx failed to process your input data.\
         Please try again or contact an administrator."
     elif ur_status == UserRequestStatus.DELETED:
-        # already deleted, sorry. 
+        # already deleted, sorry.
         message = "This BugEx result has already been deleted."
     elif ur_status == UserRequestStatus.INVALID:
         # not our fault - the user messed it up!
@@ -465,7 +464,7 @@ def get_source_file_content(request, token, class_name):
     """
     package_name = '.'.join(class_name.split('.')[:-1])
     class_name = class_name.split('.')[-1] + '.java'
-    
+
     ur = get_object_or_404(UserRequest, token=token)
 
     try:
