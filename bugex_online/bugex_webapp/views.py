@@ -13,7 +13,6 @@ Authors: Amir Baradaran
 
 import shutil
 import logging
-from collections import defaultdict
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -380,7 +379,10 @@ def show_bugex_result(request, token):
         #                      ...
         #                     }
         fact_list = enumerate(user_request.result.fact_set.all())
-        fact_dict = defaultdict(list)
+        fact_dict = {}
+        for fact_type in Fact.FACT_TYPES:
+            fact_dict[fact_type[0]] = []
+
         for number, fact in fact_list:
             fact_dict[fact.fact_type].append((number, fact))
 
