@@ -39,21 +39,34 @@ class UserRequest(models.Model):
 
     The UserRequest model represents a single request to be sent to BugEx.
     """
-    user = models.ForeignKey(User)
-    test_case = models.OneToOneField('TestCase')
-    token = models.CharField(max_length=36)
-    delete_token = models.CharField(max_length=36)
-    status = models.PositiveIntegerField()
-    result = models.OneToOneField(
-            'BugExResult',
-            blank=True,
-            null=True,
-            on_delete=models.SET_NULL)
-
+    user = models.ForeignKey(User,
+        help_text='The user who submitted this request.'
+    )
+    test_case = models.OneToOneField('TestCase',
+        help_text='The failing test case associated with this request.'
+    )
+    token = models.CharField(
+        max_length=36,
+        help_text='The token used in the results link for security reasons.'
+    )
+    delete_token = models.CharField(
+        max_length=36,
+        verbose_name='delete-token',
+        help_text='The token used in the delete link for security reasons.'
+    )
+    status = models.PositiveIntegerField(
+        help_text='The status code of this request.'
+    )
+    result = models.OneToOneField('BugExResult',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text='The BugEx result object associated with this request.'
+    )
     date = models.DateTimeField(
         auto_now_add=True,
         verbose_name='date of creation',
-        help_text='The date when this UserRequest was created.'
+        help_text='The date when this request was created.'
     )
 
     def __unicode__(self):
