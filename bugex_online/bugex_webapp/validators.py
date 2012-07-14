@@ -34,7 +34,7 @@ def validate_source_file_extension(file_name):
     file_name -- value of SourceFile model's `name` field
 
     """
-    if not file_name.endswith('.java'):
+    if not file_name.lower().endswith('.java'):
         raise ValidationError(
             u'{0} is not a Java source file'.format(file_name)
         )
@@ -52,7 +52,7 @@ def validate_class_file_extension(file_name):
     file_name -- value of ClassFile model's `name` field
 
     """
-    if not file_name.endswith('.class'):
+    if not file_name.lower().endswith('.class'):
         raise ValidationError(
             u'{0} is not a Java class file'.format(file_name)
         )
@@ -70,7 +70,7 @@ def validate_archive_file_extension(archive_file):
     archive_file -- value of CodeArchive model's `archive_file` field
 
     """
-    if not archive_file.name.endswith(('.zip', '.jar')):
+    if not archive_file.name.lower().endswith(('.zip', '.jar')):
         raise ValidationError(
             u'{0} is not a valid archive format'.format(archive_file.name)
         )
@@ -110,9 +110,9 @@ def validate_test_case_name(test_case_name):
 
     """
     test_case_name_pattern = re.compile(r"""^
-        (?P<package> [a-z0-9]+\. )+
-        (?P<class> [A-Z][A-Za-z0-9]+\# )
-        (?P<method> [a-z][A-Za-z0-9]+ )$""",
+        (?P<package> [a-z\_\$][a-z0-9\_\$]*\. )+
+        (?P<class> [A-Z\_\$][A-Za-z0-9\_\$]*\# )
+        (?P<method> [a-z\_\$][A-Za-z0-9\_\$]* )$""",
         re.VERBOSE
     )
     if not test_case_name_pattern.match(test_case_name):
