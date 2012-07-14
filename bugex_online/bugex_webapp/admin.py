@@ -21,13 +21,17 @@ class UserRequestAdmin(admin.ModelAdmin):
     """The admin site configuration for the UserRequest model."""
     fieldsets = (
         (None, {
-            'fields': ('status', 'token')
+            'fields': ('status', 'token', 'delete_token')
         }),
         (None, {
-            'fields': ('result', 'test_case', 'user')
+            'fields': ('test_case', 'user')
+        }),
+        ('Optional', {
+            'fields': ('result',)
         })
     )
-    list_display = ('status', 'token', 'result', 'test_case', 'user')
+    list_display = ('status', 'token', 'delete_token',
+                    'result', 'test_case', 'user')
     list_display_links = ('token',)
     list_filter = ('status', 'user__username')
     ordering = ('user', 'result')
@@ -93,7 +97,7 @@ class FolderAdmin(admin.ModelAdmin):
             'fields': ('parent_folder',)
         })
     )
-    list_display = ('name', 'code_archive', 'parent_folder')
+    list_display = ('name', 'parent_folder', 'code_archive')
     list_display_links = ('name',)
     list_filter = ('code_archive',)
     ordering = ('code_archive', 'name')
@@ -107,16 +111,16 @@ class SourceFileAdmin(admin.ModelAdmin):
             'fields': ('name',)
         }),
         (None, {
-            'fields': ('code_archive', 'class_element', 'folder')
+            'fields': ('code_archive', 'class_element')
         }),
         ('Optional', {
-            'fields': ('package',)
+            'fields': ('folder', 'package')
         })
     )
-    list_display = ('name', 'code_archive', 'class_element', 'folder', 'package')
+    list_display = ('name', 'class_element', 'folder', 'package', 'code_archive')
     list_display_links = ('name',)
     ordering = ('code_archive', 'name')
-    search_fields = ('name', 'code_archive', 'class_element', 'folder')
+    search_fields = ('name', 'package')
 
 
 class ClassFileAdmin(admin.ModelAdmin):
@@ -126,13 +130,16 @@ class ClassFileAdmin(admin.ModelAdmin):
             'fields': ('name',)
         }),
         (None, {
-            'fields': ('code_archive', 'folder')
+            'fields': ('code_archive',)
+        }),
+        ('Optional', {
+            'fields': ('folder',)
         })
     )
-    list_display = ('name', 'code_archive', 'folder')
+    list_display = ('name', 'folder', 'code_archive')
     list_display_links = ('name',)
     ordering = ('code_archive', 'name')
-    search_fields = ('name', 'code_archive', 'folder')
+    search_fields = ('name',)
 
 
 class LineAdmin(admin.ModelAdmin):
@@ -152,7 +159,7 @@ class LineAdmin(admin.ModelAdmin):
     list_display_links = ('content',)
     list_filter = ('definition',)
     ordering = ('source_file', 'number')
-    search_fields = ('content', 'number', 'source_file')
+    search_fields = ('content', 'number',)
 
 
 class MethodElementAdmin(admin.ModelAdmin):
@@ -173,8 +180,7 @@ class MethodElementAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
     list_filter = ('access_level',)
     ordering = ('name',)
-    search_fields = ('name', 'arguments', 'return_types', 'class_element',
-                     'comment')
+    search_fields = ('name', 'arguments', 'return_type', 'comment')
 
 
 class FieldElementAdmin(admin.ModelAdmin):
@@ -195,7 +201,7 @@ class FieldElementAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
     list_filter = ('access_level',)
     ordering = ('name',)
-    search_fields = ('name', 'field_type', 'class_element', 'comment')
+    search_fields = ('name', 'field_type', 'comment')
 
 
 class ClassElementAdmin(admin.ModelAdmin):
@@ -215,7 +221,7 @@ class ClassElementAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
     list_filter = ('access_level',)
     ordering = ('name',)
-    search_fields = ('name', 'class_element', 'comment')
+    search_fields = ('name', 'comment')
 
 
 admin.site.register(UserRequest, UserRequestAdmin)
