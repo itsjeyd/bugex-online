@@ -32,23 +32,6 @@ from bugex_webapp.forms import UserRequestForm, ChangeEmailForm, ContactForm
 from bugex_webapp.forms import RegistrationForm, EmailBaseForm
 from bugex_webapp.core_modules.password_generator import get_pronounceable_pass
 
-def get_or_create_user(email_address):
-    """Create and return a new user.
-
-    If the user is already present in the database, return this user.
-
-    """
-    if not User.objects.filter(username=email_address).count():
-        password = get_pronounceable_pass(3,2)
-        user = User.objects.create_user(
-            username=email_address,
-            email=email_address,
-            password=password
-        )
-        return user
-
-    return User.objects.get(username=email_address)
-
 
 def process_main_page_forms(request):
     """Process the forms on the main page."""
@@ -191,7 +174,7 @@ def _submit_user_request(request):
     if user_req_form.is_valid():
 
         UserRequest.new(
-            user=get_or_create_user(request.user.email),
+            user=request.user,
             test_case_name=user_req_form.cleaned_data['test_case'],
             archive_file=request.FILES['code_archive']
         )
