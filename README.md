@@ -27,7 +27,9 @@ For further information, see http://www.st.cs.uni-saarland.de/edu/se/2012/ and h
 2. Navigate to the folder _bugex_online_ (should contain a file named _manage.py_).
 3. To generate the required database tables, run the following command:  
 <pre><code>python manage.py syncdb</code></pre>
-4. Start the Django development server:  
+4. All static files have to be collected into a common directory. This is necessary for deploying the project, i.e. having access to CSS, JavaScript and image files. To collect all static files into a directory named *static*, run the following command:
+<pre><code>python manage.py collectstatic</code></pre>
+5. Start the Django development server:  
 <pre><code>python manage.py runserver</code></pre>  
 You’ll see the following output on the command line:  
 <pre><code>Validating models...      
