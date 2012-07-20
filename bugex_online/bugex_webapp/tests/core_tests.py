@@ -15,18 +15,19 @@ import os
 import shutil
 import logging
 import time
+import unittest
 
 from django.contrib.auth.models import User
 from django.test import TestCase
 
 from bugex_webapp import UserRequestStatus
-from bugex_webapp.core_modules.core_config import WORKING_DIR
+# from bugex_webapp.core_modules.core_config import WORKING_DIR
 from bugex_webapp.core_modules.bugex_monitor import BugExMonitor
 from bugex_webapp.core_modules.bugex_decorators import Singleton
 
 from bugex_webapp.models import UserRequest, BugExResult
 
-
+@unittest.skip('BugExMonitoringTest uses deprecated or deleted code')
 class BugExMonitoringTest(TestCase):
     """ Test for the Monitoring Function of BugExOnline
     """

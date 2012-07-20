@@ -1,0 +1,252 @@
+[
+    {
+        "pk": 1, 
+        "model": "bugex_webapp.codearchive", 
+        "fields": {
+            "archive_format": "JAR", 
+            "user_request": 1, 
+            "archive_file": "user_1/123/some_archive.jar"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "bugex_webapp.codearchive", 
+        "fields": {
+            "archive_format": "JAR", 
+            "user_request": 2, 
+            "archive_file": "user_1/345/some_archive2.JAR"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "bugex_webapp.codearchive", 
+        "fields": {
+            "archive_format": "JAR", 
+            "user_request": 3, 
+            "archive_file": "user_1/183/some_archive3.JaR"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "bugex_webapp.codearchive", 
+        "fields": {
+            "archive_format": "JAR", 
+            "user_request": 4, 
+            "archive_file": "user_1/4930/some_archive4.jAr"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "bugex_webapp.codearchive", 
+        "fields": {
+            "archive_format": "ZIP", 
+            "user_request": 5, 
+            "archive_file": "user_1/948109/some_archive5.zip"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "bugex_webapp.codearchive", 
+        "fields": {
+            "archive_format": "ZIP", 
+            "user_request": 6, 
+            "archive_file": "user_1/203239\u00df4/some_archive6.ZIP"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "bugex_webapp.codearchive", 
+        "fields": {
+            "archive_format": "ZIP", 
+            "user_request": 7, 
+            "archive_file": "user_1/3904280/some_archive7.zIp"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "bugex_webapp.codearchive", 
+        "fields": {
+            "archive_format": "ZIP", 
+            "user_request": 8, 
+            "archive_file": "user_1/230974219/some_archive8.ZiP"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "bugex_webapp.testcase", 
+        "fields": {
+            "name": "de.mypackage.TestMyClass#testGetMin"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "bugex_webapp.testcase", 
+        "fields": {
+            "name": "de.mypackage.TestMyClass#testGetMin2"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "bugex_webapp.testcase", 
+        "fields": {
+            "name": "de.mypackage.TestMyClass#testGetMin3"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "bugex_webapp.testcase", 
+        "fields": {
+            "name": "de.mypackage.TestMyClass#testGetMin4"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "bugex_webapp.testcase", 
+        "fields": {
+            "name": "de.mypackage.TestMyClass#testGetMin5"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "bugex_webapp.testcase", 
+        "fields": {
+            "name": "de.mypackage.TestMyClass#testGetMin6"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "bugex_webapp.testcase", 
+        "fields": {
+            "name": "de.mypackage.TestMyClass#testGetMin7"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "bugex_webapp.testcase", 
+        "fields": {
+            "name": "de.mypackage.TestMyClass#testGetMin8"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "peter", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2012-07-14T20:02:47.762", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "pbkdf2_sha256$10000$z4c9fFODkGAY$eesUgjjqQqfcoyBrOFUR0dfNFa9rf6pDE/qbzrTDZHc=", 
+            "email": "pstahl@coli.uni-saarland.de", 
+            "date_joined": "2012-07-14T19:52:25.365"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "bugex_webapp.userrequest", 
+        "fields": {
+            "status": 7, 
+            "delete_token": "456", 
+            "token": "123", 
+            "result": null, 
+            "date": "2012-07-14T20:03:47.318", 
+            "test_case": 1, 
+            "user": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "bugex_webapp.userrequest", 
+        "fields": {
+            "status": 7, 
+            "delete_token": "678", 
+            "token": "345", 
+            "result": null, 
+            "date": "2012-07-14T20:09:12.345", 
+            "test_case": 2, 
+            "user": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "bugex_webapp.userrequest", 
+        "fields": {
+            "status": 7, 
+            "delete_token": "4832", 
+            "token": "183", 
+            "result": null, 
+            "date": "2012-07-14T20:10:25.974", 
+            "test_case": 3, 
+            "user": 1
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "bugex_webapp.userrequest", 
+        "fields": {
+            "status": 7, 
+            "delete_token": "39284", 
+            "token": "4930", 
+            "result": null, 
+            "date": "2012-07-14T20:11:11.371", 
+            "test_case": 4, 
+            "user": 1
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "bugex_webapp.userrequest", 
+        "fields": {
+            "status": 7, 
+            "delete_token": "23905203", 
+            "token": "948109", 
+            "result": null, 
+            "date": "2012-07-14T20:12:09.472", 
+            "test_case": 5, 
+            "user": 1
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "bugex_webapp.userrequest", 
+        "fields": {
+            "status": 7, 
+            "delete_token": "53958234", 
+            "token": "203239\u00df4", 
+            "result": null, 
+            "date": "2012-07-14T20:12:57.326", 
+            "test_case": 6, 
+            "user": 1
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "bugex_webapp.userrequest", 
+        "fields": {
+            "status": 7, 
+            "delete_token": "43905804", 
+            "token": "3904280", 
+            "result": null, 
+            "date": "2012-07-14T20:13:31.870", 
+            "test_case": 7, 
+            "user": 1
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "bugex_webapp.userrequest", 
+        "fields": {
+            "status": 7, 
+            "delete_token": "320974283", 
+            "token": "230974219", 
+            "result": null, 
+            "date": "2012-07-14T20:14:07.410", 
+            "test_case": 8, 
+            "user": 1
+        }
+    }
+]
