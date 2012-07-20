@@ -28,7 +28,6 @@ class BugExInstance(object):
     - BugExJavaInstance (utilizes Py4J java gateway)
 
     '''
-    #RESULT_FILE_NAME = 'bugex-results.xml'
 
     def __init__(self, user_archive_path, failing_test_case_name
                  , working_folder_path, token, artificial_delay = 0):

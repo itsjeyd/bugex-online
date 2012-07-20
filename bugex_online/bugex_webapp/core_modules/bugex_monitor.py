@@ -75,7 +75,7 @@ class BugExMonitor(object):
         job.schedule(bugex_interval)
 
         # store reference to job
-        self.__monitor_jobs.append(job)
+        #self.__monitor_jobs.append(job)
 
 
     def shutdown(self):
@@ -88,7 +88,7 @@ class BugExMonitor(object):
         for job in self.__monitor_jobs:
             job.cancel()
 
-        self.__log.info('Shutting down FileMonitor.')
+        self.__log.info('Shutting down BugExMonitor.')
 
     def new_request(self, request):
         """
@@ -103,6 +103,11 @@ class BugExMonitor(object):
         # create file job
         self.__create_job(request)
 
+    def remove_job(self, job):
+        """
+        Removes a job from the list of all jobs, e.g. after it has finished.
+        """
+        self.__monitor_jobs.remove(job)
 
 class BugExMonitorJob(object):
     """
@@ -136,7 +141,7 @@ class BugExMonitorJob(object):
             self._log.setLevel('INFO')
 
         # done!
-        self._log.info('Created FileMonitorJob \'%s\'', self.name)
+        self._log.info('Created BugExMonitorJob \'%s\'', self.name)
 
 
     def _run(self):
@@ -163,8 +168,8 @@ class BugExMonitorJob(object):
         # (1) life time
         time_diff = datetime.now() - self._creation_date    #timedelta
         if (time_diff.total_seconds() > core_config.MAX_LIFE_TIME):
-            self.cancel('Maximum life time exceeded (%s seconds)',
-            str(time_diff.total_seconds()))
+            self.cancel(UserRequestStatus.FAILED, 'Maximum life time exceeded (%s seconds)',
+                str(time_diff.total_seconds()))
             return
 
         # (2) check process status
@@ -174,8 +179,7 @@ class BugExMonitorJob(object):
             self._log.debug('BugEx is not ready yet..')
             return
         elif not status == 0:
-            self._user_request.update_status(UserRequestStatus.FAILED)
-            self.cancel(
+            self.cancel(UserRequestStatus.FAILED, 
                 ("BugEx terminated unsuccessfully (status code %s)! " +
                 "Please check bugex.log in the request directory for more " +
                 "details."), status)
@@ -183,7 +187,7 @@ class BugExMonitorJob(object):
 
         # check result file
         if not self._bug_ex_instance.result_file.exists():
-            self.cancel('Result file should exist, but does not.')
+            self.cancel(UserRequestStatus.FAILED, 'Result file should exist, but does not.')
             return
 
         xml_content = self._bug_ex_instance.result_file.read()
@@ -197,13 +201,11 @@ class BugExMonitorJob(object):
             BugExResult.new(xml_content, self._user_request)
         except Exception as e:
             traceback.print_exc(file=sys.stdout)
-            self.cancel('Could not store the BugExResult: %s',e)
-            self._user_request.update_status(UserRequestStatus.FAILED)
+            self.cancel(UserRequestStatus.FAILED, 'Could not store the BugExResult: %s',e)
             return
 
         # success
-        self.cancel('Success!')
-        self._user_request.update_status(UserRequestStatus.FINISHED)
+        self.cancel(UserRequestStatus.FINISHED, 'Success!')
 
 
     def schedule(self, interval):
@@ -226,10 +228,12 @@ class BugExMonitorJob(object):
         self._log.info('Scheduled to run every %s seconds.', str(interval))
 
 
-    def cancel(self, message, *args):
+    def cancel(self, status, message, *args):
         """
-        This method cancels the underlying task.
-
+        This method cancels the underlying task and updates the status of the
+        user request.
         """
+        self._user_request.update_status(status)
         self._log.info(message, *args)
         self._task.cancel()
+        #BugExMonitor.Instance().remove(self)
