@@ -70,7 +70,7 @@
                                                         	        success: function(responseText) {
                                                         	        	var brush = new SyntaxHighlighter.brushes.Java(),
                                                                         html;
-                                                        	            brush.init({ toolbar: false });
+                                                        	            brush.init({ toolbar: false,  highlight: {{ fact.line_number }}  });
                                                         	            html = brush.getHtml(responseText);
                                                         	            document.getElementById("code").innerHTML = html;
                                                         	        }
@@ -104,11 +104,11 @@
                                                                 	        success: function(responseText) {
                                                                 	        	var brush = new SyntaxHighlighter.brushes.Java(),
                                                                                 html;
-                                                                	            brush.init({ toolbar: false });
+                                                                	            brush.init({ toolbar: false, highlight: {{ fact.line_number }} });
                                                                 	            html = brush.getHtml(responseText);
                                                                 	            document.getElementById("code").innerHTML = html;
                                                                 	        }
-                                                                	    });'>See the class</a>See the class</a>
+                                                                	    });'>See the code</a>See the class</a>
                                                     		</div>
                                                 		</div>
                                             		 </div>
@@ -139,9 +139,9 @@
  
             <div class="span8 fullHeight">
                 <div id="code"> 
-<pre class="brush: java;">
-
-</pre>
+					<div id="codeMessage">
+						<i class="icon-arrow-left"></i> Expand one of the facts and click "See the code"!
+					</div>
                 </div>
             </div>
         </div>

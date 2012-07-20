@@ -37,7 +37,7 @@
   outline: 0 !important;
   overflow: visible !important;
   padding: 0 !important;
-  position: static !important;
+  position: relative !important;
   right: auto !important;
   text-align: left !important;
   top: auto !important;
@@ -54,7 +54,7 @@
 
 .syntaxhighlighter {
   width: 100% !important;
-  margin: 1em 0 1em 0 !important;
+  margin: 0 !important;
   position: relative !important;
   overflow: visible !important;
   font-size: 1em !important;
@@ -72,7 +72,7 @@
   white-space: pre !important;
 }
 .syntaxhighlighter table {
-  width: 100% !important;
+  width: 100% !important; 
 }
 .syntaxhighlighter table caption {
   text-align: left !important;
@@ -82,7 +82,9 @@
   width: 100% !important;
 }
 .syntaxhighlighter table td.code .container {
-  position: relative !important;
+  position: absolute !important;
+  top: 0 !important;
+  width: 100% !important;
 }
 .syntaxhighlighter table td.code .container textarea {
   box-sizing: border-box !important;
@@ -244,13 +246,13 @@
   color: black !important;
 }
 .syntaxhighlighter .gutter {
-  color: #afafaf !important;
+  color: #afafaf !important; padding: 1em 0 0 0;
 }
 .syntaxhighlighter .gutter .line {
   border-right: 3px solid #75BCEF !important;
 }
 .syntaxhighlighter .gutter .line.highlighted {
-  background-color: #6ce26c !important;
+  background-color: #75BCEF !important;
   color: white !important;
 }
 .syntaxhighlighter.printing .line .content {
