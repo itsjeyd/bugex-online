@@ -16,11 +16,10 @@ import logging
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import mail_admins, send_mail
+from django.core.mail import send_mail
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
-from django.http import Http404
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -325,11 +324,15 @@ def submit_contact_form(request):
 
         if form.is_valid():
 
-            content = 'Name:\n' + request.POST['name'] + \
-                      '\n\nEmail:\n' + request.POST['email_address'] + \
-                      '\n\nMessage:\n'+ request.POST['message']
-            send_mail('[Contact Form] from ' + request.POST['name'], content,
-                      request.POST['email_address'], ['bugexonline@gmail.com'],
+            name = form.cleaned_data['name']
+            email_address = form.cleaned_data['email_address']
+            message = form.cleaned_data['message']
+
+            content = 'Name:\n' + name + \
+                      '\n\nEmail:\n' + email_address + \
+                      '\n\nMessage:\n'+ message
+            send_mail('[Contact Form] from ' + name, content,
+                      email_address, [settings.EMAIL_HOST_USER],
                       fail_silently=True)
 
             messages.success(request, 'We received your email!')
