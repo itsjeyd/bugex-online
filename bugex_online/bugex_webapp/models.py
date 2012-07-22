@@ -320,7 +320,7 @@ class CodeArchive(models.Model):
 
     @property
     def name(self):
-        return self.archive_file.name.split('/')[-1]
+        return os.path.basename(self.archive_file.name)
 
     @property
     def path(self):
