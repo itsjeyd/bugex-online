@@ -14,33 +14,30 @@ html, body { height: 87% }
   body>div#footerContainer { position:fixed; }
  * html body { overflow:hidden; }
  * html div.container-fluid { height:90%; overflow:auto; }
-  /*********Fixed Header-Footer*********/
+/*********Fixed Header-Footer*********/
 
-  /*********Navigation*********/
-  div.navbar { position:absolute; top:0; left:0;width: 100%; height: 3em; z-index: 500; }
-  div.navbar ul.nav li { margin: 0 1em; }
-  .navbar .nav > li > a { line-height: 50px; text-shadow:none; font-size: 14px; font-weight: bold; color: #555555; }
-  .navbar .dropdown-menu:after { border-bottom: 6px solid #ddeaf6; }
-  .navbar-fixed-bottom .dropdown-menu:after { border-top: 6px solid #ddeaf6; }
-  .navbar .btn-navbar:hover,
-  .navbar .btn-navbar:active,
-  .navbar .btn-navbar.active,
-  .navbar .btn-navbar.disabled,
-  .navbar .btn-navbar[disabled] { background-color: #75bcef; }
-  .navbar-inner {
-    min-height: 50px;
-    background-color: #75bcef;
-    background-image: -moz-linear-gradient(top, #75bcef, #75bcef);
-    background-image: -ms-linear-gradient(top, #75bcef, #75bcef);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#75bcef), to(#75bcef));
-    background-image: -webkit-linear-gradient(top, #75bcef, #75bcef);
-    background-image: -o-linear-gradient(top, #75bcef, #75bcef);
-    background-image: linear-gradient(top, #75bcef, #75bcef);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#75bcef', endColorstr='#75bcef', GradientType=0); }
-  .navbar .navbar-text { line-height: 50px; }
-  .navbar .nav .active > a,
-  .navbar .nav .active > a:hover { background-color: #75bcef; }
-  .navbar .btn-navbar {
+/*********Navigation*********/
+div.navbar { position:absolute; top:0; left:0;width: 100%; height: 3em; z-index: 500; }
+div.navbar ul.nav li { margin: 0 1em; }
+.navbar .nav > li > a { line-height: 50px; text-shadow:none; font-size: 14px; font-weight: bold; color: #555555; }
+.navbar .dropdown-menu:after { border-bottom: 6px solid #ddeaf6; }
+.navbar-fixed-bottom .dropdown-menu:after { border-top: 6px solid #ddeaf6; }
+.navbar .btn-navbar:hover,
+.navbar .btn-navbar:active,
+.navbar .btn-navbar.active,
+.navbar .btn-navbar.disabled,
+.navbar .btn-navbar[disabled] { background-color: #75bcef; }
+.navbar-inner { min-height: 50px; background-color: #75bcef;
+background-image: -moz-linear-gradient(top, #75bcef, #75bcef);
+background-image: -ms-linear-gradient(top, #75bcef, #75bcef);
+background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#75bcef), to(#75bcef));
+background-image: -webkit-linear-gradient(top, #75bcef, #75bcef);
+background-image: -o-linear-gradient(top, #75bcef, #75bcef);
+background-image: linear-gradient(top, #75bcef, #75bcef);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#75bcef', endColorstr='#75bcef', GradientType=0); }
+.navbar .navbar-text { line-height: 50px; }
+.navbar .nav .active > a, .navbar .nav .active > a:hover { background-color: #75bcef; }
+.navbar .btn-navbar {
     background-color: #75bcef;
     background-image: -moz-linear-gradient(top, #75bcef, #75bcef);
     background-image: -ms-linear-gradient(top, #75bcef, #75bcef);
@@ -51,108 +48,103 @@ html, body { height: 87% }
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#75bcef', endColorstr='#75bcef', GradientType=0);
     border-color: #75bcef #75bcef #309be7;
     *background-color: #75bcef; }
+.nav-tabs > .active > a:hover { color: #555555; }
+.navbar .brand { color: #555555; }
+.navbar .navbar-link { color: #555555; }
+.navbar .divider-vertical { height: 72px; background: #6bafdf; border-right: 1px solid #6bafdf; }
+/*********Navigation*********/
 
-  .nav-tabs > .active > a:hover { color: #555555; }
-  .navbar .brand { color: #555555; }
-  .navbar .navbar-link { color: #555555; }
-  .navbar .divider-vertical {
-    height: 72px;
-    background-color: #6bafdf;
-    border-right: 1px solid #6bafdf; }
-  /*********Navigation*********/
+/*********Main Content*********/
+div.container-fluid #welcomeText, div.container-fluid #howTo { text-align: center; }
+div.container-fluid #welcomeText h1, div.container-fluid #howTo h1 { font-size: 2em; font-weight: 800; }
+div.container-fluid #howTo img { margin: 1em 0; }
+div.container-fluid #howTo p { text-align: left; }
+div.container-fluid #howTo h3 { text-align: left; }
+div.container-fluid #howTo p.indent {text-indent: 4em; }
+div.container-fluid #howTo pre.codeHowTo { width: 45%; padding: 0 3px; margin: 0 auto; }
+div.container-fluid #leftColumnMain { width: 90%; margin: 2.5em auto 0 auto; }
+p.marginFix {margin:0 0 4em 0; }
+ul.fixedMenu { position: fixed; }
+.anchorFix:before { content:""; display:block; height: 5em; margin:-5em 0 0; }
+div.container-fluid #leftColumnMain pre.prettyprint { width: 90%; padding: 0 0 0 10px; margin: 0; }
+div.container-fluid #mainPageForm { width: 90%; margin: 2.5em auto 5em auto; overflow: visible; }
+div.container-fluid div.alert { margin: 0; }
+/*********Main Content*********/
 
-  /*********Main Content*********/
-  div.container-fluid #welcomeText, div.container-fluid #howTo { text-align: center; }
-  div.container-fluid #welcomeText h1, div.container-fluid #howTo h1 { font-size: 2em; font-weight: 800; }
-  div.container-fluid #howTo img { margin: 1em 0; }
-  div.container-fluid #howTo p { text-align: left; }
-  div.container-fluid #howTo h3 { text-align: left; }
-  div.container-fluid #howTo p.indent {text-indent: 4em; }
-  div.container-fluid #howTo pre.prettyprint { width: 45%; padding: 0 3px; margin: 0 auto; }
-  div.container-fluid #leftColumnMain { width: 90%; margin: 2.5em auto 0 auto; }
-  p.marginFix {margin:0 0 4em 0; }
-  ul.fixedMenu { position: fixed; }
-  .anchorFix:before { content:""; display:block; height: 5em; margin:-5em 0 0; }
-  div.container-fluid #leftColumnMain pre.prettyprint { width: 90%; padding: 0 0 0 10px; margin: 0; }
-  div.container-fluid #mainPageForm { width: 90%; margin: 2.5em auto 5em auto; overflow: visible; }
-  div.container-fluid div.alert { margin: 0; }
-  div.row-fluid h1 {}
-  div.row-fluid p {}
-  /*********Main Content*********/
+/*********Footer*********/
+div#footerContainer { position:absolute; bottom:0; left:0; width:100%; background: #75BCEF; height: 2em; margin: 10em 0 0 0; padding: 0.4em 0; }
+div.container-fluid #footer { width: 100%; margin: 0 auto; background: #75BCEF;  padding: 0; }
+div.container-fluid #footer p { text-align: center; line-height: 1.5em; }
+/*********Footer*********/
 
-  /*********Footer*********/
-  div#footerContainer { position:absolute; bottom:0; left:0; width:100%; background: #75BCEF; height: 2em; margin: 10em 0 0 0; padding: 0.4em 0; }
-  div.container-fluid #footer { width: 100%; margin: 0 auto; background: #75BCEF;  padding: 0; }
-  div.container-fluid #footer p { text-align: center; line-height: 1.5em; }
-  /*********Footer*********/
+/*********Social*********/
+ul#social { list-style-type: none; float: right; clear: both; padding: 0; margin: 0; }
+ul#social li { display: inline; margin: 0 0.3em 0 0; }
+/*********Social*********/
 
-  /*********Social*********/
-  ul#social { list-style-type: none; float: right; clear: both; padding: 0; margin: 0; }
-  ul#social li { display: inline; margin: 0 0.3em 0 0; }
-  /*********Social*********/
+/*********Testing*********/
+div.container-fluid { height: 100%; }
+div.row-fluid { height: 100%; }
+div.fullHeight { height: 100%; }
+/*********Testing*********/
 
-  /*********Testing*********/
-  div.container-fluid { height: 100%; }
-  div.row-fluid { height: 100%; }
-  div.fullHeight { height: 100%; }
-  /*********Testing*********/
+/*********Facts*********/
+#facts { background: #fff; border: 2px solid #75BCEF; margin: 0 0 1em 0; overflow: auto; height: 100%;  }
+div.scrollable-facts {  }
+/*********Facts*********/
 
-  /*********Facts*********/
-  #facts { background: #fff; border: 2px solid #75BCEF; margin: 0 0 1em 0; overflow: auto; height: 100%;  }
-  div.scrollable-facts {  }
-  /*********Facts*********/
+/*********Code*********/
+#code { background: #F5F5F5; font-family: DroidSansMono; border: 2px solid #75BCEF; overflow: auto; height: 100%;   overflow-x: hidden; }
+#codeMessage { height: 10%; width: 60%; font-weight: 900; margin: 16em auto 0 auto; text-align: center; }
+/*********Code*********/
 
-  /*********Code*********/
-  #code { background: #F5F5F5; font-family: DroidSansMono; border: 2px solid #75BCEF; overflow: auto; height: 100%;}
-  /*********Code*********/
+/*********Informing Text After Submitting something*********/
+#informingText { float: left; color: #fff; margin: 0; padding: 0; }
+/*********Informing Text After Submitting something*********/
 
-  /*********Informing Text After Submitting something*********/
-  #informingText { float: left; color: #fff; margin: 0; padding: 0; }
-  /*********Informing Text After Submitting something*********/
+/*********Forms*********/
+div.control-group label.control-label { width: 100%; text-align: left; }
+form.form-horizontal div.controls { margin: 0; width: 70%; margin: 0; padding: 0; }
+form.form-horizontal div.controls input { width: 85%; }
+form.form-horizontal p.help-block { color: #555555; margin: 0; padding: 0; width: 70%; }
+form.form-horizontal div.form-actions { background: transparent; width: 100%; margin: 1em 0 3em 0; padding: 0; }
+div.form-actions button { float: left; margin: 0 1em 0 0; }
+form.form-horizontal span.label { width: 50%; }
 
-  /*********Forms*********/
-  div.control-group label.control-label { width: 100%; text-align: left; }
-  form.form-horizontal div.controls { margin: 0; width: 70%; margin: 0; padding: 0; }
-  form.form-horizontal div.controls input { width: 85%; }
-  form.form-horizontal p.help-block { color: #555555; margin: 0; padding: 0; width: 70%; }
-  form.form-horizontal div.form-actions { background: transparent; width: 100%; margin: 1em 0 3em 0; padding: 0; }
-  div.form-actions button { float: left; margin: 0 1em 0 0; }
-  form.form-horizontal span.label { width: 50%; }
+form.contact fieldset { margin: 0 auto; width: 60%; }
+form.contact div.control-group { width: 80%; margin: 0 auto; }
+form.contact div.control-group label { width: 100%; text-align: left; }
+form.contact div.controls { float: left; width: 70%; margin: 0; padding: 0; }
+form.contact div.controls span { float: left; margin: 0.5em 0 0 0; }
+form.contact div.controls input { float: left; width: 100%; }
+form.contact div.controls textarea { width: 100%; }
+form.contact p.help-block { color: #555555; margin: 0; padding: 0; width: 70%; }
+form.contact div.form-actions { background: transparent; width: 50%; margin: 1em 0 0 4em; padding: 0; }
+form.contact div.form-actions button { float: left; margin: 0 1em 0 0; }
+div.form-actions div.alert  { float: left; width: 100%; margin: 1em 0 0 0 }
+/*********Forms*********/
 
-  form.contact fieldset { margin: 0 auto; width: 60%; }
-  form.contact div.control-group { width: 80%; margin: 0 auto; }
-  form.contact div.control-group label { width: 100%; text-align: left; }
-  form.contact div.controls { float: left; width: 70%; margin: 0; padding: 0; }
-  form.contact div.controls span { float: left; margin: 0.5em 0 0 0; }
-  form.contact div.controls input { float: left; width: 100%; }
-  form.contact div.controls textarea { width: 100%; }
-  form.contact p.help-block { color: #555555; margin: 0; padding: 0; width: 70%; }
-  form.contact div.form-actions { background: transparent; width: 50%; margin: 1em 0 0 4em; padding: 0; }
-  form.contact div.form-actions button { float: left; margin: 0 1em 0 0; }
-  div.form-actions div.alert  { float: left; width: 100%; margin: 1em 0 0 0 }
-  /*********Forms*********/
+/*********Accordion*********/
+div.accordion-group { width: 98%; margin: 0 auto; }
+div.accordion-heading { background: #DDEAF6; width: 100%; border: 1px solid #75BCEF; }
+div.accordion-heading table, div.accordion table { width: 100%; }
+div.accordion-heading table tr, table.tableFormat { width: 100%; }
+div.accordion-heading table tr th.small, div table.tableFormat tr th.small { width: 16%; text-align: center; }
+div.accordion-heading table tr th.smallId, div table.tableFormat tr th.smallId { width: 8%; text-align: center; }
+div.accordion-heading table tr th.big, div table.tableFormat tr th.big { width: 65%; text-align: left; padding: 0 0 0 0.5em }
+div table.tableFormat tr th.big { text-align: left }
+#collapse { background: #F5F5F5; width: 100%; border: 1px solid #75BCEF; }
+span.noErrors p { color: #347C17; margin: 2em 0 0 2em; font-weight: 900; }
+div.accordion-heading .accordion-toggle { padding: 8px 0 ; }
+a.seeCode { float: right; font-weight: 900; color: #FF0000; clear: both; text-decoration: underline; }
+a.seeCode:hover { color: #FF0000; }
+/*********Accordion*********/
 
-  /*********Accordion*********/
-  div.accordion-group { width: 98%; margin: 0 auto; }
-  div.accordion-group { width: 98%; margin: 0 auto; }
-  div.accordion-heading { background: #DDEAF6; width: 100%; border: 1px solid #75BCEF; }
-  div.accordion-heading table, div.accordion table { width: 100%; }
-  div.accordion-heading table tr, table.tableFormat { width: 100%; }
-  div.accordion-heading table tr th.small, div table.tableFormat tr th.small { width: 20%; }
-  div.accordion-heading table tr th.big, div table.tableFormat tr th.big { width: 50%; }
-  #collapse { background: #F5F5F5; width: 100%; border: 1px solid #75BCEF; }
-  span.noErrors p { color: #347C17; margin: 2em 0 0 2em; font-weight: 900; }
-  div.accordion-heading .accordion-toggle { padding: 8px 0 ; }
-  a.seeCode { float: right; font-weight: 900; color: #FF0000; clear: both; text-decoration: underline; }
-  a.seeCode:hover { color: #FF0000; }
-  /*********Accordion*********/
-
-  /*********Other*********/
-  /*.scrollable-code { height: 470px; overflow: auto; }
-  .scrollable-facts { height: 120px; overflow: auto; }
-  .scrollable-outline { height: 220px; overflow: auto; }*/
-  div.row-fluid:after { clear: both; }
-  .well {background-color: #ffffff; border: none;}
-  .dropdown-menu {background-color: #ddeaf6; padding: 0 15px;}
-  /*********Other*********/
-}
+/*********Other*********/
+/*.scrollable-code { height: 470px; overflow: auto; }
+.scrollable-facts { height: 120px; overflow: auto; }
+.scrollable-outline { height: 220px; overflow: auto; }*/
+div.row-fluid:after { clear: both; }
+.well {background-color: #ffffff; border: none;}
+.dropdown-menu {background-color: #ddeaf6; padding: 0 15px;}
+/*********Other*********/

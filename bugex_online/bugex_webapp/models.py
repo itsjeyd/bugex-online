@@ -320,7 +320,7 @@ class CodeArchive(models.Model):
 
     @property
     def name(self):
-        return self.archive_file.name.split('/')[-1]
+        return os.path.basename(self.archive_file.name)
 
     @property
     def path(self):
@@ -332,16 +332,17 @@ class CodeArchive(models.Model):
         Returns the absolute path to the extracted archive.
 
         """
-        return self.user_request._build_path(self.get_archive_basename())
+        return self.user_request._build_path(self.archive_basename)
 
-    def get_archive_basename(self):
+    @property
+    def archive_basename(self):
         return os.path.splitext(os.path.basename(self.archive_file.name))[0]
 
     def traverse(self):
         # ok, lets create the root folder
         root_folder = Folder.objects.create(
                 # the name of the root folder does not really matter..
-                name = self.get_archive_basename(),
+                name = self.archive_basename,
                 parent_folder = None,
                 code_archive = self)
 
@@ -379,7 +380,7 @@ class BugExResult(models.Model):
 
     def __unicode__(self):
         """Return a unicode representation for a BugExResult model object."""
-        return '{0}'.format(self.date)
+        return u'{0}'.format(self.date)
 
     @staticmethod
     def new(xml_string, user_request):
@@ -475,7 +476,7 @@ class Fact(models.Model):
 
     def __unicode__(self):
         """Return a unicode representation for a Fact model object."""
-        return 'type {0}, class {1}, line {2}'.format(
+        return u'type {0}, class {1}, line {2}'.format(
             self.fact_type, self.class_name, self.line_number
         )
 
@@ -497,7 +498,7 @@ class Folder(models.Model):
 
     def __unicode__(self):
         """Return a unicode representation for a Folder model object."""
-        return '{0}'.format(self.name)
+        return u'{0}'.format(self.name)
 
     @property
     def is_root_folder(self):
@@ -634,7 +635,7 @@ class SourceFile(ProjectFile):
 
     def __unicode__(self):
         """Return a unicode representation for a SourceFile model object."""
-        return '{0}'.format(self.name)
+        return u'{0}'.format(self.name)
 
     @property
     def content(self):
@@ -658,7 +659,7 @@ class ClassFile(ProjectFile):
 
     def __unicode__(self):
         """Return a unicode representation for a ClassFile model object."""
-        return '{0}'.format(self.name)
+        return u'{0}'.format(self.name)
 
 
 class Line(models.Model):
@@ -687,7 +688,7 @@ class Line(models.Model):
 
     def __unicode__(self):
         """Return a unicode representation for a Line model object."""
-        return '{0}: line {1}'.format(self.source_file.name, self.number)
+        return u'{0}: line {1}'.format(self.source_file.name, self.number)
 
 
 class OutlineElement(models.Model):
@@ -739,7 +740,7 @@ class MethodElement(OutlineElement):
 
     def __unicode__(self):
         """Return a unicode representation for a MethodElement model object."""
-        return '{0}'.format(self.name)
+        return u'{0}'.format(self.name)
 
     def save(self, *args, **kwargs):
         """Override save() method to prevent a MethodElement being saved
@@ -769,7 +770,7 @@ class FieldElement(OutlineElement):
 
     def __unicode__(self):
         """Return a unicode representation for a FieldElement model object."""
-        return '{0}'.format(self.name)
+        return u'{0}'.format(self.name)
 
     def save(self, *args, **kwargs):
         """Override save() method to prevent a FieldElement being saved
@@ -795,4 +796,4 @@ class ClassElement(OutlineElement):
     """
     def __unicode__(self):
         """Return a unicode representation for a ClassElement model object."""
-        return '{0}'.format(self.name)
+        return u'{0}'.format(self.name)
