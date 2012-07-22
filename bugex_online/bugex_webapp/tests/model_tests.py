@@ -108,6 +108,6 @@ class CodeArchiveTest(TestCase):
             os.path.join(
                 settings.MEDIA_ROOT,
                 'user_2',
-                'f99db44e-c841-444b-977b-ccc9baa11027/',
-                'tmp_extracted'))
+                'f99db44e-c841-444b-977b-ccc9baa11027',
+                'failing-program-0.0.2-SNAPSHOT-jar-with-dependencies'))
 
