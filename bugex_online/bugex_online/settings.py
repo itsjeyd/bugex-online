@@ -18,6 +18,8 @@ from os import getcwd
 # independent of a particular computer.
 ROOT_PATH = getcwd()
 
+APPLICATION_BASE_URL = 'http://localhost:8000'
+
 # A boolean that turns on/off debug mode.
 # One of the main features of debug mode is
 # the display of detailed error pages.
@@ -29,8 +31,11 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 # The backend to use for sending emails.
-# Only for debugging; prints emails to the console
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'bugexonline@gmail.com'
+EMAIL_HOST_PASSWORD = 'eniln0xeguB'
 
 # A tuple that lists people who get code error notifications.
 # When DEBUG=False and a view raises an exception, Django will
@@ -204,16 +209,3 @@ LOGGING = {
         },
     }
 }
-
-APPLICATION_BASE_URL = 'http://localhost:8000'
-
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'bugexonline@gmail.com'
-EMAIL_HOST_PASSWORD = 'eniln0xeguB'
-#Admin variable.
-#Here sees man the emails that are going to get emails when
-#1)an HTTP error occurs
-#2)a user submits the contact form
-ADMINS = (('Admin', 'pemistahl@gmail.com'))

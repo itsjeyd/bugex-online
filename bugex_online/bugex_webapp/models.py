@@ -208,6 +208,7 @@ class UserRequest(models.Model):
         )
 
     def _build_path(self, *sub_folders):
+        """Returns the joined path of a folder and its subfolders."""
         return os.path.join(self.folder, *sub_folders)
 
     def __parse_archive(self):
@@ -320,10 +321,12 @@ class CodeArchive(models.Model):
 
     @property
     def name(self):
+        """Returns the base name of the code archive without its path."""
         return os.path.basename(self.archive_file.name)
 
     @property
     def path(self):
+        """Returns the absolute path of the code archive."""
         return os.path.join(settings.MEDIA_ROOT, self.archive_file.name)
 
     @property
@@ -336,6 +339,7 @@ class CodeArchive(models.Model):
 
     @property
     def archive_basename(self):
+        """Returns the base name of the code archive without its extension."""
         return os.path.splitext(os.path.basename(self.archive_file.name))[0]
 
     def traverse(self):
@@ -384,10 +388,11 @@ class BugExResult(models.Model):
 
     @staticmethod
     def new(xml_string, user_request):
-        '''Creates a new instance of BugExResult.
+        """
+        Creates a new instance of BugExResult.
 
         xml_string -- a string containing the xml output of BugEx
-        '''
+        """
         try:
             facts = BugExResult._parse_xml(xml_string)
         except Exception:
@@ -406,8 +411,7 @@ class BugExResult(models.Model):
 
     @staticmethod
     def _parse_xml(xml_string):
-        '''Parse the xml string and if parse is successful create Facts
-        '''
+        """Parse the xml string and if parse is successful create Facts."""
         facts = []
 
         try:
@@ -519,9 +523,10 @@ class Folder(models.Model):
 
 
     def _get_path_elements(self, my_path):
-        '''Returns the current and parent folder names of a specified path
+        """Returns the current and parent folder names of a specified path.
+
         my_path -- a path string
-        '''
+        """
         elements = os.path.split(os.path.abspath(my_path))
         this_f = elements[1]
         parent_f = os.path.split(os.path.abspath(elements[0]))[1]
@@ -529,7 +534,7 @@ class Folder(models.Model):
 
 
     def traverse(self):
-        #print 'in Folder.traverse(): name: {0}, path: {1}'.format(self.name,self.absolute_path)
+        """Traverses the folder and creates appropriate File objects."""
         for f in os.listdir(self.absolute_path):
             f_path = os.path.join(self.absolute_path, f)
             #if f_path points to a class or java file, create it
@@ -621,13 +626,11 @@ class SourceFile(ProjectFile):
 
         # read and store lines and extract package name
         for number, line in enumerate(open(path).readlines(), 1):
-            #print 'line: {0}'.format(line)
             Line.objects.create(
                 source_file=source_file,
                 number=number,
                 content=line.rstrip())
             if line.startswith('package'):
-                #print 'package line: {0}'.format(line)
                 source_file.package = re.search('package +(.+);', line).group(1)
 
         source_file.save()
