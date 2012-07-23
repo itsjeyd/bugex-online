@@ -30,19 +30,17 @@
                                 {% for request in requests_by_user %}
                                     <div class="well">
                                         {% if not request.status == 8 %}
-                                        <li><h4>Request {{ forloop.counter }}, created on {{ request.date }}</h4>
-                                            <dl>
-                                                <dt><strong>Code archive:</strong></dt>
-                                                <dd><span class="label label-info">{{ request.codearchive.name }}</span></dd>
-                                                <br>
-                                                <dt><strong>Test case:</strong></dt>
-                                                <dd><span class="label label-info">{{ request.test_case.name }}</span></dd>
-                                                <br>
-                                                <dt><a class="btn btn-info" href="/result/{{ request.token }}">Results</a> <a class="btn btn-danger" href="/delete/{{ request.delete_token }}">Delete</a></dt>
-                                            </dl>
-                                        </li>
-
-
+                                            <li><h4>Request {{ forloop.counter }}, created on {{ request.date }}</h4>
+                                                <dl>
+                                                    <dt><strong>Code archive:</strong></dt>
+                                                    <dd><span class="label label-info">{{ request.codearchive.name }}</span></dd>
+                                                    <br>
+                                                    <dt><strong>Test case:</strong></dt>
+                                                    <dd><span class="label label-info">{{ request.test_case.name }}</span></dd>
+                                                    <br>
+                                                    <dt><a class="btn btn-info" href="/result/{{ request.token }}">Results</a> <a class="btn btn-danger" href="/delete/{{ request.delete_token }}">Delete</a></dt>
+                                                </dl>
+                                            </li>
                                         {% else %}
                                             <li><h4>Request {{ forloop.counter }}, created on {{ request.date }}<br><span class="label label-inverse"> DELETED</span></h4></li>
                                         {% endif %}
@@ -60,86 +58,90 @@
 
                             <form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
 
+                                <fieldset>
 
+                                    {% for field in change_email_form %}
 
-                            <fieldset>
+                                        {% if field.errors %}
+                                            <div class="control-group error">
+                                        {% else %}
+                                            <div class="control-group">
+                                        {% endif %}
 
-                                {% for field in change_email_form %}
+                                                <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
 
-                                    {% if field.errors %}
-                                        <div class="control-group error">
-                                    {% else %}
-                                        <div class="control-group">
-                                    {% endif %}
+                                                <div class="controls">
+                                                    {% if field.html_name == "password" %}
+                                                        <input id="id_password" type="password" name="password" maxlength="8" />
+                                                    {% else %}
+                                                        {{ field }}
+                                                    {% endif %}
 
-                                            <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+                                                    {% for error in field.errors %}
+                                                        <span class="label label-important">{{ error }}</span>
+                                                    {% endfor %}
+                                                </div>
 
-                                            <div class="controls">
-                                                {% if field.html_name == "password" %}
-                                                    <input id="id_password" type="password" name="password" maxlength="8" />
-                                                {% else %}
-                                                    {{ field }}
-                                                {% endif %}
-
-                                                {% for error in field.errors %}
-                                                    <span class="label label-important">{{ error }}</span>
-                                                {% endfor %}
                                             </div>
+                                    {% endfor %}
 
-                                        </div>
-                                {% endfor %}
+                                    <div class="form-actions">
+                                        <input type="hidden" name="form-type" value="change-email-form" />
+                                        <button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
 
-                                <div class="form-actions">
-                                    <input type="hidden" name="form-type" value="change-email-form" />
-                                    <button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
-				    {% if message %}
+                                        {% if message %}
 
-                                      {% if "Your new email address has been successfully set." == message %}
-					<div class="alert alert-success fade in">
-					  <a class="close" data-dismiss="alert" href="#">&times;</a>
-					  {{ message }}
-					</div>
-                                      {% elif "The email addresses you entered are not identical." == message or "Input not valid." == message %}
-					<div class="alert alert-error fade in">
-					  <a class="close" data-dismiss="alert" href="#">&times;</a>
-					  {{ message }}
-					</div>
-                                      {% endif %}
-				    {% endif %}
+                                            {% if "Your new email address has been successfully set." == message %}
+                                                <div class="alert alert-success fade in">
+                                                    <a class="close" data-dismiss="alert" href="#">&times;</a>
+                                                    {{ message }}
+                                                </div>
 
-                                </div>
-                            </fieldset>
+                                            {% elif "The email addresses you entered are not identical." == message or "Input not valid." == message %}
+                                                <div class="alert alert-error fade in">
+                                                    <a class="close" data-dismiss="alert" href="#">&times;</a>
+                                                    {{ message }}
+                                                    </div>
+
+                                            {% endif %}
+
+                                        {% endif %}
+
+                                    </div>
+                                </fieldset>
                             </form>
 
                             <br>
                             <h3>Change password</h3>
                             <p>If you wish to change your password please click on the following button.</p>
                             <p>The new password will be sent to your email address.</p>
+
                             <form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
 
-                            <fieldset>
+                                <fieldset>
 
-                                <div class="form-actions">
-                                    <input type="hidden" name="form-type" value="change-password-form" />
-                                    <button type="submit" class="btn btn-primary">Change Password!</button>
+                                    <div class="form-actions">
+                                        <input type="hidden" name="form-type" value="change-password-form" />
+                                        <button type="submit" class="btn btn-primary">Change Password!</button>
 
-				    {% if message %}
+				                        {% if message %}
 
-                                      {% if "Your new password has been successfully set." == message %}
-					<div class="alert alert-success fade in">
-					  <a class="close" data-dismiss="alert" href="#">&times;</a>
-					  {{ message }}
-					</div>
-                                      {% elif "Failure: Your new password could not be created." == message %}
-					<div class="alert alert-error fade in">
-					  <a class="close" data-dismiss="alert" href="#">&times;</a>
-					  {{ message }}
-					</div>
-                                      {% endif %}
-				    {% endif %}
-                                </div>
+                                            {% if "Your new password has been successfully set." == message %}
+					                            <div class="alert alert-success fade in">
+					                                <a class="close" data-dismiss="alert" href="#">&times;</a>
+					                                {{ message }}
+					                            </div>
 
-                            </fieldset>
+                                            {% elif "Failure: Your new password could not be created." == message %}
+                                                <div class="alert alert-error fade in">
+					                                <a class="close" data-dismiss="alert" href="#">&times;</a>
+					                                {{ message }}
+					                            </div>
+                                            {% endif %}
+				                        {% endif %}
+                                    </div>
+
+                                </fieldset>
                             </form>
                         </div>
                     </div>
