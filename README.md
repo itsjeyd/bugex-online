@@ -20,16 +20,17 @@ For further information, see http://www.st.cs.uni-saarland.de/edu/se/2012/ and h
 
 * Python (version 2.7.*) and Django (version 1.4). 
 * For the user registration captcha field we used django-simple-captcha (version 0.3.5). To install it follow these [instructions](http://django-simple-captcha.readthedocs.org/en/latest/usage.html#installation). Please note that django-simple-captcha requires the python imaging library [PIL](http://www.pythonware.com/products/pil/) (version 1.1.7) to be installed. 
-* MySQL and the python-mysql connector (install python-mysqldb via your prefered package manager)
+* MySQL server
+* The python-mysql connector (install python-mysqldb via your prefered package manager)
 
 #### MySQL configuration
 
-The default configuration of BugExOnline uses the following MySQL data:
+The default configuration of BugExOnline uses the following data for accessing the MySQL database:
 * User: bugex
 * Password: bugex
 * Database: bugexonline
 
-You can change the credentials in */bugex_online/settingy.py*
+You can change the credentials in */bugex_online/settings.py*
 
 #### Running the project
 
