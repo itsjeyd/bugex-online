@@ -12,7 +12,7 @@ Authors: Amir Baradaran
 """
 
 from django import forms
-from captcha.fields import CaptchaField
+#from captcha.fields import CaptchaField
 
 from bugex_webapp.validators import validate_archive_file_extension
 from bugex_webapp.validators import validate_archive_copyright
@@ -29,7 +29,8 @@ class EmailBaseForm(forms.Form):
 
 
 class RegistrationForm(EmailBaseForm):
-    captcha = CaptchaField()
+    pass
+    #captcha = CaptchaField()
 
 
 class EmailPasswordBaseForm(EmailBaseForm):
