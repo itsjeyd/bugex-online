@@ -17,7 +17,6 @@ import logging
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
-from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
@@ -247,7 +246,6 @@ def _change_password(request):
 def _change_email_address(request):
     """Change a user's current email address."""
     change_email_form = ChangeEmailForm(request.POST)
-    message = ''
 
     if change_email_form.is_valid():
 
@@ -394,7 +392,6 @@ def show_bugex_result(request, token):
         }
         return render(request, 'bugex_webapp/results.html', template_context)
 
-    # TODO put messages in a nice dictionary?
     elif ur_status == UserRequestStatus.FAILED:
         # something went wrong
         message = "BugEx failed to process your input data.\
