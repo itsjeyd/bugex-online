@@ -17,8 +17,6 @@
                 <h3>Detailed information on how to use BugEx Online can be found on our <a href="{% url howto-page %}">HowTo</a> page.</h3>
             </div>
 
-
-
             <div class="row-fluid">
                 <div class="span6">
                     <div id="leftColumnMain">
@@ -29,8 +27,6 @@
                             <h3>Test case</h3>
                             <p>The failing test case you want BugEx to analyze needs to be a JUnit test method and must be specified as a string of the following form: <pre>package.containing.test.case.Class#failingTest</pre></p>
                         {% else %}
-
-
                             <h3>Sign In</h3>
 
                             <form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
@@ -62,21 +58,21 @@
                                         </div>
 
 
-                                        <div class="form-actions">
-                                            <input type="hidden" name="form-type" value="login-form" />
-                                            <button type="submit" class="btn btn-primary"><i class="icon-user icon-white"></i> Login</button>
-                                            <input type="hidden" name="next" value="/">
-					    {% if message %}
+                                    <div class="form-actions">
+                                        <input type="hidden" name="form-type" value="login-form" />
+                                        <button type="submit" class="btn btn-primary"><i class="icon-user icon-white"></i> Login</button>
+                                        <input type="hidden" name="next" value="/">
 
-					      {% if "Your account has been disabled" in message or "Your username and password didn't match" in message %}
-						<div class="alert alert-error fade in">
-						  <a class="close" data-dismiss="alert" href="#">&times;</a>
-						  {{ message }}
-						</div>
-					      {% endif %}
+                                        {% if message %}
 
-					    {% endif %}
-                                        </div>
+					                        {% if "Your account has been disabled" in message or "Your username and password didn't match" in message %}
+						                        <div class="alert alert-error fade in">
+						                            <a class="close" data-dismiss="alert" href="#">&times;</a>
+						                            {{ message }}
+						                        </div>
+					                        {% endif %}
+					                    {% endif %}
+                                    </div>
                                 </fieldset>
                             </form>
 
@@ -86,6 +82,7 @@
                                         Register
                                         <b class="caret"></b>
                                     </a>
+
                                     <ul class="dropdown-menu">
                                         <form class="form-horizontal" method="post" accept-charset="UTF-8" action="">{% csrf_token %}
 
@@ -151,8 +148,6 @@
                                     </ul>
                                 </li>
                             </ul>
-
-
                         {% endif %}
                     </div>
                 </div>
@@ -174,14 +169,11 @@
                                             <div class="control-group">
                                         {% endif %}
 
-
                                                 <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
-
 
                                                 <div class="controls">
 
                                                     {{ field }}
-
 
                                                     {% for error in field.errors %}
                                                         <span class="label label-important">{{ error }}</span>
@@ -189,35 +181,38 @@
                                                 </div>
                                             </div>
                                     {% endfor %}
-									<script>
-			                        $(document).ready(function(){
-			                        	$('#informingText').hide();
-			                            $('#submit').click(function() {
-			                                $('#informingText').delay(2000).fadeIn(200);
+
+                                    <script>
+			                            $(document).ready(function(){
+			                        	    $('#informingText').hide();
+			                                $('#submit').click(function() {
+			                                    $('#informingText').delay(2000).fadeIn(200);
+			                                });
 			                            });
-			                        });
 									</script>
+
                                     <div class="form-actions">
                                         <input type="hidden" name="form-type" value="user-request-form" />
                                         <button id="submit" type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Submit</button>
                                         <button id="informingText" class="btn btn-danger">Uploading! Do not close the Browser!</button>
-					{% if message %}
 
-					  {% if "Upload successful" in message %}
-					    <div class="alert alert-success fade in">
-					      <a class="close" data-dismiss="alert" href="#">&times;</a>
-					      {{ message }}
-					    </div>
-					  {% elif "request could not be processed" in message %}
-					    <div class="alert alert-error fade in">
-					      <a class="close" data-dismiss="alert" href="#">&times;</a>
-					      {{ message }}
-					    </div>
-					  {% endif %}
+                                        {% if message %}
 
-					{% endif %}
+					                        {% if "Upload successful" in message %}
+					                            <div class="alert alert-success fade in">
+					                                <a class="close" data-dismiss="alert" href="#">&times;</a>
+					                                {{ message }}
+					                            </div>
+
+                                            {% elif "request could not be processed" in message %}
+					                            <div class="alert alert-error fade in">
+					                                <a class="close" data-dismiss="alert" href="#">&times;</a>
+					                                {{ message }}
+					                            </div>
+					                        {% endif %}
+
+					                    {% endif %}
                                     </div>
-
                                 </fieldset>
                             </form>
                         {% endif %}
