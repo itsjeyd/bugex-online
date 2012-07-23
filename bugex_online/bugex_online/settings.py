@@ -49,10 +49,17 @@ MANAGERS = ADMINS
 # for an individual database.
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bugexonline',
+        'USER': 'bugex',
+        'PASSWORD': 'bugex',
+        },
+    'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': '{0}/bugex_online_database.db'.format(ROOT_PATH),
-    }
+        }
 }
+
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
