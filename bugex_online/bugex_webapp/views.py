@@ -319,6 +319,7 @@ def log_user_out(request):
 def submit_contact_form(request):
     """Submit a contact form request
     """
+    message = ''
     if request.method == 'POST':
         form = ContactForm(request.POST)
 
@@ -335,16 +336,17 @@ def submit_contact_form(request):
                       email_address, [settings.EMAIL_HOST_USER],
                       fail_silently=True)
 
-            messages.success(request, 'We received your email!')
+            message = 'Thank you very much! We received your email.'
 
         else:
-            messages.error(
-                request, 'Unfortunately, your request could not be processed!')
+            message = 'Unfortunately, your contact request could not be processed.'
 
     else:
         form = ContactForm()
 
-    return render(request, 'bugex_webapp/contact.html', {'form': form,})
+    template_context = {'form': form, 'message': message}
+
+    return render(request, 'bugex_webapp/contact.html', template_context)
 
 
 def show_bugex_result(request, token):
