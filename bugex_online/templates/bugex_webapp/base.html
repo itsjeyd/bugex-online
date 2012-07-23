@@ -15,7 +15,6 @@
    	<script type="text/javascript" src="{{ STATIC_URL }}js/shCore.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}js/shBrushJava.js"></script>
 	<script type="text/javascript">SyntaxHighlighter.all();</script>  	
-	
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -27,38 +26,40 @@
 </head>
 <body>
     {% block header %}	
-    <div class="navbar">
-		<div class="navbar-inner">
-			<div class="container">
-				<a class="brand" href="{% url main-page %}"><img src="{{ STATIC_URL }}img/logo50px.png"></a>
-				<ul class="nav pull-right">
-					{% block home %}<li><a href="{% url main-page %}">{% endblock home %}<i class="icon-home"></i> Home</a></li>
-                    {% block howto %}<li><a href="{% url howto-page %}">{% endblock howto %}<i class="icon-question-sign"></i> HowTo</a></li>
-                    {% block contact %}<li><a href="{% url contact-page %}">{% endblock contact %}<i class="icon-comment"></i> Contact Us</a></li>
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="{% url main-page %}"><img src="{{ STATIC_URL }}img/logo50px.png"></a>
+                    <ul class="nav pull-right">
+                        {% block home %}<li><a href="{% url main-page %}">{% endblock home %}<i class="icon-home"></i> Home</a></li>
+                        {% block howto %}<li><a href="{% url howto-page %}">{% endblock howto %}<i class="icon-question-sign"></i> HowTo</a></li>
+                        {% block contact %}<li><a href="{% url contact-page %}">{% endblock contact %}<i class="icon-comment"></i> Contact Us</a></li>
 
-                    {% if user.is_authenticated %}
-                        {% comment %}<li><a href="{% url results-page-overview %}">Results</a></li>{% endcomment %}
-                        {% block user %}<li><a href="{% url user-page %}">{% endblock user %}<i class="icon-user"></i> My Account</a></li>
-                        <li><a href="{% url logout %}"><i class="icon-remove"></i> Logout</a></li>
-                        <li class="divider-vertical"></li>
-                        <li class="active"><a><i class="icon-user icon-white"></i> {{ user.username }}</a></li>
-                    {% endif %}
-				</ul>
+                        {% if user.is_authenticated %}
+                            {% comment %}<li><a href="{% url results-page-overview %}">Results</a></li>{% endcomment %}
+                            {% block user %}<li><a href="{% url user-page %}">{% endblock user %}<i class="icon-user"></i> My Account</a></li>
+                            <li><a href="{% url logout %}"><i class="icon-remove"></i> Logout</a></li>
+                            <li class="divider-vertical"></li>
+                            <li class="active"><a><i class="icon-user icon-white"></i> {{ user.email }}</a></li>
+                        {% endif %}
+                    </ul>
 
-			</div>
-		</div>
-	</div>
+                </div>
+            </div>
+        </div>
 	{% endblock header %}
-    {% block content %}{% endblock content %}
-    {% block footer %}        
-    <div id="footerContainer" class="container-fluid">
-            <div class="row-fluid">
-                    <div id="footer">
-                        <p>Copyright &copy; BugEx Online</p>
-                    </div>
-            </div>	
-	</div>	
-	{% endblock footer %}
-</body>
 
+    {% block content %}{% endblock content %}
+
+    {% block footer %}
+        <div id="footerContainer" class="container-fluid">
+            <div class="row-fluid">
+                <div id="footer">
+                    <p>Copyright &copy; BugEx Online</p>
+                </div>
+            </div>
+        </div>
+	{% endblock footer %}
+
+</body>
 </html>
