@@ -19,6 +19,20 @@
                                 $(this).tab('show');
                         	});
                         });
+                        
+                        function ajaxCallForClass(url, class_line) {
+                			$.ajax({
+                    		type: "get",
+                    	    url: url,
+                    	        success: function(responseText) {
+                    	        	var brush = new SyntaxHighlighter.brushes.Java(),
+                                    html;
+                    	            brush.init({ toolbar: false, highlight: class_line });
+                    	            html = brush.getHtml(responseText);
+                    	            document.getElementById("code").innerHTML = html;
+                    	        }
+                    	    });
+						}
                     </script>
 
                     <ul class="nav nav-tabs" id="myTab">
@@ -31,7 +45,6 @@
                             	<a href="#cat{{ forloop.counter }}" data-toggle="tab">Fact Type {{ fact_type }}</a>
                            	</li>
                         {% endfor %}
-
                     </ul>
 
 					<div class="scrollable-facts">
@@ -76,19 +89,8 @@
                                                 <div id="collapse{{forloop.parentloop.counter}}{{ forloop.counter }}0" class="accordion-body collapse">
                                                     <div class="accordion-inner">
                                                         {{ fact.explanation }}
-                                                        <a class="seeCode" href="#" onclick='
-                                                            $.ajax({
-                                                                type: "get",
-                                                                url: "{% url source-page token fact.class_name %}",
-                                                                success: function(responseText) {
-                                                                    var brush = new SyntaxHighlighter.brushes.Java(),
-                                                                    html;
-                                                                    brush.init({ toolbar: false,  highlight: {{ fact.line_number }}  });
-                                                                    html = brush.getHtml(responseText);
-                                                                    document.getElementById("code").innerHTML = html;
-                                                                }
-                                                            });'>
-                                                            See the code
+                                                        <a class="seeCode" href="#" onclick='ajaxCallForClass("{% url source-page token fact.class_name %}", "{{ fact.line_number }}")'>
+                                                        	See the code
                                                         </a>
                                                     </div>
                                                 </div>
@@ -101,7 +103,6 @@
                             {% for fact_type, fact_list in fact_dict.iteritems %}
                                 <div class="tab-pane fade" id="cat{{ forloop.counter }}">
                                     <div class="accordion{{forloop.counter}}" id="ac{{forloop.counter}}">
-
                                         <table class="tableFormat">
                                             <tr>
                                                 <th class="smallId">
@@ -139,20 +140,9 @@
                                                 <div id="collapse{{ forloop.counter }}{{forloop.parentloop.counter}}" class="accordion-body collapse">
                                                     <div class="accordion-inner">
                                                         {{ fact.explanation }}
-                                                        <a class="seeCode" href="#" onclick='
-                                                            $.ajax({
-                                                                type: "get",
-                                                                url: "{% url source-page token fact.class_name %}",
-                                                                success: function(responseText) {
-                                                                    var brush = new SyntaxHighlighter.brushes.Java(),
-                                                                    html;
-                                                                    brush.init({ toolbar: false, highlight: {{ fact.line_number }} });
-                                                                    html = brush.getHtml(responseText);
-                                                                    document.getElementById("code").innerHTML = html;
-                                                                }
-                                                            });'>
+                                                        <a class="seeCode" href="#" onclick='ajaxCallForClass("{% url source-page token fact.class_name %}", "{{ fact.line_number }}")'>
                                                             See the code
-                                                        </a>See the class</a>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
