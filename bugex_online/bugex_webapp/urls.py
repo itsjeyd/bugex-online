@@ -11,7 +11,7 @@ Authors: Amir Baradaran
          Peter Stahl
 """
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
 from bugex_webapp.views import provide_user_content, process_main_page_forms
@@ -26,12 +26,17 @@ urlpatterns = patterns('',
     ),
     url(r'^contact/$', submit_contact_form, name='contact-page'),
 
-    url(r'^result/(?P<token>[a-z0-9\-]{36})$', show_bugex_result, name='results-page'),
-    url(r'^delete/(?P<delete_token>[a-z0-9\-]{36})$', delete_bugex_result, name='delete-page'),
+    url(r'^result/(?P<token>[a-z0-9\-]{36})$', show_bugex_result,
+        name='results-page'),
+    url(r'^delete/(?P<delete_token>[a-z0-9\-]{36})$', delete_bugex_result,
+        name='delete-page'),
 
     url(r'^account/$', provide_user_content, name='user-page'),
     url(r'^account/logout/$', log_user_out, name='logout'),
 
-    url(r'^source/(?P<token>[a-z0-9\-]{36})/(?P<class_name>([a-z0-9]+\.)+[A-Z][A-Za-z0-9]+)$', get_source_file_content, name='source-page'),
+    url(r'^source/(?P<token>[a-z0-9\-]{36})/'
+        r'(?P<class_name>([a-z0-9]+\.)+[A-Z][A-Za-z0-9]+)$',
+        get_source_file_content,
+        name='source-page'),
 
 )
