@@ -41,7 +41,7 @@
                         {% block user %}<li><a href="{% url user-page %}">{% endblock user %}<i class="icon-user"></i> My Account</a></li>
                         <li><a href="{% url logout %}"><i class="icon-remove"></i> Logout</a></li>
                         <li class="divider-vertical"></li>
-                        <li class="active"><a><i class="icon-user icon-white"></i> {{ user.username }}</a></li>
+                        <li class="active"><a><i class="icon-user icon-white"></i> {{ user.email }}</a></li>
                     {% endif %}
 				</ul>
 
