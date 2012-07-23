@@ -66,7 +66,7 @@ def _recover_password(request):
         email_address = password_recovery_form.cleaned_data['email_address']
 
         try:
-            user = User.objects.get(username=email_address)
+            user = User.objects.get(email=email_address)
             new_password = get_pronounceable_pass(3,2)
             user.set_password(new_password)
             user.save()
@@ -111,7 +111,7 @@ def _register_user(request):
         new_password = get_pronounceable_pass(3,2)
 
         try:
-            user = User.objects.get(username=email_address)
+            user = User.objects.get(email=email_address)
             user.set_password(new_password)
             user.save()
 
@@ -131,11 +131,15 @@ def _register_user(request):
 
         except User.DoesNotExist:
 
-            User.objects.create_user(
-                username=email_address,
+            user = User.objects.create_user(
+                username=email_address[:30], # username can only have 30 chars!
                 email=email_address,
                 password=new_password
             )
+
+            # use id as username
+            user.username = user.id
+            user.save()
 
             send_mail(
                 subject=Notifications.CONTENT['USER_REGISTERED']['subject'],
@@ -286,16 +290,26 @@ def _change_email_address(request):
 def _log_user_in(request):
     """Log a user in."""
     message = ''
-    username = request.POST['username']
+    email_address = request.POST['username'] # this is actually the email
     password = request.POST['password']
-    user = authenticate(username=username, password=password)
+    
+    # a little workarounce, because we are looking up users based on email
+    try:
+        # lookup the correct user object
+        pre_auth_user = User.objects.get(email=email_address)
+    except ObjectDoesNotExist:
+        user = None
+    else:
+        # authenticate with name
+        user = authenticate(
+                username=pre_auth_user.username, password=password)
 
     if user is not None:
         if user.is_active:
             login(request, user)
         else:
             message = 'Your account has been disabled. ' \
-                      'Please contact the administrator.'
+                        'Please contact the administrator.'
     else:
         message = 'Your username and password didn\'t match. Please try again.'
 
