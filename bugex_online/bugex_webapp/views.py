@@ -130,14 +130,14 @@ def _register_user(request):
                       'sent to this address.'
 
         except User.DoesNotExist:
-
+            
             user = User.objects.create_user(
-                username=email_address[:30], # username can only have 30 chars!
+                username='-1', # dummy username just for now
                 email=email_address,
                 password=new_password
             )
 
-            # use id as username
+            # now use id as username
             user.username = user.id
             user.save()
 
