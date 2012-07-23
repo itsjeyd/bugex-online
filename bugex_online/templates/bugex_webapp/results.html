@@ -7,6 +7,7 @@
         <div class="row-fluid">
             <div class="span4 fullHeight">
                 <div id="facts">
+
                     <script>
                         $(document).ready(function(){
                         	$.ajaxSetup ({
@@ -17,124 +18,155 @@
                                 e.preventDefault();
                                 $(this).tab('show');
                         	});
-
-//                         	function callToAjax(token, class_name) {
-//                         		var url = "/source/" + token + "/" + class_name
-//                         		alert('hi');
-//                             	$.ajax({
-//                             		type: "get",
-//                             		  url: url,
-//                             		  context: document.body,
-//                             		  success: function(responseText){
-//                             			  alert('hi');
-//                           				$("#code pre.prettyprint").text(responseText);
-//                           			},
-//                             		  dataType: "text"
-//                             		});'
-//                         	}
-
                         });
                     </script>
-                     <ul class="nav nav-tabs" id="myTab">
-                            <li class="active">
-                            	<a href="#cat0" data-toggle="tab">All</a>
-                           	</li>
+
+                    <ul class="nav nav-tabs" id="myTab">
+                        <li class="active">
+                            <a href="#cat0" data-toggle="tab">All</a>
+                        </li>
+
                         {% for fact_type, fact_list in fact_dict.iteritems %}
                             <li class="">
                             	<a href="#cat{{ forloop.counter }}" data-toggle="tab">Fact Type {{ fact_type }}</a>
                            	</li>
                         {% endfor %}
-                    </ul>
-                    <script type="text/javascript">
 
-                    </script>
+                    </ul>
+
 					<div class="scrollable-facts">
 						<div class="tab-content">
                             <div class="tab-pane fade in active" id="cat0">
                             	<div class="accordion0" id="ac0">
-                                	<table class="tableFormat"><tr><th class="smallId">ID</th><th class="big">Class_Name#Method_Name</th><th class="small">Fact Type</th></tr></table>
-                                    	{% for fact_type, fact_list in fact_dict.iteritems %}
-                                    	{% for number, fact in fact_list %}
+
+                                    <table class="tableFormat">
+                                        <tr>
+                                            <th class="smallId">
+                                                ID
+                                            </th>
+                                            <th class="big">
+                                                Class_Name#Method_Name
+                                            </th>
+                                            <th class="small">
+                                                Fact Type</th>
+                                        </tr>
+                                    </table>
+
+                                    {% for fact_type, fact_list in fact_dict.iteritems %}
+                                        {% for number, fact in fact_list %}
                                             <div class="accordion-group">
                                                 <div class="accordion-heading">
                                                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#ac0" href="#collapse{{forloop.parentloop.counter}}{{ forloop.counter }}0">
-                                                    	<table><tr><th class="smallId">{{ number }}</th><th class="big">{{ fact.class_name }}#{{ fact.method_name }}</th><th class="small">TYPE_{{ fact.fact_type }}</th></tr></table>
-                                                   	</a>
+                                                        <table>
+                                                            <tr>
+                                                                <th class="smallId">
+                                                                    {{ number }}
+                                                                </th>
+                                                                <th class="big">
+                                                                    {{ fact.class_name }}#{{ fact.method_name }}
+                                                                </th>
+                                                                <th class="small">
+                                                                    TYPE_{{ fact.fact_type }}
+                                                                </th>
+                                                            </tr>
+                                                        </table>
+                                                    </a>
                                                 </div>
+
                                                 <div id="collapse{{forloop.parentloop.counter}}{{ forloop.counter }}0" class="accordion-body collapse">
                                                     <div class="accordion-inner">
-                                                        {{ fact.explanation }}<a class="seeCode" href="#" onclick='
-                                                        		$.ajax({
-                                                        		type: "get",
-                                                        	    url: "{% url source-page token fact.class_name %}",
-                                                        	        success: function(responseText) {
-                                                        	        	var brush = new SyntaxHighlighter.brushes.Java(),
-                                                                        html;
-                                                        	            brush.init({ toolbar: false,  highlight: {{ fact.line_number }}  });
-                                                        	            html = brush.getHtml(responseText);
-                                                        	            document.getElementById("code").innerHTML = html;
-                                                        	        }
-                                                        	    });'>See the code</a>
+                                                        {{ fact.explanation }}
+                                                        <a class="seeCode" href="#" onclick='
+                                                            $.ajax({
+                                                                type: "get",
+                                                                url: "{% url source-page token fact.class_name %}",
+                                                                success: function(responseText) {
+                                                                    var brush = new SyntaxHighlighter.brushes.Java(),
+                                                                    html;
+                                                                    brush.init({ toolbar: false,  highlight: {{ fact.line_number }}  });
+                                                                    html = brush.getHtml(responseText);
+                                                                    document.getElementById("code").innerHTML = html;
+                                                                }
+                                                            });'>
+                                                            See the code
+                                                        </a>
                                                     </div>
                                                 </div>
-
                                             </div>
-
-                                            {% endfor %}
                                         {% endfor %}
-                                    </div>
+                                    {% endfor %}
                                 </div>
+                            </div>
+
                             {% for fact_type, fact_list in fact_dict.iteritems %}
                                 <div class="tab-pane fade" id="cat{{ forloop.counter }}">
                                     <div class="accordion{{forloop.counter}}" id="ac{{forloop.counter}}">
-                                    	<table class="tableFormat"><tr><th class="smallId">ID</th><th class="big">Class_Name#Method_Name</th><th class="small">Fact Type</th></tr></table>
-                                     		{% for number, fact in fact_list %}
-                                            		<div class="accordion-group">
-                                            			<div class="accordion-heading">
-                                                    		<a class="accordion-toggle" data-toggle="collapse" data-parent="#ac{{forloop.parentloop.counter}}" href="#collapse{{ forloop.counter }}{{forloop.parentloop.counter}}">
-                                                    			<table><tr><th class="smallId">{{ number }}</th><th class="big">{{ fact.class_name }}#{{ fact.method_name }}</th><th class="small">TYPE_{{ fact.fact_type }}</th></tr></table>
-                                                   			</a>
-                                                		</div>
-                                                		<div id="collapse{{ forloop.counter }}{{forloop.parentloop.counter}}" class="accordion-body collapse">
-                                                    		<div class="accordion-inner">
-                                                        		{{ fact.explanation }}<a class="seeCode" href="#" onclick='
-                                                            		$.ajax({
-                                                                		type: "get",
-                                                                	    url: "{% url source-page token fact.class_name %}",
-                                                                	        success: function(responseText) {
-                                                                	        	var brush = new SyntaxHighlighter.brushes.Java(),
-                                                                                html;
-                                                                	            brush.init({ toolbar: false, highlight: {{ fact.line_number }} });
-                                                                	            html = brush.getHtml(responseText);
-                                                                	            document.getElementById("code").innerHTML = html;
-                                                                	        }
-                                                                	    });'>See the code</a>See the class</a>
-                                                    		</div>
-                                                		</div>
-                                            		 </div>
-												{% empty %}
-                                            	<span class="noErrors"><p>BugEx did not generate any facts of this type for your code.</p></span>
-                                            	{% endfor %}
-                                   	  </div>
-                               	 </div>
-                            {% endfor %}
-                        	</div>
-                    	</div>
-                </div>
-                <!-- <button class="btn btn-primary"><i class="icon-download icon-white"></i>Download Results</button>
-                <ul id="social">
-                    <li><a href="#"><img src="{{ STATIC_URL }}img/fb.png"></a></li>
-                    <li><a href="#"><img src="{{ STATIC_URL }}img/go.png"></a></li>
-                </ul>
-                <div id="outline">
-                    <h1>{{ class_name }}</h1>
-                    <ul>
-                        {% for methods in class_methods_list %}
-                            <li>{{ methods.name }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>-->
 
+                                        <table class="tableFormat">
+                                            <tr>
+                                                <th class="smallId">
+                                                    ID
+                                                </th>
+                                                <th class="big">
+                                                    Class_Name#Method_Name
+                                                </th>
+                                                <th class="small">
+                                                    Fact Type
+                                                </th>
+                                            </tr>
+                                        </table>
+
+                                        {% for number, fact in fact_list %}
+                                            <div class="accordion-group">
+                                                <div class="accordion-heading">
+                                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#ac{{forloop.parentloop.counter}}" href="#collapse{{ forloop.counter }}{{forloop.parentloop.counter}}">
+                                                        <table>
+                                                            <tr>
+                                                                <th class="smallId">
+                                                                    {{ number }}
+                                                                </th>
+                                                                <th class="big">
+                                                                    {{ fact.class_name }}#{{ fact.method_name }}
+                                                                </th>
+                                                                <th class="small">
+                                                                    TYPE_{{ fact.fact_type }}
+                                                                </th>
+                                                            </tr>
+                                                        </table>
+                                                    </a>
+                                                </div>
+
+                                                <div id="collapse{{ forloop.counter }}{{forloop.parentloop.counter}}" class="accordion-body collapse">
+                                                    <div class="accordion-inner">
+                                                        {{ fact.explanation }}
+                                                        <a class="seeCode" href="#" onclick='
+                                                            $.ajax({
+                                                                type: "get",
+                                                                url: "{% url source-page token fact.class_name %}",
+                                                                success: function(responseText) {
+                                                                    var brush = new SyntaxHighlighter.brushes.Java(),
+                                                                    html;
+                                                                    brush.init({ toolbar: false, highlight: {{ fact.line_number }} });
+                                                                    html = brush.getHtml(responseText);
+                                                                    document.getElementById("code").innerHTML = html;
+                                                                }
+                                                            });'>
+                                                            See the code
+                                                        </a>See the class</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% empty %}
+                                            <span class="noErrors">
+                                                <p>BugEx did not generate any facts of this type for your code.</p>
+                                            </span>
+                                        {% endfor %}
+                                   	</div>
+                               	</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="span8 fullHeight">
