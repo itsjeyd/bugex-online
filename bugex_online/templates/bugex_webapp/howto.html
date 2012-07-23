@@ -5,148 +5,179 @@
 {% block howto %}<li class="active"><a href="#">{% endblock howto %}
 
 {% block content %}
-<script type="text/javascript">
-$(document).ready(function() {
-	$("ul.nav li").click(function(){
-						$("ul.fixedMenu li").removeClass("active");
-						$(this).addClass("active");
-});
-});
-</script>
-	<div class="container-fluid">
-		<div class="row-fluid">
+    <script type="text/javascript">
+        $(document).ready(function() {
+	        $("ul.nav li").click(function(){
+			    $("ul.fixedMenu li").removeClass("active");
+				$(this).addClass("active");
+            });
+        });
+    </script>
+
+    <div class="container-fluid">
+	    <div class="row-fluid">
         	<div class="span2">
-			<ul class="nav nav-list fixedMenu">
-			  <li class="nav-header">
-				Using BugEx Online
-			  </li>
-			  <li>
-				<a href="#sec1_1"><i class="icon-upload"></i> Submit data</a>
-			  </li>
-			  <li>
-				<a href="#sec1_2"><i class="icon-search"></i> Access results</a>
-			  </li>
-			  <li>
-				<a href="#sec1_3"><i class="icon-trash"></i> Delete results</a>
-			  </li>
-			  <li class="nav-header">
-				Account Management
-			  </li>
-			  <li>
-				<a href="#sec2_1"><i class="icon-user"></i> Create account</a>
-			  </li>
-			  <li>
-				<a href="#sec2_2"><i class="icon-envelope"></i> Change email</a>
-			  </li>
-			  <li>
-				<a href="#sec2_3"><i class="icon-wrench"></i> Change password</a>
-			  </li>
-			  <li>
-				<a href="#sec2_4"><i class="icon-random"></i> Recover password</a>
-			  </li>
-			  <li class="nav-header">
-				Advanced Functionality
-			  </li>
-			  <li>
-				<a href="#sec3_1"><i class="icon-globe"></i> Share results</a>
-			  </li>
-			  <li>
-				<a href="#sec3_2"><i class="icon-download"></i> Download results</a>
-			  </li>
-			  <li class="divider"></li>
-			  <li>
-				<a href="#sec4_1"><i class="icon-comment"></i> Other questions?</a>
-			  </li>
-			</ul>
+			    <ul class="nav nav-list fixedMenu">
+			        <li class="nav-header">
+				        Using BugEx Online
+			        </li>
+			        <li>
+				        <a href="#sec1_1"><i class="icon-upload"></i> Submit data</a>
+			        </li>
+			        <li>
+				        <a href="#sec1_2"><i class="icon-search"></i> Access results</a>
+			        </li>
+			        <li>
+				        <a href="#sec1_3"><i class="icon-trash"></i> Delete results</a>
+			        </li>
+			        <li class="nav-header">
+				        Account Management
+			        </li>
+			        <li>
+				        <a href="#sec2_1"><i class="icon-user"></i> Create account</a>
+			        </li>
+			        <li>
+				        <a href="#sec2_2"><i class="icon-envelope"></i> Change email</a>
+			        </li>
+			        <li>
+				        <a href="#sec2_3"><i class="icon-wrench"></i> Change password</a>
+			        </li>
+			        <li>
+				        <a href="#sec2_4"><i class="icon-random"></i> Recover password</a>
+			        </li>
+			        <li class="nav-header">
+				        Advanced Functionality
+			        </li>
+			        <li>
+				        <a href="#sec3_1"><i class="icon-globe"></i> Share results</a>
+			        </li>
+			        <li>
+				        <a href="#sec3_2"><i class="icon-download"></i> Download results</a>
+			        </li>
+			        <li class="divider"></li>
+			        <li>
+				        <a href="#sec4_1"><i class="icon-comment"></i> Other questions?</a>
+			        </li>
+			    </ul>
 			</div>
-			<div class="span1"></div>
+
+            <div class="span1"></div>
 			<div class="span8">
             	<div id="howTo">
-					
-					<hr/>                    
+					<hr/>
                     <h2>Using BugEx Online</h2>
-					<p/>
+                    <br>
 					<h3 class="anchorFix" id="sec1_1">Submitting your input data</h3>
-                    <p>To submit your input data to BugEx Online, login to the system. On the main page, please provide the code archive file containing your failing program and the failing test case and the fully qualified name of the method of the failing test case.
-Currently, the provided archive can be either of type JAR or of type ZIP.</p>
-                    <img src="{{ STATIC_URL }}img/howto_bugex_main.png" />
-<p>The archive file needs to contain:</p>
-		    <p class="indent">(a) all dependencies of the project,</p>
-		    <p class="indent">(b) both the source code and the binary files (*.java and *.class files).</p>
-		    <p>The name for the failing test case should have the following format:</p>
-		    <pre class="codeHowTo">package.containing.test.case.Class#failingTest</pre>
-		    <p>Also you have to confirm that you own all necessary rights to upload the code, before being able to submit your request. After clicking on "Submit" the archive will be uploaded to BugEx Online. Depending on the archive size, this might take a while.</p>
-			<p><i class="icon-warning-sign"></i> Please <b>do not close the browser tab and do not disconnect from the internet while the upload is in progress</b>. You will be notified in the browser and via email after the upload has finished.</p>
-			<p><i class="icon-info-sign"></i> On important events, BugEx Online will send you notifications via email, e.g. on successful upload of the archive file, after BugEx finished or if BugEx could not process your request.
-				</p>
+                    <p>
+                        To submit your input data to BugEx Online, login to the system. On the main page, please provide the code archive file containing your failing program and the failing test case and the fully qualified name of the method of the failing test case.
+                        Currently, the provided archive can be either of type JAR or of type ZIP.
+                    </p>
 
-				<h3 class="anchorFix" id="sec1_2">Accessing the BugEx results</h3>
+                    <img src="{{ STATIC_URL }}img/howto_bugex_main.png" />
+
+                    <p>The archive file needs to contain:</p>
+		            <p class="indent">(a) all dependencies of the project,</p>
+		            <p class="indent">(b) both the source code and the binary files (*.java and *.class files).</p>
+		            <p>The name for the failing test case should have the following format:</p>
+		            <pre class="codeHowTo">package.containing.test.case.Class#failingTest</pre>
+		            <p>Also you have to confirm that you own all necessary rights to upload the code, before being able to submit your request. After clicking on "Submit" the archive will be uploaded to BugEx Online. Depending on the archive size, this might take a while.</p>
+			        <p><i class="icon-warning-sign"></i> Please <b>do not close the browser tab and do not disconnect from the internet while the upload is in progress</b>. You will be notified in the browser and via email after the upload has finished.</p>
+			        <p><i class="icon-info-sign"></i> On important events, BugEx Online will send you notifications via email, e.g. on successful upload of the archive file, after BugEx finished or if BugEx could not process your request.</p>
+
+				    <h3 class="anchorFix" id="sec1_2">Accessing the BugEx results</h3>
   					<p>After BugEx finished processing your input data, you will recieve an email containing the link to the results page - Your result will be available to you anytime from now on.</p>
-					<p>On the results page, on the left hand side the system will display a list of 
+					<p>
+                        On the results page, on the left hand side the system will display a list of
 						facts as produced by BugEx, which highlight different important aspects of the failure.
 						You can click on a single fact in the list of facts. On the right side, the system then will then display the code that is 
 						associated with the fact, marking those lines to which the fact refers. Additionally, a textual 
-						description of the fact is displayed.</p>
+						description of the fact is displayed.
+                    </p>
+
                     <img src="{{ STATIC_URL }}img/howto_bugex_results.png" />
-					<p>Some variable, method or class may  not  be  defined  in the scope of the given source 
+
+                    <p>
+                        Some variable, method or class may  not  be  defined  in the scope of the given source
 						code. This might occur, if one or more necessary source code file  are missing in the 
-						uploaded archive, or if the variable, method or class belongs to third party code. In this case the system will not be able to display the source code.</p>
-					<p>To improve clarity the list allows you to filter facts according to their type. Then the results get 
+						uploaded archive, or if the variable, method or class belongs to third party code. In this case the system will not be able to display the source code.
+                    </p>
+					<p>
+                        To improve clarity the list allows you to filter facts according to their type. Then the results get
 						visually filtered by the system to only display the facts associated with the types chosen by
-						you.</p>
+						you.
+                    </p>
 
 					<h3 class="anchorFix" id="sec1_3">Deleting the BugEx result</h3>
-					<p>If you want to delete the results, please use the link provided in the email 
-						together with the link to the result page.</p>
+					<p>
+                        If you want to delete the results, please use the link provided in the email
+						together with the link to the result page.
+                    </p>
 					<p><i class="icon-warning-sign"></i> This will permanently delete the submitted archive, and the BugEx results from the BugEx Online servers.</p>
 
 					<hr/>
-					<h2>Account Management</h2>
-					<p/>
+
+                    <h2>Account Management</h2>
+					<br>
+
                     <h3 class="anchorFix" id="sec2_1">Registering with BugEx Online</h3>
-                    <p>To be able to work with the BugEx Online system, please register yourself as a user. For that 
-                                                click on "Registration" below the Sign In form and enter your email address and the captcha.
-                                                Please, provide a valid email address as it will be used to send the login credentials and
-                                                other notifications to you. To register, click on "Register" after you filled in the data.</p>
+                    <p>
+                        To be able to work with the BugEx Online system, please register yourself as a user. For that
+                        click on "Registration" below the Sign In form and enter your email address and the captcha.
+                        Please, provide a valid email address as it will be used to send the login credentials and
+                        other notifications to you. To register, click on "Register" after you filled in the data.
+                    </p>
 
                     <h3 class="anchorFix" id="sec2_2">Changing your email</h3>
-                    <p>If you wish to change your email address associated to your BugEx Online account, please login to the system and access
-                                                your "My Account" page afterwards. To change your email address, enter the new email address
-                                                twice in the appropriate "New email address" fields of the form. After that, click on "Submit".
-                                                For security reasons, a confirmation email will be sent to your both to your old email address
-                                                and the new one.</p>	
+                    <p>
+                        If you wish to change your email address associated to your BugEx Online account, please login to the system and access
+                        your "My Account" page afterwards. To change your email address, enter the new email address
+                        twice in the appropriate "New email address" fields of the form. After that, click on "Submit".
+                        For security reasons, a confirmation email will be sent to your both to your old email address
+                        and the new one.
+                    </p>
 			
                     <h3 class="anchorFix" id="sec2_3">Changing your password</h3>
-                    <p>If you wish to change your password, please access the "My Account" page as described in the last step and click on
-                                                "Change Password!". A new password will be sent to your current email address.</p>
+                    <p>
+                        If you wish to change your password, please access the "My Account" page as described in the last step and click on
+                        "Change Password!". A new password will be sent to your current email address.
+                    </p>
 
-		    <h3 class="anchorFix" id="sec2_4">Recover password</h3>
-                    <p>If you forgot your password, you can request a new password. To do so, click on "Forgot password?" below the Sign In
-                                                form. A new password will be sent to your current email address afterwards.</p>
+		            <h3 class="anchorFix" id="sec2_4">Recover password</h3>
+                    <p>
+                       If you forgot your password, you can request a new password. To do so, click on "Forgot password?" below the Sign In
+                       form. A new password will be sent to your current email address afterwards.
+                    </p>
 			
-			<hr/>
-			<h2>Advanced Functionality</h2>
-			<p/>
+			        <br>
+			        <h2>Advanced Functionality</h2>
+			        <br>
+
                     <h3 class="anchorFix" id="sec3_1">Sharing the BugEx result on social networks</h3>
-                    <p>It is possible to share your results from BugEx Online in Facebook or Google+. For that, 
+                    <p>
+                        It is possible to share your results from BugEx Online in Facebook or Google+. For that,
 						please click the corresponding button on the result page and follow the instructions from 
-						your social network provider.</p>
+						your social network provider.
+                    </p>
 					<p><i class="icon-info-sign"></i> This feature is not available yet.</p>
 
 					<h3 class="anchorFix" id="sec3_2">Downloading the BugEx result</h3>	
-					<p>It is also possible to download the generated BugEx result as an XML document to your local 
+					<p>
+                        It is also possible to download the generated BugEx result as an XML document to your local
 						machine.  For that, please click  the  "Download"  button on the result page and follow the 
-						instructions from your browser.</p>
+						instructions from your browser.
+                    </p>
 					<p><i class="icon-info-sign"></i> This feature is not available yet.</p>
 			
-			<hr/>
-			<h3 class="anchorFix" id="sec4_1">Any other questions?</h3>
-			<p><a class="btn btn-primary" href="{% url contact-page %}"><i class="icon-comment icon-white"></i> Contact us!</a></p>
-			<hr/>
-            <p class="marginFix"></p>
-</div>
-<div class="span1"></div>
+			        <br>
+			        <h3 class="anchorFix" id="sec4_1">Any other questions?</h3>
+			        <p>
+                        <a class="btn btn-primary" href="{% url contact-page %}"><i class="icon-comment icon-white"></i> Contact us!</a>
+                    </p>
+			        <br>
+                    <p class="marginFix"></p>
+                </div>
+                <div class="span1"></div>
 			</div>
-                    </div>
+        </div>
 	</div>
 {% endblock content %}
