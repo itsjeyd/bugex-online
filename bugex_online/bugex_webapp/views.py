@@ -325,7 +325,7 @@ def _log_user_in(request):
 def log_user_out(request):
     """Log a currently logged in user out."""
     logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(settings.APPLICATION_BASE_URL)
 
 
 def submit_contact_form(request):
