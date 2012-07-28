@@ -29,6 +29,11 @@ class EmailBaseForm(forms.Form):
 
 
 class RegistrationForm(EmailBaseForm):
+    """The RegistrationForm form for registering a new user.
+
+    The RegistrationForm inherits from EmailBaseForm and
+    introduces a new field for entering a captcha.
+    """
     captcha = CaptchaField()
 
 

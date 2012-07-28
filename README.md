@@ -18,7 +18,7 @@ For further information, see http://www.st.cs.uni-saarland.de/edu/se/2012/ and h
 
 #### Prerequisites
 
-* Python (version 2.7.*) and Django (version 1.4). 
+* [Python](http://python.org/download/releases/2.7.3/) (version 2.7.*) and [Django](https://www.djangoproject.com/download/) (version 1.4). 
 * For the user registration captcha field we used django-simple-captcha (version 0.3.5). To install it follow these [instructions](http://django-simple-captcha.readthedocs.org/en/latest/usage.html#installation). Please note that django-simple-captcha requires the python imaging library [PIL](http://www.pythonware.com/products/pil/) (version 1.1.7) to be installed. 
 * MySQL server
 * The python-mysql connector (install python-mysqldb via your prefered package manager)

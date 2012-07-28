@@ -27,6 +27,7 @@ class ValidatorTestCase(TestCase):
     fixtures = ('data_with_different_archive_extensions.json',)
 
     def setUp(self):
+        """Set up Java source and class file names with different extensions."""
         self.java_source_file_names = (
             'JavaSourceFile.java',
             'JavaSourceFile.JAVA',
