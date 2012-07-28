@@ -205,13 +205,18 @@ LOGGING = {
     }
 }
 
+# The application base url configures the URL context of the application.
+# THe url will be used for example in email notifications.
+# For a productive system, this could read; 'http://www.bugex.com/bugexonline'
 APPLICATION_BASE_URL = 'http://localhost:8000'
 
+# This settings will be used to send out email notifications.
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'bugexonline@gmail.com'
 EMAIL_HOST_PASSWORD = 'eniln0xeguB'
+
 #Admin variable.
 #Here sees man the emails that are going to get emails when
 #1)an HTTP error occurs
