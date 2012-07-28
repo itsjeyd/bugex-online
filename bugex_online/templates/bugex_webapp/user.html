@@ -40,7 +40,7 @@
                                                     <dt><strong>Test case:</strong></dt>
                                                     <dd><span class="label label-info">{{ request.test_case.name }}</span></dd>
                                                     <br>
-                                                    <dt><a class="btn btn-info" href="{% settings_value "APPLICATION_BASE_URL" %}/result/{{ request.token }}">Results</a> <a class="btn btn-danger" href="{% settings_value "APPLICATION_BASE_URL" %}/delete/{{ request.delete_token }}">Delete</a></dt>
+                                                    <dt><a class="btn btn-info" href="{% url results-page request.token %}">Results</a> <a class="btn btn-danger" href="{% url delete-page request.delete_token %}">Delete</a></dt>
                                                 </dl>
                                             </li>
                                         {% else %}
