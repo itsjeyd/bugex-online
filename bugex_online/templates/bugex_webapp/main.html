@@ -33,7 +33,7 @@
 
                                 <fieldset>
 
-                                    {% if error == "not_authenticated" %}
+                                    {% if "Your account has been disabled" in message or "Your username and password didn't match" in message %}
                                         <div class="control-group error">
                                     {% else %}
                                         <div class="control-group">
@@ -45,7 +45,7 @@
                                             </div>
                                         </div>
 
-                                    {% if error == "not_authenticated" %}
+                                    {% if "Your account has been disabled" in message or "Your username and password didn't match" in message %}
                                         <div class="control-group error">
                                     {% else %}
                                         <div class="control-group">
@@ -65,11 +65,16 @@
 
                                         {% if message %}
 
-					                        {% if "Your account has been disabled" in message or "Your username and password didn't match" in message %}
+					                        {% if "Your account has been disabled" in message or "Your username and password didn't match" in message or "does not exist in the database" in message or "You have not entered a valid email address" in message or "is already registered in the database" in message or "User could not be created" in message %}
 						                        <div class="alert alert-error fade in">
 						                            <a class="close" data-dismiss="alert" href="#">&times;</a>
 						                            {{ message }}
 						                        </div>
+                                            {% else %}
+                                                <div class="alert alert-success fade in">
+                                                    <a class="close" data-dismiss="alert" href="#">&times;</a>
+                                                    {{ message }}
+                                                </div>
 					                        {% endif %}
 					                    {% endif %}
                                     </div>
