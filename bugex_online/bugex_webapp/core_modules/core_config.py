@@ -1,14 +1,5 @@
 # [ BUG EX ONLINE ]
 
-from os import getcwd
-
-# The absolute path to the bugex_online directory
-ROOT_PATH = getcwd()
-
-# Working directory of BugExOnline.
-# It holds all user data.
-#WORKING_DIR = '/tmp/bugex'
-
 # A boolean that turns on/off debug mode.
 # It determines if bugex instances run in debug mode,
 # which produces more log output and uses artificial delay for the mockup
@@ -25,7 +16,7 @@ ARTIFICIAL_DELAY = 5
 RESULT_FILE_NAME = 'bugex-results.xml'
 
 # Absolute path of the BugEx executable.
-EXECUTABLE = '{0}/../java_mock/bin/bugex-mock-0.0.6-SNAPSHOT-jar-with-dependencies.jar'.format(ROOT_PATH)
+EXECUTABLE = '/var/django/bugex-mock-0.0.6-SNAPSHOT-jar-with-dependencies.jar'
 
 # [ MONITORING ]
 
