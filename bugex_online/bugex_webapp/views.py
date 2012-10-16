@@ -194,7 +194,7 @@ def _submit_user_request(request):
 @login_required(login_url='/')
 def provide_user_content(request):
     """Change a user's credentials, i.e. email address and password."""
-    requests_by_user = UserRequest.objects.filter(user=request.user)
+    requests_by_user = UserRequest.objects.filter(user=request.user).order_by('-date')
 
     if request.method == 'POST':
 
