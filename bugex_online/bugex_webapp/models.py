@@ -645,7 +645,7 @@ class SourceFile(ProjectFile):
         """
         Return a string representation of the content of a SourceFile
         """
-        return '\n'.join([line.content for line in self.line_set.all()])
+        return '\n'.join([line.content for line in self.line_set.order_by('number')])
 
 
 class ClassFile(ProjectFile):
