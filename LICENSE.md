@@ -1,10 +1,9 @@
 # License
-BugEx Online is free software, released under the xxx license.
+BugEx Online is free software. A decision for an applicable license is still pending.
 
 ## Licenses and Acknowledgements for Third Party Software
 
-### (Apache License v2.0)[https://www.apache.org/licenses/LICENSE-2.0.html] (GPLv3 compatible):
-**Twitter Bootstrap** - Copyright 2012 Twitter, Inc. Distributed under the (Apache License v2.0)[https://www.apache.org/licenses/LICENSE-2.0.html], see https://github.com/twitter/bootstrap/blob/master/LICENSE for original license file.
+**Twitter Bootstrap** - Copyright 2012 Twitter, Inc. Distributed under the [Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0.html), see https://github.com/twitter/bootstrap/blob/master/LICENSE for original license file.
     
     Copyright 2012 Twitter, Inc.
     
@@ -14,9 +13,14 @@ BugEx Online is free software, released under the xxx license.
     
     Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
-**Glyphicons Halflings** - Copyright 2010-2012 Jan Kovařík. Distributed as part of Twitter Bootstrap under the (Apache License v2.0)[https://www.apache.org/licenses/LICENSE-2.0.html]. See http://glyphicons.com/glyphicons-licenses for additional information.
+- - -
 
-**Django 1.4** - Copyright (c) Django Software Foundation and individual contributors. Distributed under the BSD license. See https://github.com/django/django/blob/master/LICENSE for original license file.
+**Glyphicons Halflings** - Copyright 2010-2012 Jan Kovařík. Distributed as part of Twitter Bootstrap under the [Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0.html). See http://glyphicons.com/glyphicons-licenses for additional information.
+
+- - -
+
+**Django 1.4** - Copyright (c) Django Software Foundation and individual contributors. Distributed under the BSD license. See https://github.com/django/django/blob/master/LICENSE for original license file.  
+*Note: BugEx Online does not contain any binary or source code of the Django Project itself. This is merely an acknowledgement to the original developers.*
 
     Copyright (c) Django Software Foundation and individual contributors.
     All rights reserved.
@@ -46,9 +50,15 @@ BugEx Online is free software, released under the xxx license.
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-**Python MySQL Client libraries** - Distributed under the (GNU General Public License version 2.0)[https://www.gnu.org/licenses/gpl-2.0.html]. See http://sourceforge.net/projects/mysql-python for additional information.
+- - -
 
-**django-simple-captcha** - Copyright (c) 2008-2010 Marco Bonetti. Distributed under MIT license. See https://github.com/mbi/django-simple-captcha/blob/master/LICENSE for original license file.
+**Python MySQL Client libraries** - Distributed under the [GNU General Public License version 2.0](https://www.gnu.org/licenses/gpl-2.0.html). See http://sourceforge.net/projects/mysql-python for additional information.  
+*Note: BugEx Online does not contain any binary or source code of the MySQL client libraries itself. This is merely an acknowledgement to the original developers.*
+
+- - -
+
+**django-simple-captcha** - Copyright (c) 2008-2010 Marco Bonetti. Distributed under MIT license. See https://github.com/mbi/django-simple-captcha/blob/master/LICENSE for original license file.  
+*Note: BugEx Online does not contain any binary or source code of django-simple-captcha itself. This is merely an acknowledgement to the original developers.*
 
     Copyright (c) 2008 - 2010 Marco Bonetti
     
@@ -70,6 +80,8 @@ BugEx Online is free software, released under the xxx license.
     LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
     OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
     WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+- - -
 
 **jQuery** - Copyright 2012 jQuery Foundation and other contributors. Distributed under MIT license. See https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt for original license file.
 
@@ -95,7 +107,10 @@ BugEx Online is free software, released under the xxx license.
     OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
     WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-**Python Imaging Library (PIL)** - Copyright (c) 1997-2011 by Secret Labs AB. Copyright (c) 1995-2011 by Fredrik Lundh. Distributed under (Python Imaging Library license)[http://www.pythonware.com/products/pil/license.htm]. See http://www.pythonware.com/products/pil/license.htm for original license file.
+- - -
+
+**Python Imaging Library (PIL)** - Copyright (c) 1997-2011 by Secret Labs AB. Copyright (c) 1995-2011 by Fredrik Lundh. Distributed under [Python Imaging Library license](http://www.pythonware.com/products/pil/license.htm). See http://www.pythonware.com/products/pil/license.htm for original license file.  
+*Note: BugEx Online does not contain any binary or source code of the Python Imaging Library itself. This is merely an acknowledgement to the original developers.*
 
     The Python Imaging Library (PIL) is
     
@@ -108,4 +123,8 @@ BugEx Online is free software, released under the xxx license.
     
     SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL SECRET LABS AB OR THE AUTHOR BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-**Python 2.7.3** - Distributed under the (Python Software Foundation license)[http://docs.python.org/2/license.html]. See http://docs.python.org/2/license.html for original license.
+- - -
+
+**Python 2.7.3** - Distributed under the [Python Software Foundation license](http://docs.python.org/2/license.html). See http://docs.python.org/2/license.html for original license.  
+*Note: BugEx Online does not contain any binary or source code of Python itself. This is merely an acknowledgement to the original developers.*
+- - -
