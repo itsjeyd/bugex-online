@@ -50,3 +50,7 @@ Development server is running at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.</code></pre>
 
 5. Enter the URL http://127.0.0.1:8000/ in your browser to start using the system. Detailed instructions on how to use it can be found on its HowTo page. 
+
+### License
+
+Please see [LICENSE](LICENSE.md) for details.
